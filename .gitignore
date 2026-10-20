@@ -16,3 +16,8 @@ screenshots/
 .opencode-web/
 
 node_modules/
+
+android/build/
+android/assets/www/
+*.keystore
+android/thomcall.jks

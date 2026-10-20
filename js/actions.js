@@ -254,6 +254,52 @@ function toggleMiniCall(force) {
   return open;
 }
 
+function startNativeOverlay() {
+  if (!isNativeApp()) return;
+  if (typeof toggleMiniCall === "function") toggleMiniCall(false);
+  window.setTimeout(() => {
+    try {
+      window.ThomAndroid.startOverlay();
+      toast("Sobreposição ativada.", { type: "info", icon: "external" });
+    } catch {
+      toast("Não foi possível ativar a sobreposição.", { type: "error", icon: "x" });
+    }
+  }, 120);
+}
+
+function requestNativeOverlay() {
+  if (!isNativeApp()) {
+    toast("Sobreposição de tela está disponível no app Android do Thom Call.", { type: "info", icon: "external" });
+    return;
+  }
+  let granted = false;
+  try {
+    granted = Boolean(window.ThomAndroid.hasOverlayPermission());
+  } catch {
+    granted = false;
+  }
+  if (granted) {
+    startNativeOverlay();
+    return;
+  }
+  toast("Permita “Sobrepor a outros apps” para continuar.", { type: "info", icon: "external" });
+  try {
+    window.ThomAndroid.requestOverlayPermission();
+  } catch {
+    toast("Não foi possível abrir a permissão de sobreposição.", { type: "error", icon: "x" });
+  }
+}
+
+window.thomNativeOverlayPermission = (granted) => {
+  if (!isNativeApp()) return;
+  if (granted) {
+    toast("Sobreposição liberada.", { type: "info", icon: "external" });
+    startNativeOverlay();
+  } else {
+    toast("Permissão de sobreposição negada.", { type: "error", icon: "x" });
+  }
+};
+
 function setupMiniCall() {
   const el = $("#callMini");
   if (!el || el.dataset.bound === "1") return;
@@ -263,6 +309,7 @@ function setupMiniCall() {
     if (!button) return;
     const action = button.dataset.miniAction;
     if (action === "close") toggleMiniCall(false);
+    else if (action === "overlay") requestNativeOverlay();
     else if (action === "mic") toggleMic();
     else if (action === "camera") toggleCamera();
     else if (action === "screen") toggleScreen();

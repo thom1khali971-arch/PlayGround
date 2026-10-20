@@ -416,6 +416,7 @@ function renderMiniCall() {
         <strong>Thom Call</strong>
         <small>${escapeHtml(channel?.name || "Chamada")}</small>
       </div>
+      ${isNativeApp() ? `<button class="mini-icon" type="button" data-mini-action="overlay" aria-label="Sobreposição de tela" title="Sobreposição de tela">${icon("external")}</button>` : ""}
       <button class="mini-icon" type="button" data-mini-action="close" aria-label="Fechar mini janela">${icon("x")}</button>
     </div>
     <div class="mini-stage${stream ? " has-media" : ""}">

@@ -295,6 +295,14 @@ function mediaPolicyAllows(kind) {
   return state.mediaPolicy?.[kind] !== false;
 }
 
+function isNativeApp() {
+  try {
+    return Boolean(window.ThomAndroid?.isNative?.());
+  } catch {
+    return false;
+  }
+}
+
 let audioCtx = null;
 let modalHooks = {};
 
