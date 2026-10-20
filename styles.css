@@ -3413,6 +3413,64 @@ body.auth-locked .app {
   transform: translateY(0) scale(0.995);
 }
 
+.gmail-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.auth-guest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 46px;
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.auth-guest:hover {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.auth-guest:active {
+  transform: translateY(1px);
+}
+
+.auth-guest[hidden] {
+  display: none;
+}
+
+.auth-status {
+  margin: 12px 0 0;
+  padding: 9px 11px;
+  border: 1px solid rgba(255, 93, 108, 0.24);
+  border-radius: 9px;
+  background: rgba(255, 93, 108, 0.08);
+  color: #ffb0b8;
+  font-size: 11.5px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.auth-status[data-tone="info"] {
+  border-color: rgba(124, 108, 255, 0.24);
+  background: rgba(124, 108, 255, 0.1);
+  color: #c5bdff;
+}
+
+.auth-status[hidden] {
+  display: none;
+}
+
 .google-g {
   display: inline-grid;
   flex: none;
@@ -3446,6 +3504,7 @@ body.auth-locked .app {
 }
 
 .auth-hint {
+  margin-top: 13px;
   color: var(--text-3);
   font-size: 10.5px;
   line-height: 1.5;
@@ -3536,6 +3595,83 @@ body.auth-locked .app {
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.install-hero {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 2px 0 14px;
+}
+
+.install-app-icon {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 15px;
+  box-shadow: 0 12px 28px -14px rgba(124, 108, 255, 0.9);
+}
+
+.install-app-icon-sm {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+
+.install-hero p {
+  color: var(--text-2);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.install-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 13px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.install-benefits span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #c3cad9;
+  font-size: 12px;
+}
+
+.install-benefits svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--green);
+}
+
+.install-foot {
+  justify-content: flex-end;
+}
+
+.install-steps {
+  margin: 0;
+  padding-left: 20px;
+  color: #c3cad9;
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.install-steps li + li {
+  margin-top: 4px;
+}
+
+.install-settings-btn {
+  flex: none;
+  gap: 5px;
+  height: 32px;
+  padding: 0 9px;
+  color: #b9b1ff;
+  font-size: 11px;
 }
 
 .account-logout {

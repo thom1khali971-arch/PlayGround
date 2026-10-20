@@ -6,14 +6,20 @@
   <title>Thom Call — Chamadas por voz</title>
   <meta name="description" content="Thom Call é um espaço de conversas por voz com chat oficial do dono. Entre em uma sala e fale com quem importa." />
   <meta name="theme-color" content="#080a0f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ThomCall" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
   <link rel="preload" href="assets/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="auth-locked">
   <script>
     try {
-      if (localStorage.getItem("thom.session.v1")) document.body.classList.remove("auth-locked");
+      if (localStorage.getItem("thom.session.v2")) document.body.classList.remove("auth-locked");
     } catch {}
   </script>
   <div class="app" id="app">
@@ -33,7 +39,7 @@
         <div class="server-heading">
           <span class="server-mini" id="serverMini"></span>
           <div class="server-heading-text">
-            <h1 id="serverName">Onda HQ</h1>
+            <h1 id="serverName">ThomCall</h1>
             <span id="serverKind">Espaço de voz</span>
           </div>
         </div>
@@ -88,7 +94,7 @@
           <div class="call-title-text">
             <div class="call-title-line">
               <h2 id="callName">Thom Call</h2>
-              <span class="server-chip" id="callServerChip">Onda HQ</span>
+              <span class="server-chip" id="callServerChip">ThomCall</span>
             </div>
             <p id="callMeta">Carregando chamada…</p>
           </div>
@@ -207,27 +213,28 @@
       <span class="auth-orb auth-orb-b"></span>
       <span class="auth-orb auth-orb-c"></span>
     </div>
-    <section class="auth-card" aria-label="Entrar no Thom Call">
+    <section class="auth-card" aria-label="Entrar no ThomCall">
       <div class="auth-brand">
         <span class="auth-logo" data-icon="wave"></span>
-        <span>Thom Call</span>
+        <span>ThomCall</span>
       </div>
       <span class="auth-eyebrow">Acesso à conta</span>
-      <h1>Entrar no Thom Call</h1>
-      <p class="auth-subtitle">Use sua conta Gmail para acompanhar as chamadas e o chat oficial do dono.</p>
+      <h1>Entrar no ThomCall</h1>
+      <p class="auth-subtitle" id="authSubtitle">Use sua conta Google para acessar as chamadas e o chat oficial do dono.</p>
 
       <div class="google-slot" id="googleButtonSlot" hidden></div>
       <button class="gmail-btn" id="gmailBtn" type="button">
         <span class="google-g" aria-hidden="true"></span>
-        <span>Continuar com Gmail</span>
+        <span class="gmail-btn-label">Continuar com Google</span>
       </button>
+      <button class="auth-guest" id="guestBtn" type="button" hidden>Entrar como visitante</button>
+      <p class="auth-status" id="authStatus" role="status" hidden></p>
 
-      <div class="auth-divider"><span>conta pessoal</span></div>
-      <p class="auth-hint">Seus dados de acesso ficam salvos apenas neste navegador.</p>
+      <p class="auth-hint" id="authHint">A autenticação é feita pelo Google. O ThomCall não acessa sua senha.</p>
 
-      <div class="auth-foot">
+      <div class="auth-foot" id="authFoot">
         <span data-icon="lock"></span>
-        <span>Acesso pessoal ao Thom Call</span>
+        <span id="authFootLabel">Login seguro com Google</span>
       </div>
     </section>
   </div>
@@ -244,5 +251,6 @@
   <script src="js/actions.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/modals.js"></script>
+  <script src="js/install.js"></script>
 </body>
 </html>

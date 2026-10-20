@@ -76,7 +76,7 @@ function openSettings() {
             <span class="avatar avatar-38 brand-avatar">${escapeHtml(session.initials)}</span>
             <div class="account-info">
               <strong>${escapeHtml(session.name)}</strong>
-              <span>${escapeHtml(session.email)}</span>
+              <span>${escapeHtml(session.email || (session.guest ? "Sessão de visitante" : ""))}</span>
             </div>
             <button class="btn-ghost account-logout" id="logoutBtn" type="button">${icon("log-out")} Sair</button>
           </div>
@@ -93,6 +93,17 @@ function openSettings() {
       </div>
       <div class="modal-body">
         ${accountSection}
+        <section class="settings-section">
+          <h4>Aplicativo</h4>
+          <div class="account-card">
+            <img class="install-app-icon install-app-icon-sm" src="assets/icons/icon-192.png" alt="" width="38" height="38" />
+            <div class="account-info">
+              <strong>ThomCall no Android</strong>
+              <span>Instale para abrir em tela cheia</span>
+            </div>
+            <button class="btn-ghost install-settings-btn" id="settingsInstallBtn" type="button">${icon("download")} Instalar</button>
+          </div>
+        </section>
         <section class="settings-section">
           <h4>Dispositivos</h4>
           <label class="field"><span>Microfone</span><select id="setInput"><option value="">Padrão do sistema</option></select></label>
@@ -121,6 +132,10 @@ function openSettings() {
         <button class="btn-primary" type="button" data-close>Concluir</button>
       </div>`,
     onOpen(root) {
+      $("#settingsInstallBtn", root)?.addEventListener("click", () => {
+        closeModal();
+        window.setTimeout(() => showInstallOffer(true), 220);
+      });
       $("#logoutBtn", root)?.addEventListener("click", () => {
         stopMicTest();
         logoutAccount();

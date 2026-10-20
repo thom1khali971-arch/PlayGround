@@ -33,6 +33,7 @@ const ICONS = {
   "log-in": '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/>',
   mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
   shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>',
+  download: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
   ban: '<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>',
   "user-x": '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 8 5 5"/><path d="m22 8-5 5"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9Z"/>',
@@ -112,7 +113,7 @@ function person(id, name, extra = {}) {
 const servers = [
   {
     id: "onda",
-    name: "Onda HQ",
+    name: "ThomCall",
     kind: "Espaço de voz",
     glyph: "wave",
     gradient: SERVER_GRADIENTS[0],
@@ -130,12 +131,12 @@ const servers = [
       {
         id: "foco-estudo",
         name: "Foco & Estudo",
-        participants: [person("clara", "Clara Reis"), person("nico", "Nico Santos")],
+        participants: [person("clara", "Clara Reis"), person("nico", "BOT")],
       },
       {
         id: "musica-ideias",
         name: "Música & Ideias",
-        participants: [person("leo", "Léo Prado", { muted: true }), person("sami", "Sami Rocha"), person("iris", "Iris Melo")],
+        participants: [person("leo", "Léo Prado", { muted: true }), person("sami", "Sami Rocha"), person("iris", "BOT")],
       },
       { id: "sala-espera", name: "Sala de Espera", participants: [] },
     ],
