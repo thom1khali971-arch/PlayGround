@@ -370,10 +370,103 @@ function renderMembers() {
     </div>`;
 }
 
+function renderMiniCall() {
+  const el = $("#callMini");
+  if (!el) return;
+  const open = Boolean(state.call && state.mini?.open);
+  const previousVideo = $("#miniVideo", el);
+  el.hidden = !open;
+  if (!open) {
+    if (previousVideo) previousVideo.srcObject = null;
+    el.innerHTML = "";
+    return;
+  }
+  const channel = callChannel();
+  const people = callPeople();
+  const remoteScreen = people.find((p) => !p.isLocal && p.screen) || null;
+  const localStream = state.screenStream || state.cameraStream;
+  const remoteStream =
+    remoteScreen && typeof liveScreenStream === "function" ? liveScreenStream(remoteScreen.id) : null;
+  const stream = localStream || remoteStream;
+  const source = localStream
+    ? state.screenSource === "camera"
+      ? "camera"
+      : "screen"
+    : remoteScreen
+      ? remoteScreen.screenSource === "camera"
+        ? "camera"
+        : "screen"
+      : "";
+  const speaker = people.find((p) => p.speaking) || people[0] || localParticipant();
+  const ownerLabel = localStream
+    ? source === "camera"
+      ? "Sua câmera"
+      : "Sua tela"
+    : remoteScreen
+      ? `${source === "camera" ? "Câmera" : "Tela"} de ${escapeHtml(remoteScreen.name)}`
+      : "";
+  const muted = isMutedLocally();
+  const cameraAllowed = mediaPolicyAllows("camera");
+  const screenAllowed = mediaPolicyAllows("screen");
+  const localScreenCamera = state.screenStream && state.screenSource === "camera";
+
+  el.innerHTML = `<div class="mini-head" data-mini-drag>
+      <span class="mini-brand">${icon("wave")}</span>
+      <div class="mini-title">
+        <strong>Thom Call</strong>
+        <small>${escapeHtml(channel?.name || "Chamada")}</small>
+      </div>
+      <button class="mini-icon" type="button" data-mini-action="close" aria-label="Fechar mini janela">${icon("x")}</button>
+    </div>
+    <div class="mini-stage${stream ? " has-media" : ""}">
+      ${
+        stream
+          ? '<video id="miniVideo" class="mini-video" autoplay playsinline muted></video>'
+          : `<div class="mini-fallback">
+              <span class="mini-orb" style="--av:${speaker.gradient}">${speaker.initials}</span>
+              <strong>${speaker.isLocal ? "Você" : escapeHtml(speaker.name)}</strong>
+              <small>${people.length} ${people.length === 1 ? "pessoa" : "pessoas"} na chamada</small>
+            </div>`
+      }
+      ${ownerLabel ? `<span class="mini-badge">${icon(source === "camera" ? "video" : "screen")} ${ownerLabel}</span>` : ""}
+    </div>
+    <div class="mini-controls">
+      <button class="mini-btn${muted ? " is-off" : ""}" type="button" data-mini-action="mic"
+        aria-label="${muted ? "Ativar microfone" : "Silenciar microfone"}" title="${muted ? "Ativar microfone" : "Silenciar microfone"}">
+        ${icon(muted ? "mic-off" : "mic")}
+      </button>
+      <button class="mini-btn${state.cameraStream ? " is-on" : ""}${cameraAllowed ? "" : " is-locked"}" type="button" data-mini-action="camera"
+        aria-label="${cameraAllowed ? (state.cameraStream ? "Desligar câmera" : "Ligar câmera") : "Câmera bloqueada pelo dono"}"
+        title="${cameraAllowed ? (state.cameraStream ? "Desligar câmera" : "Ligar câmera") : "Câmera bloqueada pelo dono"}">
+        ${icon(cameraAllowed ? (state.cameraStream ? "video" : "video-off") : "lock")}
+      </button>
+      <button class="mini-btn${state.screenStream ? " is-sharing" : ""}${screenAllowed ? "" : " is-locked"}" type="button" data-mini-action="screen"
+        aria-label="${screenAllowed ? (state.screenStream ? "Parar transmissão" : "Compartilhar tela") : "Tela bloqueada pelo dono"}"
+        title="${screenAllowed ? (state.screenStream ? "Parar transmissão" : "Compartilhar tela") : "Tela bloqueada pelo dono"}">
+        ${icon(screenAllowed ? (localScreenCamera ? "video" : "screen") : "lock")}
+      </button>
+      <span class="mini-spacer"></span>
+      <button class="mini-btn danger" type="button" data-mini-action="leave" aria-label="Sair da chamada" title="Sair da chamada">
+        ${icon("phone-off")}
+      </button>
+    </div>`;
+  const video = $("#miniVideo", el);
+  if (video && stream) {
+    if (video.srcObject !== stream) video.srcObject = stream;
+    video.play?.().catch(() => {});
+  }
+}
+
 function renderDock() {
+  const miniBtn = $("#miniBtn");
+  if (miniBtn) {
+    miniBtn.hidden = !state.call;
+    miniBtn.classList.toggle("is-active", Boolean(state.call && state.mini?.open));
+  }
   if (!state.call) {
     dockWrap.classList.add("is-hidden");
     dockEl.innerHTML = "";
+    renderMiniCall();
     return;
   }
   dockWrap.classList.remove("is-hidden");
@@ -401,6 +494,7 @@ function renderDock() {
     <button class="dock-btn danger" type="button" data-action="leave" data-tip="Sair da chamada">
       ${icon("phone-off")}<span class="dock-label">Sair</span>
     </button>`;
+  renderMiniCall();
 }
 
 function renderUserPanel() {

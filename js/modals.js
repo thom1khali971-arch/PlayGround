@@ -107,6 +107,7 @@ function openShortcuts() {
           ${shortcut("Ativar / desativar áudio", "D")}
           ${shortcut("Ligar / desligar câmera", "V")}
           ${shortcut("Compartilhar tela", "S")}
+          ${shortcut("Mini janela da chamada", "P")}
           ${shortcut("Fechar janelas", "Esc")}
         </div>
         <p class="modal-note">Os atalhos ficam ativos quando você está em uma chamada e nenhum campo de texto está em foco.</p>
@@ -214,6 +215,9 @@ function handleShortcut(event) {
   } else if (key === "s") {
     event.preventDefault();
     toggleScreen();
+  } else if (key === "p") {
+    event.preventDefault();
+    toggleMiniCall();
   }
 }
 
@@ -222,6 +226,8 @@ function bindEvents() {
   $("#addChannelBtn").addEventListener("click", openCreateChannel);
   $("#settingsBtn").addEventListener("click", openSettings);
   $("#profileBtn").addEventListener("click", openSettings);
+  $("#miniBtn").addEventListener("click", () => toggleMiniCall());
+  if (typeof setupMiniCall === "function") setupMiniCall();
   $("#helpBtn").addEventListener("click", openShortcuts);
   $("#serverMenuBtn").addEventListener("click", openSpaceInfo);
   $("#inviteBtn").addEventListener("click", copyInvite);

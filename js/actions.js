@@ -1,4 +1,5 @@
 let screenPending = false;
+let miniDrag = null;
 
 function switchServer(serverId) {
   if (!getServer(serverId) || state.serverId === serverId) return;
@@ -51,6 +52,7 @@ function leaveCall(options = {}) {
   stopScreen();
   stopCamera();
   state.call = null;
+  state.mini.open = false;
   state.selectedChannelId =
     callServerId === state.serverId
       ? channel?.id || state.selectedChannelId
@@ -218,6 +220,94 @@ function applyMediaPolicy() {
   }
   if (changed && typeof livePublishPresence === "function") livePublishPresence();
   if (typeof renderAll === "function") renderAll();
+}
+
+function applyMiniPosition() {
+  const el = $("#callMini");
+  if (!el || el.hidden) return;
+  if (!Number.isFinite(state.mini.x) || !Number.isFinite(state.mini.y)) return;
+  el.classList.add("is-positioned");
+  const rect = el.getBoundingClientRect();
+  const margin = 8;
+  const maxX = Math.max(margin, window.innerWidth - rect.width - margin);
+  const maxY = Math.max(margin, window.innerHeight - rect.height - margin);
+  state.mini.x = Math.min(Math.max(state.mini.x, margin), maxX);
+  state.mini.y = Math.min(Math.max(state.mini.y, margin), maxY);
+  el.style.left = `${state.mini.x}px`;
+  el.style.top = `${state.mini.y}px`;
+  el.style.right = "auto";
+  el.style.bottom = "auto";
+}
+
+function toggleMiniCall(force) {
+  if (!state.call) {
+    toast("Entre em uma chamada para abrir a mini janela.", { type: "info", icon: "pip" });
+    return false;
+  }
+  const open = typeof force === "boolean" ? force : !state.mini.open;
+  state.mini.open = open;
+  renderMiniCall();
+  renderDock();
+  if (open && Number.isFinite(state.mini.x) && Number.isFinite(state.mini.y)) {
+    window.requestAnimationFrame(applyMiniPosition);
+  }
+  return open;
+}
+
+function setupMiniCall() {
+  const el = $("#callMini");
+  if (!el || el.dataset.bound === "1") return;
+  el.dataset.bound = "1";
+  el.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-mini-action]");
+    if (!button) return;
+    const action = button.dataset.miniAction;
+    if (action === "close") toggleMiniCall(false);
+    else if (action === "mic") toggleMic();
+    else if (action === "camera") toggleCamera();
+    else if (action === "screen") toggleScreen();
+    else if (action === "leave") leaveCall();
+  });
+  el.addEventListener("pointerdown", (event) => {
+    const head = event.target.closest("[data-mini-drag]");
+    if (!head || event.target.closest("button")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const rect = el.getBoundingClientRect();
+    state.mini.x = rect.left;
+    state.mini.y = rect.top;
+    miniDrag = {
+      id: event.pointerId,
+      dx: event.clientX - rect.left,
+      dy: event.clientY - rect.top,
+    };
+    el.classList.add("is-dragging");
+    try {
+      el.setPointerCapture(event.pointerId);
+    } catch {
+    }
+    event.preventDefault();
+  });
+  el.addEventListener("pointermove", (event) => {
+    if (!miniDrag || event.pointerId !== miniDrag.id) return;
+    state.mini.x = event.clientX - miniDrag.dx;
+    state.mini.y = event.clientY - miniDrag.dy;
+    applyMiniPosition();
+  });
+  const endDrag = (event) => {
+    if (!miniDrag || event.pointerId !== miniDrag.id) return;
+    miniDrag = null;
+    el.classList.remove("is-dragging");
+    try {
+      el.releasePointerCapture(event.pointerId);
+    } catch {
+    }
+    applyMiniPosition();
+  };
+  el.addEventListener("pointerup", endDrag);
+  el.addEventListener("pointercancel", endDrag);
+  window.addEventListener("resize", () => {
+    if (state.mini.open && Number.isFinite(state.mini.x)) applyMiniPosition();
+  });
 }
 
 function adoptScreenStream(stream, source) {

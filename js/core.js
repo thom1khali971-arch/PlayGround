@@ -44,6 +44,7 @@ const ICONS = {
   sparkles: '<path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"/><path d="m5 17 .8 2.2L8 20l-2.2.8L5 23l-.8-2.2L2 20l2.2-.8L5 17Z"/>',
   refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
   external: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  pip: '<rect x="2" y="4" width="20" height="16" rx="2"/><rect x="12" y="12" width="7" height="5" rx="1"/>',
 };
 
 function icon(name, cls = "") {
@@ -281,6 +282,7 @@ const state = {
   screenStream: null,
   screenSource: "",
   mediaPolicy: loadMediaPolicy(),
+  mini: { open: false, x: null, y: null },
   membersOpen: window.innerWidth > 1180,
   panelTab: "chat",
   sidebarOpen: false,
