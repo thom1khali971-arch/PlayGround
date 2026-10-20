@@ -31,11 +31,14 @@ cp "$ROOT/index.html" "$ROOT/styles.css" "$WWW/"
 cp -R "$ROOT/js" "$WWW/js"
 cp -R "$ROOT/assets" "$WWW/assets"
 
+"$BUILD_TOOLS/aapt2" compile --dir "$HERE/res" -o "$BUILD/res.zip"
+
 "$BUILD_TOOLS/aapt2" link \
   -o "$BUILD/app-unsigned.apk" \
   -I "$PLATFORM" \
   --manifest "$HERE/AndroidManifest.xml" \
   -A "$BUILD/assets" \
+  "$BUILD/res.zip" \
   --auto-add-overlay
 
 find "$HERE/src" -name '*.java' -print0 | xargs -0 javac \

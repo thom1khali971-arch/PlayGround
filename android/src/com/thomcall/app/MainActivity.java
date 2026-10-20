@@ -3,6 +3,7 @@ package com.thomcall.app;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -187,7 +188,9 @@ public class MainActivity extends Activity {
         settings.setUseWideViewPort(true);
         settings.setSupportZoom(false);
         settings.setUserAgentString(settings.getUserAgentString() + " ThomCallAndroid/1.1.0");
-        WebView.setWebContentsDebuggingEnabled(true);
+        if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
 
         view.setWebViewClient(new WebViewClient() {
             @Override
