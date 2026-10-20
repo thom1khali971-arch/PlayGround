@@ -1,4 +1,5 @@
 const ICONS = {
+  brand: '<path d="M4.5 5.5h15M12 5.5V20" stroke-width="3.4"/>',
   wave: '<path d="M2 12c2.3-5 4.6-5 6.9 0s4.6 5 6.9 0 4.6-5 6.9 0"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9.3 9a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.5-2.7 4"/><path d="M12 17h.01"/>',
@@ -41,6 +42,8 @@ const ICONS = {
   gamepad: '<path d="M6 11h4M8 9v4"/><path d="M15 12h.01"/><path d="M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="4"/>',
   music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
   sparkles: '<path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"/><path d="m5 17 .8 2.2L8 20l-2.2.8L5 23l-.8-2.2L2 20l2.2-.8L5 17Z"/>',
+  refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+  external: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
 };
 
 function icon(name, cls = "") {
@@ -112,7 +115,7 @@ function person(id, name, extra = {}) {
 const servers = [
   {
     id: "onda",
-    name: "Onda HQ",
+    name: "Thom Call's",
     kind: "Espaço de voz",
     glyph: "wave",
     gradient: SERVER_GRADIENTS[0],
@@ -228,7 +231,17 @@ const localUser = {
 };
 
 const SETTINGS_KEY = "onda.settings.v1";
-const DEFAULT_SETTINGS = { input: "", output: "", noise: true, echo: true, agc: true, volume: 80 };
+const MEDIA_POLICY_KEY = "thom.mediaPolicy.v1";
+const DEFAULT_SETTINGS = {
+  input: "",
+  output: "",
+  noise: true,
+  echo: true,
+  agc: true,
+  volume: 80,
+  screenRelayUrl: "",
+  screenRelayRegion: "",
+};
 
 function loadSettings() {
   try {
@@ -246,6 +259,18 @@ function persistSettings() {
   }
 }
 
+function loadMediaPolicy() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MEDIA_POLICY_KEY) || "{}");
+    return {
+      camera: saved.camera !== false,
+      screen: saved.screen !== false,
+    };
+  } catch {
+    return { camera: true, screen: true };
+  }
+}
+
 const state = {
   serverId: "onda",
   selectedChannelId: "thom-call",
@@ -254,12 +279,19 @@ const state = {
   deafened: false,
   cameraStream: null,
   screenStream: null,
+  screenSource: "",
+  mediaPolicy: loadMediaPolicy(),
   membersOpen: window.innerWidth > 1180,
   panelTab: "chat",
   sidebarOpen: false,
   ping: 24,
   settings: loadSettings(),
 };
+
+function mediaPolicyAllows(kind) {
+  if (typeof isOwnerMode === "function" && isOwnerMode()) return true;
+  return state.mediaPolicy?.[kind] !== false;
+}
 
 let audioCtx = null;
 let modalHooks = {};
@@ -294,12 +326,20 @@ function isMutedLocally() {
 }
 
 function localParticipant() {
-  return { ...localUser, muted: isMutedLocally() };
+  return {
+    ...localUser,
+    muted: isMutedLocally(),
+    speaking: typeof live !== "undefined" ? Boolean(live.selfSpeaking) : false,
+  };
 }
 
 function callPeople() {
   const channel = callChannel();
-  return channel ? [localParticipant(), ...channel.participants] : [];
+  if (!channel) return [];
+  if (typeof livePeopleForChannel === "function") {
+    return livePeopleForChannel(state.call.serverId, channel.id, true);
+  }
+  return [localParticipant(), ...channel.participants];
 }
 
 function escapeHtml(value) {
@@ -394,9 +434,9 @@ function toast(message, options = {}) {
   }, 3000);
 }
 
-function openModal({ content, small = false, onOpen, onClose }) {
+function openModal({ content, small = false, wide = false, onOpen, onClose }) {
   closeModal(true);
-  modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal${small ? " modal-sm" : ""}" role="dialog" aria-modal="true">${content}</div></div>`;
+  modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal${small ? " modal-sm" : ""}${wide ? " modal-wide" : ""}" role="dialog" aria-modal="true">${content}</div></div>`;
   modalRoot.classList.add("is-open");
   document.body.classList.add("modal-open");
   modalHooks = { onOpen, onClose };

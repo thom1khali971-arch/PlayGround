@@ -99,6 +99,8 @@ function establishAuthSession(data) {
   applyAuthToUI();
   hideAuthScreen();
   closeModal(true);
+  if (typeof startLive === "function") startLive();
+  if (typeof joinHashChannel === "function") joinHashChannel({ silent: true });
   playSfx("join");
   toast(`Bem vindo, ${name.split(/\s+/)[0]}!`, { type: "success", icon: "check" });
   return true;
@@ -250,6 +252,7 @@ function logoutAccount() {
     stopScreen();
     stopCamera();
   }
+  if (typeof stopLive === "function") stopLive();
   closeModal(true);
   applyAuthToUI();
   showAuthScreen();

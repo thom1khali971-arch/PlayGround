@@ -147,7 +147,9 @@ function unlockOwner(pin) {
     sessionStorage.setItem(OWNER_KEY, "1");
   } catch {
   }
-  if (typeof renderMembers === "function") renderMembers();
+  if (typeof applyMediaPolicy === "function") applyMediaPolicy();
+  else if (typeof renderMembers === "function") renderMembers();
+  if (typeof livePublishMediaPolicy === "function") livePublishMediaPolicy();
   return true;
 }
 
@@ -160,7 +162,8 @@ function resetOwnerAccess() {
     chatState.unlocked = false;
   }
   renderChat();
-  if (typeof renderMembers === "function") renderMembers();
+  if (typeof applyMediaPolicy === "function") applyMediaPolicy();
+  else if (typeof renderMembers === "function") renderMembers();
 }
 
 function lockOwner() {

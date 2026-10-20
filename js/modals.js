@@ -155,6 +155,10 @@ function openSpaceInfo() {
 
 function tickSpeaking() {
   if (!state.call) return;
+  if (typeof liveIsActive === "function" && liveIsActive()) {
+    updateSpeakingUI();
+    return;
+  }
   const channel = callChannel();
   if (!channel) return;
   const candidates = channel.participants.filter((p) => !p.muted);
@@ -277,12 +281,28 @@ function bindEvents() {
   });
 
   stageEl.addEventListener("click", (event) => {
+    const watch = event.target.closest("[data-watch-screen]");
+    if (watch) {
+      openLiveScreenViewer(watch.dataset.watchScreen);
+      return;
+    }
     if (!event.target.closest("#joinBtn")) return;
     const channel = displayChannel();
     if (channel) joinChannel(state.serverId, channel.id);
   });
 
   membersEl.addEventListener("click", (event) => {
+    const permission = event.target.closest("[data-media-permission]");
+    if (permission) {
+      const result = toggleMediaPermission(permission.dataset.mediaPermission);
+      if (!result) return;
+      if (result.sfx) playSfx(result.sfx);
+      toast(result.text, {
+        type: result.tone === "success" ? "success" : result.tone === "error" ? "error" : "info",
+        icon: result.icon || "lock",
+      });
+      return;
+    }
     const modAction = event.target.closest("[data-mod-action]");
     if (modAction) {
       const member = modAction.closest(".member");
@@ -297,6 +317,21 @@ function bindEvents() {
     if (event.target.closest("#closeMembersBtn")) {
       state.membersOpen = false;
       updateChrome();
+      return;
+    }
+    if (event.target.closest("#watchScreenBtn")) {
+      const call = state.call;
+      const sharing = call
+        ? [...live.users.values()].find(
+            (user) =>
+              user.screen &&
+              user.inCall &&
+              user.serverId === call.serverId &&
+              user.channelId === call.channelId,
+          )
+        : null;
+      if (sharing) openLiveScreenViewer(sharing.id);
+      else openScreenViewer();
       return;
     }
     if (event.target.closest("#inviteCardBtn")) copyInvite();
@@ -352,13 +387,43 @@ function startIntervals() {
   window.setInterval(tickSpeaking, 2900);
 }
 
+function channelFromHash() {
+  const match = /^#sala=([^&]+)/.exec(location.hash);
+  if (!match) return null;
+  let channelId = "";
+  try {
+    channelId = decodeURIComponent(match[1]);
+  } catch {
+    return null;
+  }
+  for (const server of servers) {
+    const channel = server.channels.find((item) => item.id === channelId);
+    if (channel) return { serverId: server.id, channelId: channel.id };
+  }
+  return null;
+}
+
+function joinHashChannel(options = {}) {
+  if (typeof getAuthSession !== "function" || !getAuthSession()) return false;
+  const target = channelFromHash();
+  if (!target) return false;
+  joinChannel(target.serverId, target.channelId, options);
+  return true;
+}
+
 function init() {
   $$("[data-icon]").forEach((el) => {
     el.innerHTML = icon(el.dataset.icon);
   });
+  const target = channelFromHash();
+  if (target) {
+    state.serverId = target.serverId;
+    state.selectedChannelId = target.channelId;
+  }
   bindEvents();
   renderAll();
-  joinChannel("onda", "thom-call", { silent: true });
+  if (typeof initLive === "function") initLive();
+  joinHashChannel({ silent: true });
   startIntervals();
   updateChrome();
 }

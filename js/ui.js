@@ -38,7 +38,12 @@ function renderSidebar() {
     .map((channel) => {
       const joined = state.call?.serverId === server.id && state.call?.channelId === channel.id;
       const selected = !joined && !state.call && state.selectedChannelId === channel.id;
-      const people = joined ? [localParticipant(), ...channel.participants] : channel.participants;
+      const people =
+        typeof livePeopleForChannel === "function"
+          ? livePeopleForChannel(server.id, channel.id, joined)
+          : joined
+            ? [localParticipant(), ...channel.participants]
+            : channel.participants;
       const count = people.length;
       const peopleHtml = people.length
         ? `<div class="channel-people">${people
@@ -85,7 +90,10 @@ function renderHeader() {
       count === 1 ? "Chamada ativa · 1 pessoa" : `Chamada ativa · ${count} pessoas`
     }</span><span class="meta-compact">${count} ${count === 1 ? "pessoa" : "pessoas"}</span><span class="call-timer" id="callTimer">${formatDuration(Date.now() - state.call.joinedAt)}</span>`;
   } else {
-    const count = channel.participants.length;
+    const count =
+      typeof livePeopleForChannel === "function"
+        ? livePeopleForChannel(server.id, channel.id, false).length
+        : channel.participants.length;
     callMetaEl.innerHTML = `<span>Chamada de voz · ${count} ${count === 1 ? "pessoa" : "pessoas"} na sala</span>`;
   }
 
@@ -98,6 +106,8 @@ function renderHeader() {
 function tileMarkup(p, index) {
   const local = p.isLocal;
   const screen = local && state.screenStream;
+  const screenSource = local ? state.screenSource : p.screenSource;
+  const remoteScreen = !local && p.screen;
   const camera = local && state.cameraStream && !screen;
   const muted = local ? isMutedLocally() : p.muted;
   const hasMedia = Boolean(screen || camera);
@@ -109,7 +119,7 @@ function tileMarkup(p, index) {
 
   const role = p.host ? `<span class="tile-role">${icon("crown")} Anfitriã</span>` : "";
   const badge = screen
-    ? '<span class="tile-badge">Compartilhando tela</span>'
+    ? `<span class="tile-badge">${screenSource === "camera" ? "Compartilhando câmera" : "Compartilhando tela"}</span>`
     : camera
       ? '<span class="tile-badge">Câmera ativa</span>'
       : "";
@@ -124,6 +134,7 @@ function tileMarkup(p, index) {
       ${hasMedia ? '<video class="tile-video" id="selfVideo" autoplay playsinline muted></video>' : ""}
       ${hasMedia ? "" : `<div class="tile-body"><span class="big-avatar" style="--av:${p.gradient}">${p.initials}</span></div>`}
       ${role}${badge}
+      ${remoteScreen ? `<button class="tile-watch" type="button" data-watch-screen="${escapeAttr(p.id)}">${icon(p.screenSource === "camera" ? "video" : "screen")} ${p.screenSource === "camera" ? "Ver câmera" : "Ver tela"}</button>` : ""}
       <div class="tile-name">
         <span class="tile-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         <span>${local ? "Você" : escapeHtml(p.name)}</span>
@@ -170,7 +181,11 @@ function layoutStage(count) {
 }
 
 function idleMarkup(channel) {
-  const people = channel.participants;
+  const server = displayedServer();
+  const people =
+    typeof livePeopleForChannel === "function"
+      ? livePeopleForChannel(server?.id || state.serverId, channel.id, false)
+      : channel.participants;
   const avatars = people
     .slice(0, 4)
     .map(
@@ -228,7 +243,9 @@ function statusFor(p) {
     if (state.micMuted) return "Microfone mutado";
     return "Na escuta";
   }
+  if (p.live && !p.inCall) return "Online";
   if (p.speaking) return "Falando agora";
+  if (p.screen) return p.screenSource === "camera" ? "Compartilhando câmera" : "Compartilhando tela";
   if (p.muted) return "Microfone mutado";
   return "Na escuta";
 }
@@ -236,10 +253,12 @@ function statusFor(p) {
 function memberMarkup(p) {
   const local = p.isLocal;
   const muted = local ? isMutedLocally() : p.muted;
+  const screenOn = local ? state.screenStream : p.screen;
+  const screenSource = local ? state.screenSource : p.screenSource;
   const icons = [
     muted ? icon("mic-off", "is-muted") : "",
     local && state.cameraStream ? icon("video") : "",
-    local && state.screenStream ? icon("screen", "is-sharing") : "",
+    screenOn ? icon(screenSource === "camera" ? "video" : "screen", "is-sharing") : "",
   ].join("");
   const moderation =
     isOwnerMode() && !local
@@ -277,8 +296,18 @@ function renderMembers() {
     return;
   }
   const inCall = Boolean(state.call);
-  const people = inCall ? callPeople() : channel.participants;
-  const label = inCall ? "Na chamada" : "Pessoas na sala";
+  const online = !inCall && typeof liveIsActive === "function" && liveIsActive();
+  const server = displayedServer();
+  const people = inCall
+    ? callPeople()
+    : online
+      ? liveOnlineUsers(server?.id || state.serverId).map(liveParticipant)
+      : channel.participants;
+  const label = inCall ? "Na chamada" : online ? "Pessoas online" : "Pessoas na sala";
+  const screener = people.find((p) => !p.isLocal && p.screen);
+  const screenerCamera = screener?.screenSource === "camera";
+  const cameraAllowed = state.mediaPolicy?.camera !== false;
+  const screenAllowed = state.mediaPolicy?.screen !== false;
 
   view.innerHTML = `<header class="members-head">
       <div>
@@ -288,21 +317,53 @@ function renderMembers() {
       ${isOwnerMode() ? `<span class="mod-badge">${icon("shield")} Modo dono</span>` : ""}
     </header>
     <div class="members-list">
-      ${people.map(memberMarkup).join("") || '<p class="members-empty">Ninguém por aqui ainda.</p>'}
+      ${people.map(memberMarkup).join("") || `<p class="members-empty">${online ? "Ninguém online agora." : "Ninguém por aqui ainda."}</p>`}
     </div>
     <div class="members-foot">
+      ${
+        isOwnerMode()
+          ? `<div class="media-permissions">
+              <div class="media-permissions-head">
+                <span>${icon("shield")} Permissões</span>
+                <small>Você mantém acesso</small>
+              </div>
+              <button class="media-permission${cameraAllowed ? " is-on" : ""}" type="button"
+                data-media-permission="camera" aria-pressed="${cameraAllowed}">
+                <span>${icon("video")} Câmera</span>
+                <b>${cameraAllowed ? "Permitida" : "Bloqueada"}</b>
+              </button>
+              <button class="media-permission${screenAllowed ? " is-on" : ""}" type="button"
+                data-media-permission="screen" aria-pressed="${screenAllowed}">
+                <span>${icon("screen")} Tela</span>
+                <b>${screenAllowed ? "Permitida" : "Bloqueada"}</b>
+              </button>
+            </div>`
+          : ""
+      }
       <div class="invite-card">
         <span class="invite-orb">${icon("link")}</span>
         <strong>Convide para a sala</strong>
         <p>Qualquer pessoa com o link pode entrar nesta chamada.</p>
         <button class="btn-primary" id="inviteCardBtn" type="button">${icon("copy")} Copiar convite</button>
       </div>
+      <button class="relay-watch" id="watchScreenBtn" type="button">
+        <span class="relay-watch-icon">${icon(screenerCamera ? "video" : "screen")}</span>
+        <span class="relay-watch-copy">
+          <strong>${screener ? `Ver ${screenerCamera ? "câmera" : "tela"} de ${escapeHtml(screener.name)}` : "Assistir transmissão"}</strong>
+          <small>${
+            screener
+              ? '<i class="relay-dot is-online"></i> P2P · ao vivo'
+              : `<i class="relay-dot${relayDotClass()}" data-relay-dot></i> Proxy <span data-relay-region>${escapeHtml(relayRegionLabel())}</span>`
+          }</small>
+        </span>
+        <span class="relay-watch-go">${icon("chevron-right")}</span>
+      </button>
       ${
         inCall
           ? `<div class="call-stats">
             <div class="stat"><span>${icon("signal")} Latência</span><strong class="good"><b data-ping>${state.ping}</b> ms</strong></div>
             <div class="stat"><span>${icon("lock")} Criptografia</span><strong class="good">Ativa</strong></div>
-            <div class="stat"><span>${icon("globe")} Região</span><strong>Brasil</strong></div>
+            <div class="stat"><span>${icon("globe")} Conexão</span><strong>P2P</strong></div>
           </div>`
           : ""
       }
@@ -317,6 +378,8 @@ function renderDock() {
   }
   dockWrap.classList.remove("is-hidden");
   const muted = state.micMuted;
+  const cameraAllowed = mediaPolicyAllows("camera");
+  const screenAllowed = mediaPolicyAllows("screen");
 
   dockEl.innerHTML = `<button class="dock-btn${muted ? " is-off" : ""}" type="button" data-action="mic"
       data-tip="${muted ? "Ativar microfone" : "Silenciar microfone"}" aria-pressed="${muted}">
@@ -326,13 +389,13 @@ function renderDock() {
       data-tip="${state.deafened ? "Ativar áudio" : "Desativar áudio"}" aria-pressed="${state.deafened}">
       ${icon(state.deafened ? "headphones-off" : "headphones")}<span class="dock-label">${state.deafened ? "Surdo" : "Áudio"}</span>
     </button>
-    <button class="dock-btn${state.cameraStream ? " is-on" : ""}" type="button" data-action="camera"
-      data-tip="${state.cameraStream ? "Desligar câmera" : "Ligar câmera"}" aria-pressed="${Boolean(state.cameraStream)}">
-      ${icon(state.cameraStream ? "video" : "video-off")}<span class="dock-label">Câmera</span>
+    <button class="dock-btn${state.cameraStream ? " is-on" : ""}${cameraAllowed ? "" : " is-locked"}" type="button" data-action="camera"
+      data-tip="${cameraAllowed ? (state.cameraStream ? "Desligar câmera" : "Ligar câmera") : "Câmera bloqueada pelo dono"}" aria-pressed="${Boolean(state.cameraStream)}">
+      ${icon(cameraAllowed ? (state.cameraStream ? "video" : "video-off") : "lock")}<span class="dock-label">Câmera</span>
     </button>
-    <button class="dock-btn${state.screenStream ? " is-sharing" : ""}" type="button" data-action="screen"
-      data-tip="${state.screenStream ? "Parar transmissão" : "Compartilhar tela"}" aria-pressed="${Boolean(state.screenStream)}">
-      ${icon("screen")}<span class="dock-label">Tela</span>
+    <button class="dock-btn${state.screenStream ? " is-sharing" : ""}${screenAllowed ? "" : " is-locked"}" type="button" data-action="screen"
+      data-tip="${screenAllowed ? (state.screenStream ? (state.screenSource === "camera" ? "Parar câmera" : "Parar transmissão") : "Compartilhar tela") : "Tela bloqueada pelo dono"}" aria-pressed="${Boolean(state.screenStream)}">
+      ${icon(screenAllowed ? (state.screenStream && state.screenSource === "camera" ? "video" : "screen") : "lock")}<span class="dock-label">${screenAllowed && state.screenStream && state.screenSource === "camera" ? "Câmera" : "Tela"}</span>
     </button>
     <span class="dock-sep" aria-hidden="true"></span>
     <button class="dock-btn danger" type="button" data-action="leave" data-tip="Sair da chamada">

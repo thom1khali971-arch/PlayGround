@@ -109,6 +109,12 @@ function openSettings() {
           ${toggle("setAgc", "Ajuste automático de ganho", "Mantém sua voz em um volume constante", settings.agc)}
         </section>
         <section class="settings-section">
+          <h4>Transmissão de tela</h4>
+          <label class="field"><span>URL do proxy</span><input class="modal-input" id="setRelayUrl" type="text" value="${escapeAttr(relayConfig().url)}" placeholder="wss://seu-relay/ws" autocomplete="off" /></label>
+          <label class="field"><span>Região do proxy</span><input class="modal-input" id="setRelayRegion" type="text" value="${escapeAttr(relayConfig().region)}" placeholder="us-east-1" autocomplete="off" /></label>
+          <p class="modal-note">Use um relay fora do Brasil. Em páginas HTTPS, informe uma URL wss://.</p>
+        </section>
+        <section class="settings-section">
           <h4>Volume de saída</h4>
           <div class="range-row">
             <input type="range" id="outVol" min="0" max="100" value="${settings.volume}" style="--val:${settings.volume}%" />
@@ -171,6 +177,20 @@ function openSettings() {
       $("#setAgc", root).addEventListener("change", (event) => {
         state.settings.agc = event.target.checked;
         persistSettings();
+      });
+      const relayUrl = $("#setRelayUrl", root);
+      relayUrl.addEventListener("change", () => {
+        state.settings.screenRelayUrl = relayUrl.value.trim();
+        screenRelay.online = null;
+        persistSettings();
+        updateRelayBadges();
+      });
+      const relayRegion = $("#setRelayRegion", root);
+      relayRegion.addEventListener("change", () => {
+        state.settings.screenRelayRegion = relayRegion.value.trim();
+        screenRelay.region = relayRegion.value.trim() || RELAY_DEFAULT_REGION;
+        persistSettings();
+        updateRelayBadges();
       });
       const volume = $("#outVol", root);
       volume.addEventListener("input", () => {
