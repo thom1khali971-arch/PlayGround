@@ -227,6 +227,7 @@ function bindEvents() {
   $("#settingsBtn").addEventListener("click", openSettings);
   $("#profileBtn").addEventListener("click", openSettings);
   $("#miniBtn").addEventListener("click", () => toggleMiniCall());
+  $("#bubbleBtn")?.addEventListener("click", () => requestNativeOverlay());
   if (typeof setupMiniCall === "function") setupMiniCall();
   $("#helpBtn").addEventListener("click", openShortcuts);
   $("#serverMenuBtn").addEventListener("click", openSpaceInfo);

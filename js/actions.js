@@ -1,5 +1,6 @@
 let screenPending = false;
 let miniDrag = null;
+const OVERLAY_PROMPT_KEY = "thom.overlay.prompted.v1";
 
 function switchServer(serverId) {
   if (!getServer(serverId) || state.serverId === serverId) return;
@@ -41,6 +42,7 @@ function joinChannel(serverId, channelId, options = {}) {
     if (!channel.participants.length) {
       window.setTimeout(() => toast("Sala vazia — copie o convite para chamar alguém.", { type: "info", icon: "link" }), 500);
     }
+    window.setTimeout(maybeOfferNativeOverlay, 800);
   }
 }
 
@@ -267,18 +269,20 @@ function startNativeOverlay() {
   }, 120);
 }
 
-function requestNativeOverlay() {
+function nativeOverlayGranted() {
+  try {
+    return Boolean(window.ThomAndroid?.hasOverlayPermission());
+  } catch {
+    return false;
+  }
+}
+
+function activateNativeOverlay() {
   if (!isNativeApp()) {
     toast("A bolha flutuante está disponível no app Android do Thom Call.", { type: "info", icon: "external" });
     return;
   }
-  let granted = false;
-  try {
-    granted = Boolean(window.ThomAndroid.hasOverlayPermission());
-  } catch {
-    granted = false;
-  }
-  if (granted) {
+  if (nativeOverlayGranted()) {
     startNativeOverlay();
     return;
   }
@@ -290,14 +294,61 @@ function requestNativeOverlay() {
   }
 }
 
-window.thomNativeOverlayPermission = (granted) => {
-  if (!isNativeApp()) return;
-  if (granted) {
-    toast("Bolha flutuante liberada.", { type: "info", icon: "external" });
-    startNativeOverlay();
-  } else {
-    toast("Permissão de sobreposição negada.", { type: "error", icon: "x" });
+function requestNativeOverlay() {
+  if (!isNativeApp()) {
+    toast("A bolha flutuante está disponível no app Android do Thom Call.", { type: "info", icon: "external" });
+    return;
   }
+  if (nativeOverlayGranted()) {
+    startNativeOverlay();
+    return;
+  }
+  openModal({
+    small: true,
+    content: `<div class="modal-head">
+        <div>
+          <h3>Bolha flutuante</h3>
+          <p>Continue a chamada sobre outros apps</p>
+        </div>
+        <button class="icon-btn small" type="button" data-close aria-label="Fechar">${icon("x")}</button>
+      </div>
+      <div class="modal-body">
+        <div class="google-preview">
+          <span class="google-g" aria-hidden="true" style="background:rgba(123,109,255,.16);color:#b9b0ff">${icon("external")}</span>
+          <div>
+            <strong>Chamada em uma bolha arrastável</strong>
+            <small>Toque na bolha para abrir os controles</small>
+          </div>
+        </div>
+        <p class="modal-note">O Thom Call vai minimizar e ficar sobre os outros apps. O Android pedirá a permissão “Sobrepor a outros apps”. O áudio da chamada continua ativo.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" type="button" data-close>Agora não</button>
+        <button class="btn-primary" type="button" id="enableBubbleBtn">${icon("external")} Ativar bolha</button>
+      </div>`,
+    onOpen(root) {
+      $("#enableBubbleBtn", root)?.addEventListener("click", () => {
+        closeModal(true);
+        activateNativeOverlay();
+      });
+    },
+  });
+}
+
+function maybeOfferNativeOverlay() {
+  if (!isNativeApp() || !state.call || nativeOverlayGranted()) return;
+  try {
+    if (localStorage.getItem(OVERLAY_PROMPT_KEY)) return;
+    localStorage.setItem(OVERLAY_PROMPT_KEY, "1");
+  } catch {
+    return;
+  }
+  requestNativeOverlay();
+}
+
+window.thomNativeOverlayPermission = (granted) => {
+  if (!isNativeApp() || granted) return;
+  toast("Permissão de sobreposição negada.", { type: "error", icon: "x" });
 };
 
 function setupMiniCall() {

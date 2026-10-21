@@ -464,6 +464,8 @@ function renderDock() {
     miniBtn.hidden = !state.call;
     miniBtn.classList.toggle("is-active", Boolean(state.call && state.mini?.open));
   }
+  const bubbleBtn = $("#bubbleBtn");
+  if (bubbleBtn) bubbleBtn.hidden = !(isNativeApp() && state.call);
   if (!state.call) {
     dockWrap.classList.add("is-hidden");
     dockEl.innerHTML = "";
