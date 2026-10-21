@@ -11,7 +11,7 @@ WWW="$BUILD/assets/www"
 DEX="$BUILD/dex"
 CLASSES="$BUILD/classes"
 KEYSTORE="$HERE/thomcall.jks"
-VERSION="1.1.0"
+VERSION="1.2.0"
 
 for tool in "$BUILD_TOOLS/aapt2" "$BUILD_TOOLS/d8" "$BUILD_TOOLS/zipalign" "$BUILD_TOOLS/apksigner"; do
   if [ ! -x "$tool" ]; then

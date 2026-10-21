@@ -31,6 +31,7 @@ function joinChannel(serverId, channelId, options = {}) {
 
   renderAll();
   if (typeof startLiveVoice === "function") startLiveVoice(serverId, channelId);
+  if (!wasInCall) window.setTimeout(maybePromptNativeOverlay, 700);
 
   if (!options.silent) {
     playSfx(wasInCall ? "switch" : "join");
@@ -265,6 +266,43 @@ function startNativeOverlay() {
       toast("Não foi possível ativar a sobreposição.", { type: "error", icon: "x" });
     }
   }, 120);
+}
+
+let overlayPromptShown = false;
+
+function maybePromptNativeOverlay() {
+  if (overlayPromptShown || !isNativeApp()) return;
+  overlayPromptShown = true;
+  let granted = false;
+  try {
+    granted = Boolean(window.ThomAndroid.hasOverlayPermission());
+  } catch {
+    granted = false;
+  }
+  if (granted) return;
+  openModal({
+    small: true,
+    content: `<div class="modal-head">
+        <div>
+          <h3>Sobrepor durante a chamada?</h3>
+          <p>Mantenha o Thom Call visível sobre outros apps.</p>
+        </div>
+        <button class="icon-btn small" type="button" data-close aria-label="Fechar">${icon("x")}</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-note">O Android vai perguntar se o Thom Call pode “Sobrepor a outros apps”. Assim a chamada continua acessível enquanto você usa outros aplicativos.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" type="button" data-close>Agora não</button>
+        <button class="btn-primary" type="button" id="nativeOverlayPromptAllow">${icon("external")} Permitir</button>
+      </div>`,
+    onOpen(root) {
+      $("#nativeOverlayPromptAllow", root).addEventListener("click", () => {
+        closeModal(true);
+        requestNativeOverlay();
+      });
+    },
+  });
 }
 
 function requestNativeOverlay() {
