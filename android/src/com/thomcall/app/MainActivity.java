@@ -208,7 +208,7 @@ public class MainActivity extends Activity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setSupportZoom(false);
-        settings.setUserAgentString(settings.getUserAgentString() + " ThomCallAndroid/1.5.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " ThomCallAndroid/1.5.1");
         if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
@@ -426,7 +426,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.5.0";
+            return "1.5.1";
         }
 
         @JavascriptInterface

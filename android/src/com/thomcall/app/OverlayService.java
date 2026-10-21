@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
@@ -21,7 +22,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -142,6 +147,7 @@ public class OverlayService extends Service {
         if (view == null) return false;
         webView = view;
         view.evaluateJavascript("if(typeof toggleMiniCall==='function')toggleMiniCall(false);", null);
+        setupKeyboard(view);
 
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
@@ -165,6 +171,8 @@ public class OverlayService extends Service {
                 | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         params = new WindowManager.LayoutParams(dp(BUBBLE_DP), dp(BUBBLE_DP), type, flags,
                 PixelFormat.TRANSLUCENT);
+        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED;
         params.gravity = Gravity.TOP | Gravity.START;
         params.x = Math.max(dp(8), screenWidth - dp(BUBBLE_DP) - dp(12));
         params.y = Math.max(dp(72), (screenHeight - dp(BUBBLE_DP)) / 2);
@@ -321,12 +329,15 @@ public class OverlayService extends Service {
         params.height = panelHeight;
         params.x = clamp(params.x, dp(8), getResources().getDisplayMetrics().widthPixels - panelWidth - dp(8));
         params.y = clamp(params.y, dp(8), getResources().getDisplayMetrics().heightPixels - panelHeight - dp(16));
+        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED;
         windowManager.updateViewLayout(overlayRoot, params);
-        webView.requestFocus();
+        webView.requestFocus(View.FOCUS_DOWN);
     }
 
     private void collapseToBubble() {
         if (!expanded || panel == null || bubble == null) return;
+        hideKeyboard();
         expanded = false;
         panel.setAlpha(0f);
         bubble.setVisibility(View.VISIBLE);
@@ -361,6 +372,7 @@ public class OverlayService extends Service {
     }
 
     private void removeOverlay() {
+        hideKeyboard();
         if (overlayRoot != null) {
             try {
                 windowManager.removeView(overlayRoot);
@@ -371,6 +383,78 @@ public class OverlayService extends Service {
         panel = null;
         bubble = null;
         showing = false;
+    }
+
+    private void setupKeyboard(final WebView view) {
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View target, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showKeyboardForEditor(view);
+                        }
+                    }, 80);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void showKeyboardForEditor(final WebView view) {
+        if (!expanded || view != webView) return;
+        view.evaluateJavascript(
+                "(function(){var e=document.activeElement;if(!e)return false;"
+                        + "var t=(e.tagName||'').toLowerCase();"
+                        + "if(t==='textarea')return true;"
+                        + "if(t==='input'){var ty=(e.type||'text').toLowerCase();"
+                        + "return !/^(button|checkbox|color|file|hidden|image|radio|range|reset|submit)$/.test(ty);}"
+                        + "return !!e.isContentEditable;})()",
+                new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        if ("true".equals(value)) showKeyboard(view, 0);
+                    }
+                });
+    }
+
+    private void showKeyboard(final WebView view, final int attempt) {
+        if (!expanded || view == null || view != webView) return;
+        if (!view.hasWindowFocus() && attempt < 6) {
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showKeyboard(view, attempt + 1);
+                }
+            }, 100);
+            return;
+        }
+        view.requestFocus(View.FOCUS_DOWN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController controller = view.getWindowInsetsController();
+            if (controller != null) controller.show(WindowInsets.Type.ime());
+        }
+        InputMethodManager input = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (input != null) input.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.evaluateJavascript(
+                        "(function(){var e=document.activeElement;if(!e)return;"
+                                + "function s(){try{e.scrollIntoView({block:'start'});}catch(_){e.scrollIntoView();}}"
+                                + "s();[80,260,600,1000,1500].forEach(function(d){setTimeout(s,d);});})()",
+                        null);
+            }
+        }, 300);
+    }
+
+    private void hideKeyboard() {
+        if (webView == null) return;
+        InputMethodManager input = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (input != null) input.hideSoftInputFromWindow(webView.getWindowToken(), 0);
     }
 
     private int clamp(int value, int min, int max) {
