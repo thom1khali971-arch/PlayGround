@@ -29,6 +29,7 @@ const ICONS = {
   "lock-open": '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
   message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="4"/>',
   send: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
   "log-out": '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>',
   "log-in": '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/>',
@@ -224,6 +225,7 @@ const localUser = {
   id: "local",
   name: "Você",
   initials: "V",
+  picture: "",
   gradient: "linear-gradient(150deg,#8b7bff,#5b6cff)",
   isLocal: true,
   muted: false,
@@ -336,8 +338,12 @@ function isMutedLocally() {
 }
 
 function localParticipant() {
+  const session = typeof getAuthSession === "function" ? getAuthSession() : null;
   return {
     ...localUser,
+    name: session?.name || localUser.name,
+    initials: session?.initials || localUser.initials,
+    picture: safeAvatarPicture(session?.picture) || localUser.picture,
     muted: isMutedLocally(),
     speaking: typeof live !== "undefined" ? Boolean(live.selfSpeaking) : false,
   };
@@ -363,6 +369,42 @@ function escapeHtml(value) {
 
 function escapeAttr(value) {
   return escapeHtml(value).replaceAll("`", "&#96;");
+}
+
+function safeAvatarPicture(value) {
+  const src = String(value || "").trim();
+  if (!src || src.length > 320000) return "";
+  if (/^data:image\/(?:jpeg|png|webp);base64,[a-z0-9+/=\s]+$/i.test(src)) {
+    return src.replace(/\s+/g, "");
+  }
+  try {
+    const url = new URL(src, window.location.href);
+    return url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function avatarPhoto(person) {
+  const src = safeAvatarPicture(person?.picture);
+  return src ? `<img class="avatar-photo" src="${escapeAttr(src)}" alt="" aria-hidden="true" />` : "";
+}
+
+function avatarClass(person, base) {
+  return `${base}${safeAvatarPicture(person?.picture) ? " has-photo" : ""}`;
+}
+
+function paintAvatar(element, person) {
+  if (!element) return;
+  const src = safeAvatarPicture(person?.picture);
+  element.classList.toggle("has-photo", Boolean(src));
+  element.querySelector(".avatar-photo")?.remove();
+  if (src) {
+    element.insertAdjacentHTML(
+      "afterbegin",
+      `<img class="avatar-photo" src="${escapeAttr(src)}" alt="" aria-hidden="true" />`,
+    );
+  }
 }
 
 function formatDuration(ms) {

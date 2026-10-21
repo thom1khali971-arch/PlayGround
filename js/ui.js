@@ -51,7 +51,7 @@ function renderSidebar() {
               const muted = p.isLocal ? isMutedLocally() : p.muted;
               return `<div class="channel-person${p.isLocal ? " is-local" : ""}${p.speaking ? " is-speaking" : ""}"
                 data-participant="${escapeAttr(p.id)}">
-                <span class="mini-avatar" style="--av:${p.gradient}">${p.initials}</span>
+                <span class="${avatarClass(p, "mini-avatar")}" style="--av:${p.gradient}">${p.initials}${avatarPhoto(p)}</span>
                 <span class="person-name">${p.isLocal ? "Você" : escapeHtml(p.name)}</span>
                 ${muted ? icon("mic-off", "is-muted") : ""}
                 <span class="mini-eq" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -132,7 +132,7 @@ function tileMarkup(p, index) {
   return `<article class="${classes.join(" ")}" data-participant="${escapeAttr(p.id)}"
       style="--av:${p.gradient};animation-delay:${Math.min(index * 45, 220)}ms">
       ${hasMedia ? '<video class="tile-video" id="selfVideo" autoplay playsinline muted></video>' : ""}
-      ${hasMedia ? "" : `<div class="tile-body"><span class="big-avatar" style="--av:${p.gradient}">${p.initials}</span></div>`}
+      ${hasMedia ? "" : `<div class="tile-body"><span class="${avatarClass(p, "big-avatar")}" style="--av:${p.gradient}">${p.initials}${avatarPhoto(p)}</span></div>`}
       ${role}${badge}
       ${remoteScreen ? `<button class="tile-watch" type="button" data-watch-screen="${escapeAttr(p.id)}">${icon(p.screenSource === "camera" ? "video" : "screen")} ${p.screenSource === "camera" ? "Ver câmera" : "Ver tela"}</button>` : ""}
       <div class="tile-name">
@@ -190,7 +190,7 @@ function idleMarkup(channel) {
     .slice(0, 4)
     .map(
       (p) =>
-        `<span class="avatar avatar-38" style="--av:${p.gradient}" title="${escapeAttr(p.name)}">${p.initials}</span>`,
+        `<span class="${avatarClass(p, "avatar avatar-38")}" style="--av:${p.gradient}" title="${escapeAttr(p.name)}">${p.initials}${avatarPhoto(p)}</span>`,
     )
     .join("");
   const extra = people.length > 4 ? `<span class="idle-more">+${people.length - 4}</span>` : "";
@@ -275,7 +275,7 @@ function memberMarkup(p) {
       : "";
 
   return `<div class="member${p.speaking ? " is-speaking" : ""}" data-participant="${escapeAttr(p.id)}">
-    <span class="avatar avatar-36 member-avatar" style="--av:${p.gradient}">${p.initials}</span>
+    <span class="${avatarClass(p, "avatar avatar-36 member-avatar")}" style="--av:${p.gradient}">${p.initials}${avatarPhoto(p)}</span>
     <div class="member-info">
       <div class="member-name"><span>${local ? "Você" : escapeHtml(p.name)}</span>${
         p.host ? '<span class="host-tag">Anfitriã</span>' : ""
@@ -424,7 +424,7 @@ function renderMiniCall() {
         stream
           ? '<video id="miniVideo" class="mini-video" autoplay playsinline muted></video>'
           : `<div class="mini-fallback">
-              <span class="mini-orb" style="--av:${speaker.gradient}">${speaker.initials}</span>
+              <span class="${avatarClass(speaker, "mini-orb")}" style="--av:${speaker.gradient}">${speaker.initials}${avatarPhoto(speaker)}</span>
               <strong>${speaker.isLocal ? "Você" : escapeHtml(speaker.name)}</strong>
               <small>${people.length} ${people.length === 1 ? "pessoa" : "pessoas"} na chamada</small>
             </div>`

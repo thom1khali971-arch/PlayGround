@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
 
     private static final int REQ_MEDIA = 41;
     private static final int REQ_OVERLAY = 42;
+    private static final int REQ_PICK_FILE = 43;
     private static final String APP_HOST = "appassets.androidplatform.net";
     private static final String APP_URL = "https://appassets.androidplatform.net/index.html";
 
@@ -49,6 +51,7 @@ public class MainActivity extends Activity {
     private FrameLayout loadingView;
     private WebView webView;
     private PermissionRequest pendingPermissionRequest;
+    private ValueCallback<Uri[]> pendingFileChooser;
     private boolean overlayAfterPermission;
 
     @Override
@@ -105,6 +108,24 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_PICK_FILE) {
+            if (pendingFileChooser == null) return;
+            Uri[] result = null;
+            if (resultCode == RESULT_OK && data != null) {
+                if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    result = new Uri[count];
+                    for (int i = 0; i < count; i++) {
+                        result[i] = data.getClipData().getItemAt(i).getUri();
+                    }
+                } else if (data.getData() != null) {
+                    result = new Uri[]{data.getData()};
+                }
+            }
+            pendingFileChooser.onReceiveValue(result);
+            pendingFileChooser = null;
+            return;
+        }
         if (requestCode == REQ_OVERLAY) {
             boolean granted = hasOverlayPermission();
             evaluateJavascript("window.thomNativeOverlayPermission&&window.thomNativeOverlayPermission(" + granted + ")");
@@ -187,7 +208,7 @@ public class MainActivity extends Activity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setSupportZoom(false);
-        settings.setUserAgentString(settings.getUserAgentString() + " ThomCallAndroid/1.4.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " ThomCallAndroid/1.5.0");
         if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
@@ -219,6 +240,33 @@ public class MainActivity extends Activity {
                         handleMediaPermission(request);
                     }
                 });
+            }
+
+            @Override
+            public boolean onShowFileChooser(WebView target, ValueCallback<Uri[]> callback,
+                                             FileChooserParams params) {
+                if (pendingFileChooser != null) {
+                    pendingFileChooser.onReceiveValue(null);
+                }
+                pendingFileChooser = callback;
+                Intent intent = null;
+                try {
+                    intent = params.createIntent();
+                } catch (Exception ignored) {
+                }
+                if (intent == null) {
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                }
+                try {
+                    startActivityForResult(Intent.createChooser(intent, "Escolher foto"), REQ_PICK_FILE);
+                    return true;
+                } catch (Exception error) {
+                    pendingFileChooser = null;
+                    callback.onReceiveValue(null);
+                    return false;
+                }
             }
         });
         view.addJavascriptInterface(new NativeBridge(), "ThomAndroid");
@@ -378,7 +426,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.4.0";
+            return "1.5.0";
         }
 
         @JavascriptInterface

@@ -45,19 +45,22 @@ function saveAuthSession(session) {
   authSession = session;
   try {
     localStorage.setItem(AUTH_KEY, JSON.stringify(session));
+    return true;
   } catch {
-    return;
+    return false;
   }
 }
 
 function applyAuthToUI() {
   const name = $("#userName");
   const initial = $("#userInitial");
+  const avatar = $("#userAvatar");
   const profile = $("#profileBtn");
   if (!name || !initial) return;
   if (authSession) {
     name.textContent = authSession.name;
     initial.textContent = authSession.initials;
+    paintAvatar(avatar, authSession);
     if (profile) {
       profile.title = `${authSession.name} · ${authSession.email}`;
       profile.setAttribute("aria-label", `Seu perfil: ${authSession.name}, ${authSession.email}`);
@@ -66,6 +69,7 @@ function applyAuthToUI() {
   }
   name.textContent = "Você";
   initial.textContent = "V";
+  paintAvatar(avatar, null);
   if (profile) {
     profile.removeAttribute("title");
     profile.setAttribute("aria-label", "Seu perfil");
@@ -80,6 +84,16 @@ function showAuthScreen() {
 function hideAuthScreen() {
   document.body.classList.remove("auth-locked");
   if (typeof app !== "undefined") app.inert = false;
+}
+
+function setProfilePhoto(picture) {
+  if (!authSession) return false;
+  authSession.picture = safeAvatarPicture(picture);
+  const saved = saveAuthSession(authSession);
+  applyAuthToUI();
+  if (typeof livePublishPresence === "function") livePublishPresence(true);
+  if (typeof renderAll === "function") renderAll();
+  return saved;
 }
 
 function establishAuthSession(data) {

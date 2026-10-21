@@ -1,5 +1,62 @@
 let micTest = { stream: null, ctx: null, raf: 0 };
 
+function readProfilePhoto(file) {
+  return new Promise((resolve, reject) => {
+    if (!file || !String(file.type || "").startsWith("image/")) {
+      reject(new Error("type"));
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      reject(new Error("size"));
+      return;
+    }
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      try {
+        const side = Math.min(image.naturalWidth || 0, image.naturalHeight || 0);
+        if (!side) throw new Error("empty");
+        const canvas = document.createElement("canvas");
+        canvas.width = 192;
+        canvas.height = 192;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("canvas");
+        ctx.fillStyle = "#1a2030";
+        ctx.fillRect(0, 0, 192, 192);
+        ctx.drawImage(
+          image,
+          (image.naturalWidth - side) / 2,
+          (image.naturalHeight - side) / 2,
+          side,
+          side,
+          0,
+          0,
+          192,
+          192,
+        );
+        resolve(canvas.toDataURL("image/jpeg", 0.84));
+      } catch (error) {
+        reject(error);
+      } finally {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("decode"));
+    };
+    image.src = objectUrl;
+  });
+}
+
+function paintSettingsAvatar(root) {
+  const avatar = $("#settingsAvatar", root);
+  if (!avatar) return;
+  const session = getAuthSession();
+  avatar.classList.toggle("has-photo", Boolean(safeAvatarPicture(session?.picture)));
+  avatar.innerHTML = `${escapeHtml(session?.initials || "V")}${avatarPhoto(session)}`;
+}
+
 function stopMicTest() {
   window.cancelAnimationFrame(micTest.raf);
   micTest.raf = 0;
@@ -73,12 +130,19 @@ function openSettings() {
     ? `<section class="settings-section">
           <h4>Conta</h4>
           <div class="account-card">
-            <span class="avatar avatar-38 brand-avatar">${escapeHtml(session.initials)}</span>
+            <button class="account-avatar" id="avatarPickBtn" type="button" aria-label="Alterar foto de perfil" title="Alterar foto de perfil">
+              <span class="${avatarClass(session, "avatar avatar-38 brand-avatar")}" id="settingsAvatar">${escapeHtml(session.initials)}${avatarPhoto(session)}</span>
+            </button>
             <div class="account-info">
               <strong>${escapeHtml(session.name)}</strong>
               <span>${escapeHtml(session.email)}</span>
             </div>
             <button class="btn-ghost account-logout" id="logoutBtn" type="button">${icon("log-out")} Sair</button>
+          </div>
+          <input type="file" id="avatarFileInput" accept="image/*" hidden />
+          <div class="account-photo-row">
+            <button class="btn-ghost account-photo-btn" id="avatarUploadBtn" type="button">${icon("camera")} Alterar foto</button>
+            <button class="btn-ghost account-photo-btn account-photo-remove" id="avatarRemoveBtn" type="button" ${safeAvatarPicture(session.picture) ? "" : "hidden"}>${icon("x")} Remover</button>
           </div>
         </section>`
     : "";
@@ -130,6 +194,41 @@ function openSettings() {
       $("#logoutBtn", root)?.addEventListener("click", () => {
         stopMicTest();
         logoutAccount();
+      });
+      const fileInput = $("#avatarFileInput", root);
+      const pickAvatar = () => fileInput?.click();
+      $("#avatarPickBtn", root)?.addEventListener("click", pickAvatar);
+      $("#avatarUploadBtn", root)?.addEventListener("click", pickAvatar);
+      fileInput?.addEventListener("change", async () => {
+        const file = fileInput.files?.[0];
+        fileInput.value = "";
+        if (!file) return;
+        try {
+          const picture = await readProfilePhoto(file);
+          const saved = setProfilePhoto(picture);
+          paintSettingsAvatar(root);
+          $("#avatarRemoveBtn", root).hidden = false;
+          playSfx("join");
+          toast(
+            saved ? "Foto de perfil atualizada." : "Foto aplicada, mas não foi possível salvar neste dispositivo.",
+            { type: saved ? "success" : "error", icon: "image" },
+          );
+        } catch {
+          playSfx("error");
+          toast("Não foi possível usar essa imagem. Escolha uma foto JPG, PNG ou WebP.", {
+            type: "error",
+            icon: "image",
+          });
+        }
+      });
+      $("#avatarRemoveBtn", root)?.addEventListener("click", () => {
+        const saved = setProfilePhoto("");
+        paintSettingsAvatar(root);
+        $("#avatarRemoveBtn", root).hidden = true;
+        toast(saved ? "Foto de perfil removida." : "Não foi possível salvar a alteração.", {
+          type: saved ? "info" : "error",
+          icon: "image",
+        });
       });
       const input = $("#setInput", root);
       const output = $("#setOutput", root);

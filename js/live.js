@@ -77,6 +77,7 @@ function liveSelfPresence() {
     id: live.clientId,
     name: session?.name || "Convidado",
     initials: session?.initials || "C",
+    picture: safeAvatarPicture(session?.picture),
     gradient: localUser.gradient,
     serverId: inCall ? state.call.serverId : state.serverId,
     channelId: inCall ? state.call.channelId : state.selectedChannelId || "",
@@ -145,6 +146,7 @@ function liveParticipant(user) {
     id: user.id,
     name: user.name || "Convidado",
     initials: user.initials || "C",
+    picture: safeAvatarPicture(user.picture),
     gradient: user.gradient || AV_GRADIENTS[0],
     muted: Boolean(user.muted),
     speaking: Boolean(user.speaking),
@@ -253,7 +255,7 @@ function liveHandlePresence(topic, text) {
   } else {
     liveClosePeer(id);
   }
-  const fields = ["name", "initials", "gradient", "serverId", "channelId", "inCall", "muted", "camera", "screen", "screenSource"];
+  const fields = ["name", "initials", "picture", "gradient", "serverId", "channelId", "inCall", "muted", "camera", "screen", "screenSource"];
   const changed = !previous || fields.some((field) => previous[field] !== next[field]);
   if (changed) liveScheduleRender();
 }

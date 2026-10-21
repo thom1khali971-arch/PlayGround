@@ -501,6 +501,7 @@ svg {
 }
 
 .channel-person .mini-avatar {
+  position: relative;
   display: grid;
   flex: none;
   place-items: center;
@@ -1008,6 +1009,7 @@ svg {
 }
 
 .big-avatar {
+  position: relative;
   display: grid;
   place-items: center;
   width: clamp(62px, 10.5vh, 96px);
@@ -1650,6 +1652,7 @@ svg {
 }
 
 .mini-orb {
+  position: relative;
   display: grid;
   place-items: center;
   width: 52px;
@@ -2985,6 +2988,22 @@ svg {
     inset 0 8px 16px rgba(255, 255, 255, 0.09);
 }
 
+.avatar-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.has-photo {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
 .avatar-38 {
   width: 38px;
   height: 38px;
@@ -3011,6 +3030,7 @@ svg {
   position: absolute;
   right: -1px;
   bottom: -1px;
+  z-index: 2;
   width: 10px;
   height: 10px;
   border: 2.5px solid #10141d;
@@ -4133,6 +4153,47 @@ body.auth-locked .app {
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.025);
+}
+
+.account-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  transition: box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.account-avatar:hover {
+  box-shadow: 0 0 0 2px rgba(124, 108, 255, 0.55);
+  transform: scale(1.03);
+}
+
+.account-photo-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.account-photo-btn {
+  gap: 5px;
+  height: 30px;
+  padding: 0 9px;
+  font-size: 11px;
+}
+
+.account-photo-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.account-photo-remove {
+  color: #ff9aa5;
+}
+
+.account-photo-remove:hover {
+  background: rgba(255, 93, 108, 0.1);
+  color: #ffb0b8;
 }
 
 .account-info {
