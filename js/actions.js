@@ -260,16 +260,16 @@ function startNativeOverlay() {
   window.setTimeout(() => {
     try {
       window.ThomAndroid.startOverlay();
-      toast("Sobreposição ativada.", { type: "info", icon: "external" });
+      toast("Bolha flutuante ativada.", { type: "info", icon: "external" });
     } catch {
-      toast("Não foi possível ativar a sobreposição.", { type: "error", icon: "x" });
+      toast("Não foi possível ativar a bolha flutuante.", { type: "error", icon: "x" });
     }
   }, 120);
 }
 
 function requestNativeOverlay() {
   if (!isNativeApp()) {
-    toast("Sobreposição de tela está disponível no app Android do Thom Call.", { type: "info", icon: "external" });
+    toast("A bolha flutuante está disponível no app Android do Thom Call.", { type: "info", icon: "external" });
     return;
   }
   let granted = false;
@@ -293,7 +293,7 @@ function requestNativeOverlay() {
 window.thomNativeOverlayPermission = (granted) => {
   if (!isNativeApp()) return;
   if (granted) {
-    toast("Sobreposição liberada.", { type: "info", icon: "external" });
+    toast("Bolha flutuante liberada.", { type: "info", icon: "external" });
     startNativeOverlay();
   } else {
     toast("Permissão de sobreposição negada.", { type: "error", icon: "x" });

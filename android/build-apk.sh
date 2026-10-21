@@ -11,7 +11,14 @@ WWW="$BUILD/assets/www"
 DEX="$BUILD/dex"
 CLASSES="$BUILD/classes"
 KEYSTORE="$HERE/thomcall.jks"
-VERSION="1.1.0"
+VERSION="1.3.0"
+DEBUG="${DEBUG:-0}"
+SUFFIX=""
+LINK_DEBUG=""
+if [ "$DEBUG" = "1" ]; then
+  SUFFIX="-debug"
+  LINK_DEBUG="--debug-mode"
+fi
 
 for tool in "$BUILD_TOOLS/aapt2" "$BUILD_TOOLS/d8" "$BUILD_TOOLS/zipalign" "$BUILD_TOOLS/apksigner"; do
   if [ ! -x "$tool" ]; then
@@ -39,7 +46,8 @@ cp -R "$ROOT/assets" "$WWW/assets"
   --manifest "$HERE/AndroidManifest.xml" \
   -A "$BUILD/assets" \
   "$BUILD/res.zip" \
-  --auto-add-overlay
+  --auto-add-overlay \
+  $LINK_DEBUG
 
 find "$HERE/src" -name '*.java' -print0 | xargs -0 javac \
   -encoding UTF-8 \
@@ -77,9 +85,9 @@ fi
   --ks "$KEYSTORE" \
   --ks-pass pass:thomcall \
   --key-pass pass:thomcall \
-  --out "$BUILD/ThomCall-$VERSION.apk" \
+  --out "$BUILD/ThomCall-$VERSION$SUFFIX.apk" \
   "$BUILD/app-aligned.apk"
 
-"$BUILD_TOOLS/apksigner" verify --verbose "$BUILD/ThomCall-$VERSION.apk"
-"$BUILD_TOOLS/aapt" dump badging "$BUILD/ThomCall-$VERSION.apk" | head -5
-ls -lh "$BUILD/ThomCall-$VERSION.apk"
+"$BUILD_TOOLS/apksigner" verify --verbose "$BUILD/ThomCall-$VERSION$SUFFIX.apk"
+"$BUILD_TOOLS/aapt" dump badging "$BUILD/ThomCall-$VERSION$SUFFIX.apk" | head -5
+ls -lh "$BUILD/ThomCall-$VERSION$SUFFIX.apk"

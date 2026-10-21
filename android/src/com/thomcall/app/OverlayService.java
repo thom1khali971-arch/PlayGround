@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.IBinder;
@@ -18,10 +19,12 @@ import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,17 +32,21 @@ public class OverlayService extends Service {
     public static final String ACTION_SHOW = "com.thomcall.app.action.SHOW";
     private static final String CHANNEL_ID = "thom_call_overlay";
     private static final int NOTIFICATION_ID = 71;
+    private static final int BUBBLE_DP = 64;
 
     private static OverlayService instance;
 
     private WindowManager windowManager;
-    private LinearLayout shell;
+    private FrameLayout overlayRoot;
+    private LinearLayout panel;
+    private FrameLayout bubble;
     private WebView webView;
     private WindowManager.LayoutParams params;
-    private int initialX;
-    private int initialY;
-    private float touchX;
-    private float touchY;
+    private int panelWidth;
+    private int panelHeight;
+    private int bubbleX;
+    private int bubbleY;
+    private boolean expanded;
     private boolean showing;
 
     public static boolean isActive() {
@@ -64,6 +71,7 @@ public class OverlayService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
+        if (showing) return START_NOT_STICKY;
         startForegroundNow();
         if (!Settings.canDrawOverlays(this) || !showOverlay()) stopSelf();
         return START_NOT_STICKY;
@@ -96,7 +104,7 @@ public class OverlayService extends Service {
         Notification notification = builder
                 .setSmallIcon(android.R.drawable.ic_menu_call)
                 .setContentTitle("Thom Call")
-                .setContentText("Chamada em sobreposição")
+                .setContentText("Chamada em bolha")
                 .setContentIntent(pending)
                 .setOngoing(true)
                 .setShowWhen(false)
@@ -120,9 +128,9 @@ public class OverlayService extends Service {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Sobreposição da chamada",
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Bolha da chamada",
                 NotificationManager.IMPORTANCE_LOW);
-        channel.setDescription("Mantém a chamada do Thom Call flutuando sobre outros apps.");
+        channel.setDescription("Mantém a chamada do Thom Call em uma bolha flutuante.");
         NotificationManager manager = getSystemService(NotificationManager.class);
         if (manager != null) manager.createNotificationChannel(channel);
     }
@@ -135,12 +143,60 @@ public class OverlayService extends Service {
         webView = view;
         view.evaluateJavascript("if(typeof toggleMiniCall==='function')toggleMiniCall(false);", null);
 
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = getResources().getDisplayMetrics().heightPixels;
+        panelWidth = Math.min(dp(360), screenWidth - dp(24));
+        panelHeight = Math.min(dp(560), screenHeight - dp(120));
+
+        panel = buildPanel(view);
+        bubble = buildBubble();
+        overlayRoot = new FrameLayout(this);
+        overlayRoot.setClipChildren(true);
+        overlayRoot.addView(panel, new FrameLayout.LayoutParams(panelWidth, panelHeight));
+        FrameLayout.LayoutParams bubbleParams = new FrameLayout.LayoutParams(
+                dp(BUBBLE_DP - 8), dp(BUBBLE_DP - 8), Gravity.CENTER);
+        overlayRoot.addView(bubble, bubbleParams);
+        panel.setAlpha(0f);
+
+        int type = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                : WindowManager.LayoutParams.TYPE_PHONE;
+        int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        params = new WindowManager.LayoutParams(dp(BUBBLE_DP), dp(BUBBLE_DP), type, flags,
+                PixelFormat.TRANSLUCENT);
+        params.gravity = Gravity.TOP | Gravity.START;
+        params.x = Math.max(dp(8), screenWidth - dp(BUBBLE_DP) - dp(12));
+        params.y = Math.max(dp(72), (screenHeight - dp(BUBBLE_DP)) / 2);
+        bubbleX = params.x;
+        bubbleY = params.y;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            params.layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        }
+        try {
+            windowManager.addView(overlayRoot, params);
+        } catch (Exception error) {
+            overlayRoot = null;
+            panel = null;
+            bubble = null;
+            webView = null;
+            activity.attachWebView(view);
+            return false;
+        }
+        showing = true;
+        expanded = false;
+        activity.moveTaskToBack(true);
+        return true;
+    }
+
+    private LinearLayout buildPanel(WebView view) {
         GradientDrawable background = new GradientDrawable();
         background.setColor(0xFF0B0E15);
         background.setCornerRadius(dp(16));
         background.setStroke(dp(1), 0x33FFFFFF);
 
-        shell = new LinearLayout(this);
+        LinearLayout shell = new LinearLayout(this);
         shell.setOrientation(LinearLayout.VERTICAL);
         shell.setBackground(background);
         shell.setClipToOutline(true);
@@ -149,32 +205,40 @@ public class OverlayService extends Service {
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(52)));
         shell.addView(view, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
+        return shell;
+    }
 
-        int width = Math.min(dp(360), getResources().getDisplayMetrics().widthPixels - dp(20));
-        int height = Math.min(dp(560), getResources().getDisplayMetrics().heightPixels - dp(96));
-        int type = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                : WindowManager.LayoutParams.TYPE_PHONE;
-        int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        params = new WindowManager.LayoutParams(width, height, type, flags, PixelFormat.TRANSLUCENT);
-        params.gravity = Gravity.TOP | Gravity.START;
-        params.x = Math.max(dp(8), getResources().getDisplayMetrics().widthPixels - width - dp(12));
-        params.y = dp(72);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            params.layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        }
-        try {
-            windowManager.addView(shell, params);
-        } catch (Exception error) {
-            shell = null;
-            webView = null;
-            activity.attachWebView(view);
-            return false;
-        }
-        showing = true;
-        return true;
+    private FrameLayout buildBubble() {
+        FrameLayout circle = new FrameLayout(this);
+        GradientDrawable background = new GradientDrawable();
+        background.setShape(GradientDrawable.OVAL);
+        background.setColor(0xFF5B5BF6);
+        background.setStroke(dp(2), 0x66FFFFFF);
+        circle.setBackground(background);
+        circle.setElevation(dp(12));
+        circle.setContentDescription("Abrir chamada em bolha");
+
+        TextView mark = new TextView(this);
+        mark.setText("T");
+        mark.setTextColor(0xFFFFFFFF);
+        mark.setTextSize(24);
+        mark.setGravity(Gravity.CENTER);
+        mark.setTypeface(null, Typeface.BOLD);
+        circle.addView(mark, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        View dot = new View(this);
+        GradientDrawable dotBackground = new GradientDrawable();
+        dotBackground.setShape(GradientDrawable.OVAL);
+        dotBackground.setColor(0xFF2BD98B);
+        dot.setBackground(dotBackground);
+        FrameLayout.LayoutParams dotParams = new FrameLayout.LayoutParams(dp(12), dp(12),
+                Gravity.BOTTOM | Gravity.END);
+        dotParams.setMargins(0, 0, dp(6), dp(6));
+        circle.addView(dot, dotParams);
+
+        circle.setOnTouchListener(new BubbleTouchListener());
+        return circle;
     }
 
     private LinearLayout buildHeader() {
@@ -191,7 +255,7 @@ public class OverlayService extends Service {
         title.setText("Thom Call");
         title.setTextColor(0xFFE9EDF7);
         title.setTextSize(14);
-        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setTypeface(null, Typeface.BOLD);
         TextView hint = new TextView(this);
         hint.setText("sobreposição");
         hint.setTextColor(0xFF8E97AD);
@@ -200,6 +264,22 @@ public class OverlayService extends Service {
         labels.addView(hint);
 
         View spacer = new View(this);
+        Button collapse = new Button(this);
+        collapse.setText("Bolha");
+        collapse.setAllCaps(false);
+        collapse.setTextColor(0xFFB9B0FF);
+        collapse.setTextSize(13);
+        collapse.setBackgroundColor(Color.TRANSPARENT);
+        collapse.setMinWidth(0);
+        collapse.setMinimumWidth(0);
+        collapse.setPadding(dp(8), 0, dp(8), 0);
+        collapse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapseToBubble();
+            }
+        });
+
         Button open = new Button(this);
         open.setText("Abrir");
         open.setAllCaps(false);
@@ -208,7 +288,7 @@ public class OverlayService extends Service {
         open.setBackgroundColor(Color.TRANSPARENT);
         open.setMinWidth(0);
         open.setMinimumWidth(0);
-        open.setPadding(dp(12), 0, dp(12), 0);
+        open.setPadding(dp(8), 0, dp(8), 0);
         open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,6 +299,8 @@ public class OverlayService extends Service {
         header.addView(labels, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         header.addView(spacer, new LinearLayout.LayoutParams(0, 1, 1));
+        header.addView(collapse, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         header.addView(open, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -228,6 +310,31 @@ public class OverlayService extends Service {
         title.setOnTouchListener(drag);
         hint.setOnTouchListener(drag);
         return header;
+    }
+
+    private void expandPanel() {
+        if (expanded || panel == null || bubble == null) return;
+        expanded = true;
+        bubble.setVisibility(View.GONE);
+        panel.setAlpha(1f);
+        params.width = panelWidth;
+        params.height = panelHeight;
+        params.x = clamp(params.x, dp(8), getResources().getDisplayMetrics().widthPixels - panelWidth - dp(8));
+        params.y = clamp(params.y, dp(8), getResources().getDisplayMetrics().heightPixels - panelHeight - dp(16));
+        windowManager.updateViewLayout(overlayRoot, params);
+        webView.requestFocus();
+    }
+
+    private void collapseToBubble() {
+        if (!expanded || panel == null || bubble == null) return;
+        expanded = false;
+        panel.setAlpha(0f);
+        bubble.setVisibility(View.VISIBLE);
+        params.width = dp(BUBBLE_DP);
+        params.height = dp(BUBBLE_DP);
+        params.x = clamp(bubbleX, 0, getResources().getDisplayMetrics().widthPixels - dp(BUBBLE_DP));
+        params.y = clamp(bubbleY, 0, getResources().getDisplayMetrics().heightPixels - dp(BUBBLE_DP));
+        windowManager.updateViewLayout(overlayRoot, params);
     }
 
     private void openApp() {
@@ -254,37 +361,94 @@ public class OverlayService extends Service {
     }
 
     private void removeOverlay() {
-        if (shell != null) {
+        if (overlayRoot != null) {
             try {
-                windowManager.removeView(shell);
+                windowManager.removeView(overlayRoot);
             } catch (Exception ignored) {
             }
-            shell = null;
+            overlayRoot = null;
         }
+        panel = null;
+        bubble = null;
         showing = false;
+    }
+
+    private int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(Math.max(min, max), value));
     }
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
     }
 
-    private final class DragListener implements View.OnTouchListener {
+    private final class BubbleTouchListener implements View.OnTouchListener {
+        private float downX;
+        private float downY;
+        private int startX;
+        private int startY;
+        private long downAt;
+        private boolean moved;
+
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-            if (params == null || shell == null) return false;
+            if (params == null || overlayRoot == null) return false;
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                initialX = params.x;
-                initialY = params.y;
+                downX = event.getRawX();
+                downY = event.getRawY();
+                startX = params.x;
+                startY = params.y;
+                downAt = System.currentTimeMillis();
+                moved = false;
+                return true;
+            }
+            if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                int dx = Math.round(event.getRawX() - downX);
+                int dy = Math.round(event.getRawY() - downY);
+                int slop = ViewConfiguration.get(OverlayService.this).getScaledTouchSlop();
+                if (Math.abs(dx) > slop || Math.abs(dy) > slop) moved = true;
+                if (!moved) return true;
+                params.x = clamp(startX + dx, 0,
+                        getResources().getDisplayMetrics().widthPixels - params.width);
+                params.y = clamp(startY + dy, 0,
+                        getResources().getDisplayMetrics().heightPixels - params.height);
+                bubbleX = params.x;
+                bubbleY = params.y;
+                windowManager.updateViewLayout(overlayRoot, params);
+                return true;
+            }
+            if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                bubbleX = params.x;
+                bubbleY = params.y;
+                if (!moved && System.currentTimeMillis() - downAt < 400) expandPanel();
+                return true;
+            }
+            if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) return true;
+            return false;
+        }
+    }
+
+    private final class DragListener implements View.OnTouchListener {
+        private int startX;
+        private int startY;
+        private float touchX;
+        private float touchY;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            if (params == null || overlayRoot == null || !expanded) return false;
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                startX = params.x;
+                startY = params.y;
                 touchX = event.getRawX();
                 touchY = event.getRawY();
                 return true;
             }
             if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
-                int maxX = Math.max(0, getResources().getDisplayMetrics().widthPixels - params.width);
-                int maxY = Math.max(0, getResources().getDisplayMetrics().heightPixels - params.height);
-                params.x = Math.max(0, Math.min(maxX, initialX + Math.round(event.getRawX() - touchX)));
-                params.y = Math.max(0, Math.min(maxY, initialY + Math.round(event.getRawY() - touchY)));
-                windowManager.updateViewLayout(shell, params);
+                params.x = clamp(startX + Math.round(event.getRawX() - touchX), 0,
+                        getResources().getDisplayMetrics().widthPixels - params.width);
+                params.y = clamp(startY + Math.round(event.getRawY() - touchY), 0,
+                        getResources().getDisplayMetrics().heightPixels - params.height);
+                windowManager.updateViewLayout(overlayRoot, params);
                 return true;
             }
             return false;
