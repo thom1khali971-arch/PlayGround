@@ -15,6 +15,8 @@ WEB_DIR="${OPENCODE_WEB_DIR:-/home/runner/work/_temp/omgithub-web}"
 /usr/bin/time -p cp rock-paper-clash.html "$DIST/rock-paper-clash.html"
 /usr/bin/time -p cp index-5.html "$DIST/builder.html"
 /usr/bin/time -p cp index-5.html "$DIST/index-5.html"
+/usr/bin/time -p mkdir -p "$DIST/assets"
+/usr/bin/time -p cp -a assets/. "$DIST/assets/"
 /usr/bin/time -p test -f "$DIST/index.html"
 /usr/bin/time -p mkdir -p "$WEB_DIR"
 export PROJECT_ROOT DIST WEB_DIR

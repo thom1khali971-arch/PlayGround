@@ -17,6 +17,8 @@ mkdir -p "$OUT/compiled" "$OUT/gen" "$OUT/classes" "$OUT/dex" assets
 
 cp "$ROOT/dist/index.html" assets/index.html
 cp "$ROOT/dist/rock-paper-clash.html" assets/rock-paper-clash.html
+mkdir -p assets/assets
+cp -a "$ROOT/assets/." assets/assets/
 
 "$BT/aapt2" compile --dir res -o "$OUT/compiled/res.zip"
 "$BT/aapt2" link -o "$OUT/base.apk" -I "$PLATFORM" \
