@@ -85,6 +85,8 @@ const queue = [];
 const rooms = new Map();
 let playerSeq = 0;
 let roomSeq = 0;
+let botSeq = 0;
+const BOT_WAIT_MS = Number(process.env.PXT_BOT_WAIT_MS || 6000);
 
 function send(ws, data) {
   if (ws && ws.readyState === WebSocket.OPEN) {
@@ -113,6 +115,7 @@ function removeFromQueue(ws) {
   const i = queue.indexOf(ws);
   if (i >= 0) queue.splice(i, 1);
   ws.queued = false;
+  clearBotTimer(ws);
   queue.forEach((socket, index) => send(socket, { type: 'queued', position: index + 1, queue: queue.length }));
 }
 
@@ -122,6 +125,60 @@ function randomMove() {
 
 function moveIndex(move) {
   return move === 'rock' ? 0 : move === 'paper' ? 1 : 2;
+}
+
+function clearBotTimer(ws) {
+  if (ws && ws.botTimer) {
+    clearTimeout(ws.botTimer);
+    ws.botTimer = null;
+  }
+}
+
+function armBotTimer(ws) {
+  clearBotTimer(ws);
+  if (!ws || ws.isBot || ws.room) return;
+  ws.botTimer = setTimeout(() => {
+    ws.botTimer = null;
+    startBotMatch(ws);
+  }, BOT_WAIT_MS);
+}
+
+function makeBot() {
+  const bot = {
+    playerId: 'bot' + (++botSeq),
+    name: 'BOT_TREINO',
+    email: 'bot@pxt.local',
+    room: null,
+    seat: null,
+    queued: false,
+    isBot: true,
+    readyState: WebSocket.OPEN,
+    moveTimer: null,
+    send(raw) {
+      let msg;
+      try { msg = JSON.parse(String(raw)); } catch { return; }
+      const room = bot.room;
+      if (msg.type === 'round' && room && !room.ended && room.round === msg.round) {
+        clearTimeout(bot.moveTimer);
+        bot.moveTimer = setTimeout(() => {
+          if (room.ended || room.round !== msg.round || room.moves[bot.seat] !== null) return;
+          room.moves[bot.seat] = randomMove();
+          if (room.moves[0] && room.moves[1]) resolveRound(room, false);
+        }, 700 + Math.random() * 1200);
+      } else if (msg.type === 'end' || msg.type === 'opponentLeft' || msg.type === 'left') {
+        clearTimeout(bot.moveTimer);
+        bot.moveTimer = null;
+      }
+    }
+  };
+  return bot;
+}
+
+function startBotMatch(ws) {
+  if (!ws || ws.readyState !== WebSocket.OPEN || !ws.queued || ws.room) return;
+  removeFromQueue(ws);
+  makeRoom(ws, makeBot());
+  broadcastCount();
 }
 
 function startRound(room) {
@@ -239,9 +296,11 @@ function makeRoom(one, two) {
   two.room = room;
   one.seat = 0;
   two.seat = 1;
+  if (one.isBot) room.ready[0] = true;
+  if (two.isBot) room.ready[1] = true;
   rooms.set(room.id, room);
-  send(one, { type: 'matched', roomId: room.id, opponent: { name: two.name || 'JOGADOR' }, seat: 0, bestOf: 5 });
-  send(two, { type: 'matched', roomId: room.id, opponent: { name: one.name || 'JOGADOR' }, seat: 1, bestOf: 5 });
+  send(one, { type: 'matched', roomId: room.id, opponent: { name: two.name || 'JOGADOR', bot: !!two.isBot }, seat: 0, bestOf: 5 });
+  send(two, { type: 'matched', roomId: room.id, opponent: { name: one.name || 'JOGADOR', bot: !!one.isBot }, seat: 1, bestOf: 5 });
   room.timer = setTimeout(() => {
     if (!room.started && !room.ended) {
       room.started = true;
@@ -254,13 +313,20 @@ function matchmake() {
   while (queue.length >= 2) {
     const one = queue.shift();
     const two = queue.shift();
-    one.queued = false;
-    two.queued = false;
+    clearBotTimer(one);
+    clearBotTimer(two);
     if (!one || !two || one.readyState !== WebSocket.OPEN || two.readyState !== WebSocket.OPEN) {
-      if (one && one.readyState === WebSocket.OPEN) queue.unshift(one);
-      if (two && two.readyState === WebSocket.OPEN) queue.unshift(two);
+      [one, two].forEach((ws) => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.queued = true;
+          queue.unshift(ws);
+          armBotTimer(ws);
+        }
+      });
       return;
     }
+    one.queued = false;
+    two.queued = false;
     makeRoom(one, two);
   }
   queue.forEach((ws, index) => send(ws, { type: 'queued', position: index + 1, queue: queue.length }));
@@ -294,6 +360,7 @@ function handleMessage(ws, raw) {
     ws.queued = true;
     queue.push(ws);
     send(ws, { type: 'queued', position: queue.length, queue: queue.length });
+    armBotTimer(ws);
     matchmake();
     return;
   }

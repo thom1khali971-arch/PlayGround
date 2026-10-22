@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.thomkhali.pxt"
-    android:versionCode="9"
-    android:versionName="1.0.8">
+    android:versionCode="16"
+    android:versionName="1.0.15">
 
     <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
