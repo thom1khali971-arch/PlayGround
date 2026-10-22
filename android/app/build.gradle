@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.grandmasterlab.chess'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.grandmasterlab.chess'
+        minSdk 26
+        targetSdk 36
+        versionCode 2
+        versionName '1.0.1'
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+        }
+        release {
+            // assinado com a chave de debug para permitir instalação direta (sideload)
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// mantém o HTML do app sincronizado com a raiz do repositório
+def webRoot = rootProject.projectDir.parentFile
+tasks.register('copyWebApp', Copy) {
+    from new File(webRoot, 'index.html')
+    from new File(webRoot, 'stockfish.js')
+    from new File(webRoot, 'chess.min.js')
+    into layout.projectDirectory.dir('src/main/assets')
+}
+tasks.named('preBuild').configure { dependsOn('copyWebApp') }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grandmaster Lab</string>
+    <string name="overlay_permission_hint">Autorize \"Sobrepor a outros apps\" para manter o tabuleiro sobre outros aplicativos.</string>
+</resources>
