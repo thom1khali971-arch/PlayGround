@@ -1,17 +1,17 @@
-## Process lifecycle
+## Ciclo de vida de processos
 
-- Run long-lived servers and watchers in a persistent session such as tmux.
-- Do not background them in bounded commands without explicit detachment and cleanup.
-- After a timeout, inspect the process and endpoint before retrying or claiming failure.
+- Execute servidores e watchers de longa duração em uma sessão persistente, como tmux.
+- Não os coloque em segundo plano em comandos limitados sem desanexação e limpeza explícitas.
+- Após um timeout, inspecione o processo e o endpoint antes de tentar novamente ou declarar falha.
 
-## Linux browser and WebGPU capture
+## Navegador Linux e captura WebGPU
 
-- Use the preinstalled `playwright-cli` executable from Actions or SSH.
-- Use its headed Chromium, persistent Xvfb display, and SwiftShader configuration.
-- Run `playwright-cli open http://localhost:3002` for the Pascal development server.
-- Load a saved scene. Wait for actual geometry and the active WebGPU renderer.
-- Run `playwright-cli screenshot --filename=screenshots/linux.png` after creating the output directory.
-- Inspect the image. Reject loading screens, empty grids, and blank canvases.
-- Report SwiftShader as CPU software rendering. Do not claim GPU hardware acceleration.
-- Inspect `$HOME/.local/share/omgithub-playwright/linux.json` for launch settings.
-- Use `playwright-cli --help` for commands and named sessions. Pass configuration only to `open`.
+- Use o executável `playwright-cli` pré-instalado do Actions ou SSH.
+- Use seu Chromium com interface, display Xvfb persistente e configuração SwiftShader.
+- Execute `playwright-cli open http://localhost:3002` para o servidor de desenvolvimento Pascal.
+- Carregue uma cena salva. Aguarde a geometria real e o renderizador WebGPU ativo.
+- Execute `playwright-cli screenshot --filename=screenshots/linux.png` após criar o diretório de saída.
+- Inspecione a imagem. Rejeite telas de carregamento, grades vazias e canvases em branco.
+- Informe o SwiftShader como renderização por software em CPU. Não afirme aceleração de GPU por hardware.
+- Inspecione `$HOME/.local/share/omgithub-playwright/linux.json` para as configurações de lançamento.
+- Use `playwright-cli --help` para comandos e sessões nomeadas. Passe a configuração somente para `open`.

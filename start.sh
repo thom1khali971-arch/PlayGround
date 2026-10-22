@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start/Build: statisches Projekt bauen und im Vordergrund auf PORT (Standard 3000) servieren.
+# Iniciar/build: montar o projeto estático e servi-lo em primeiro plano na PORT (padrão 3000).
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -23,5 +23,8 @@ export PROJECT_ROOT DIST WEB_DIR
 export WEB_DIR PROJECT_ROOT DIST
 /usr/bin/time -p python3 -c "import json,os; d=json.load(open(os.path.join(os.environ['WEB_DIR'],'deployment-output.json'))); assert d['project']==os.environ['PROJECT_ROOT'], d; assert d['directory']==os.environ['DIST'], d; assert os.path.isfile(os.path.join(d['directory'],'index.html')); print('deployment-output OK:', d)"
 
-echo "Serving $DIST on 0.0.0.0:$PORT (project $PROJECT_ROOT)"
-exec python3 -m http.server "$PORT" --bind 0.0.0.0 --directory "$DIST"
+if [ ! -d node_modules/ws ]; then
+  /usr/bin/time -p npm install --no-audit --no-fund
+fi
+echo "Serving $DIST + online WS on 0.0.0.0:$PORT (project $PROJECT_ROOT)"
+exec node online-server.js

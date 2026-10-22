@@ -1,21 +1,25 @@
-# NEXUS CLAW Builder AI Weboberfläche
+# Interface web NEXUS CLAW Builder AI
 
-## Start
-Öffne `index.html` in einem aktuellen Browser. Für lokale Nutzung kann ein einfacher statischer Webserver verwendet werden.
+## Início
+Abra `index-5.html` em um navegador atual. Para uso local, pode ser usado um servidor web estático simples.
 
-## Enthalten
-- Responsive Dashboard mit sechs Bereichen
-- Projektkontext übernehmen
-- Simulierter Entwicklungszyklus mit Start/Pause/Stopp
-- 20 Gameplay-Testfälle in zwei Phasen
-- Live-Logs mit Filter und TXT-Export
-- Agentenmodi: Planung, Codierung, Analyse, Reparatur
-- Optionaler Verbindungstest zu Ollama `/api/tags`
-- Browserlokale Einstellungen
-- Sicherheitshinweise für Backend/Sandbox
+## Incluído
+- Painel responsivo com seis áreas
+- Importação do contexto do projeto
+- Ciclo de desenvolvimento simulado com iniciar/pausar/parar
+- 20 casos de teste de jogo em duas fases
+- Registros ao vivo com filtro e exportação TXT
+- Modos do agente: planejamento, codificação, análise e reparo
+- Teste opcional de conexão com Ollama `/api/tags`
+- Configurações locais do navegador
+- Avisos de segurança para backend/sandbox
 
-## Wichtige Grenzen
-Diese Version ist ein Frontend-Prototyp. Projektdateien, Git, Builds, APK-Installation, echte Gameplay-Automation, Systemmetriken und autonome Reparaturen sind NICHT implementiert. Die entsprechenden Schaltflächen protokollieren den Aufruf oder zeigen einen Hinweis, statt unbemerkt externe Aktionen auszuführen.
+## Limites importantes
+Esta versão é um protótipo de frontend. Arquivos do projeto, Git, builds, instalação de APK, automação real de gameplay, métricas do sistema e reparos autônomos NÃO estão implementados. Os botões correspondentes registram a chamada ou mostram um aviso, em vez de executar ações externas sem aviso.
 
-## Nächster Architektur-Schritt
-Ein lokales Backend (z. B. Python/FastAPI) sollte über klar definierte Endpunkte mit dem Frontend verbunden werden. Dateioperationen und Codeausführung gehören in eine begrenzte Sandbox/Arbeitskopie; Git-Push, APK-Installation und andere externe oder irreversible Aktionen erfordern ausdrückliche Freigabe.
+## Próximo passo de arquitetura
+Um backend local (por exemplo, Python/FastAPI) deve ser conectado ao frontend por meio de endpoints bem definidos. Operações de arquivo e execução de código pertencem a uma sandbox/cópia de trabalho limitada; Git push, instalação de APK e outras ações externas ou irreversíveis exigem aprovação explícita.
+
+---
+
+Criado por Thom

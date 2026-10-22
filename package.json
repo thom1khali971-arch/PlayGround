@@ -1,0 +1,12 @@
+{
+  "name": "pxt-online",
+  "version": "1.0.0",
+  "private": true,
+  "description": "P×T online matchmaking server",
+  "scripts": {
+    "start": "node online-server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
