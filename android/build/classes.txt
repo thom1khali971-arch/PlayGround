@@ -1,0 +1,7 @@
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/MainActivity$2.class
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/MainActivity$1.class
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/R$string.class
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/R$style.class
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/R.class
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/MainActivity.class
+/home/runner/work/PlayGround/PlayGround/android/build/classes/com/shikigamiforge/app/R$mipmap.class

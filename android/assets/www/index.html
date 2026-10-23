@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0c12">
+  <meta name="description" content="Shikigami Forge — monte, compartilhe e descubra builds de Onmyoji Arena. Filtre por função, compare sinergia e salve suas composições.">
+  <title>Shikigami Forge — Builds de Onmyoji Arena</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0c12'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23e3535f' font-family='serif'%3E%E9%99%B0%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-7-9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 7 3.5C19 15.65 12 20 12 20Z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"/><path d="m14 6 4 4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></symbol>
+    <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v11M7.5 9.5 12 14l4.5-4.5"/><path d="M4 18v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></symbol>
+    <symbol id="i-apk" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M12 7v6M9.8 10.8 12 13l2.2-2.2M10.5 18.3h3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+  </svg>
+
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-glow ambient-glow-a"></div>
+    <div class="ambient-glow ambient-glow-b"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="#explorar" data-nav="explore" aria-label="Shikigami Forge — início">
+      <span class="brand-mark">陰</span>
+      <span class="brand-text">Shikigami <em>Forge</em><small>Onmyoji Arena</small></span>
+    </a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <button class="nav-link is-active" data-nav="explore">Explorar</button>
+      <button class="nav-link" data-nav="shikigami">Shikigami</button>
+      <button class="nav-link" data-nav="items">Itens</button>
+    </nav>
+    <div class="top-actions">
+      <a class="btn btn-ghost btn-apk apk-download" href="downloads/shikigami-forge.apk" download="Shikigami-Forge-1.0.0.apk" title="Baixar APK para Android 7+" aria-label="Baixar APK para Android">
+        <svg class="icon"><use href="#i-apk"/></svg><span>APK</span>
+      </a>
+      <button class="btn btn-ghost btn-import" id="importBtn" title="Importar build por código" aria-label="Importar build por código">
+        <svg class="icon"><use href="#i-import"/></svg><span>Importar</span>
+      </button>
+      <button class="btn btn-primary" id="createBtn">
+        <svg class="icon"><use href="#i-plus"/></svg><span>Criar build</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="view" id="view-explore" data-view="explore">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Central de builds · Temporada 2026</p>
+          <h1>A build certa muda <em>o confronto.</em></h1>
+          <p class="hero-sub">Descubra composições testadas pela comunidade, compare estatísticas e monte a sua própria estratégia para cada shikigami do Onmyoji Arena.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-lg" id="heroCreate">Montar minha build <svg class="icon"><use href="#i-arrow"/></svg></button>
+            <button class="btn btn-outline btn-lg" data-scroll="builds">Explorar builds</button>
+            <a class="btn btn-outline btn-lg btn-apk apk-download" href="downloads/shikigami-forge.apk" download="Shikigami-Forge-1.0.0.apk" title="Baixar APK para Android 7+">
+              <svg class="icon"><use href="#i-download"/></svg> Baixar APK
+            </a>
+          </div>
+          <dl class="hero-stats">
+            <div><dt id="statBuilds">0</dt><dd>builds publicadas</dd></div>
+            <div><dt id="statShiki">0</dt><dd>shikigami cobertos</dd></div>
+            <div><dt id="statItems">0</dt><dd>itens catalogados</dd></div>
+          </dl>
+        </div>
+        <aside class="hero-feature" id="heroFeature" aria-label="Build em destaque"></aside>
+      </section>
+
+      <section class="explore" id="builds">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Arquivo da comunidade</p>
+            <h2>Encontre seu próximo estilo de jogo</h2>
+          </div>
+          <div class="toolbar-right">
+            <label class="search-field">
+              <svg class="icon"><use href="#i-search"/></svg>
+              <input type="search" id="buildSearch" placeholder="Buscar build, shikigami ou autor" autocomplete="off">
+            </label>
+            <select class="select" id="buildSort" aria-label="Ordenar builds">
+              <option value="popular">Mais populares</option>
+              <option value="recent">Mais recentes</option>
+              <option value="synergy">Maior sinergia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="chips" id="roleChips" role="group" aria-label="Filtrar por função"></div>
+          <div class="scope-tabs" id="scopeTabs" role="group" aria-label="Origem das builds">
+            <button class="scope-tab is-active" data-scope="all">Comunidade</button>
+            <button class="scope-tab" data-scope="favorites">Favoritas <span class="badge-count" id="favCount">0</span></button>
+            <button class="scope-tab" data-scope="mine">Minhas builds <span class="badge-count" id="mineCount">0</span></button>
+          </div>
+        </div>
+
+        <div class="result-line">
+          <span id="buildCount">0 builds</span>
+          <button class="link-btn" id="clearFilters" hidden>Limpar filtros</button>
+        </div>
+        <div class="build-grid" id="buildGrid"></div>
+        <div class="empty-state" id="buildEmpty" hidden>
+          <span class="empty-glyph">空</span>
+          <h3>Nenhuma build encontrada</h3>
+          <p>Ajuste os filtros — ou crie a primeira composição deste shikigami.</p>
+          <button class="btn btn-primary" data-open-editor>Criar build</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-shikigami" data-view="shikigami" hidden>
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Bestiário</p>
+          <h2>Escolha seu shikigami</h2>
+          <p class="page-sub">Cada espírito tem um ritmo próprio. Veja a função, a dificuldade e as builds da comunidade.</p>
+        </div>
+        <label class="search-field search-wide">
+          <svg class="icon"><use href="#i-search"/></svg>
+          <input type="search" id="shikiSearch" placeholder="Buscar shikigami" autocomplete="off">
+        </label>
+      </div>
+      <div class="filter-bar">
+        <div class="chips" id="shikiRoleChips" role="group" aria-label="Filtrar shikigami por função"></div>
+      </div>
+      <div class="result-line"><span id="shikiCount">0 shikigami</span></div>
+      <div class="shiki-grid" id="shikiGrid"></div>
+      <div class="empty-state" id="shikiEmpty" hidden>
+        <span class="empty-glyph">無</span>
+        <h3>Nenhum shikigami encontrado</h3>
+        <p>Tente outro nome ou remova o filtro de função.</p>
+      </div>
+    </section>
+
+    <section class="view" id="view-items" data-view="items" hidden>
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Arsenal</p>
+          <h2>Catálogo de itens</h2>
+          <p class="page-sub">Atributos de referência para comparar o impacto de cada item na sua composição.</p>
+        </div>
+        <label class="search-field search-wide">
+          <svg class="icon"><use href="#i-search"/></svg>
+          <input type="search" id="itemSearch" placeholder="Buscar item" autocomplete="off">
+        </label>
+      </div>
+      <div class="filter-bar">
+        <div class="chips" id="itemChips" role="group" aria-label="Filtrar itens por categoria"></div>
+      </div>
+      <div class="result-line"><span id="itemCount">0 itens</span></div>
+      <div class="item-grid" id="itemGrid"></div>
+      <div class="empty-state" id="itemEmpty" hidden>
+        <span class="empty-glyph">器</span>
+        <h3>Nenhum item encontrado</h3>
+        <p>Tente outro termo de busca.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand"><span class="brand-mark small">陰</span> Shikigami Forge</div>
+    <p>Projeto de fã, não afiliado à NetEase. Builds e atributos são referências da comunidade — ajuste ao seu elo e estilo.</p>
+    <p class="footer-meta">Dados salvos localmente no seu navegador. <span class="apk-download">· <a class="footer-apk" href="downloads/shikigami-forge.apk" download="Shikigami-Forge-1.0.0.apk">Baixar APK para Android 7+</a></span></p>
+  </footer>
+
+  <div class="overlay" id="editor" hidden>
+    <div class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <header class="editor-head">
+        <div>
+          <p class="eyebrow" id="editorEyebrow">Nova composição</p>
+          <h2 id="editorTitle">Forjar build</h2>
+        </div>
+        <div class="editor-head-actions">
+          <button class="btn btn-ghost" id="editorReset" type="button">Limpar</button>
+          <button class="icon-btn" id="editorClose" aria-label="Fechar editor"><svg class="icon"><use href="#i-close"/></svg></button>
+        </div>
+      </header>
+      <div class="editor-body">
+        <aside class="editor-side">
+          <section class="editor-card preview-card">
+            <div id="editorPreview"></div>
+          </section>
+          <section class="editor-card">
+            <div class="card-kicker">Desempenho estimado</div>
+            <div id="editorRadar" class="radar-wrap"></div>
+          </section>
+        </aside>
+        <div class="editor-main">
+          <section class="editor-card">
+            <div class="editor-section-head">
+              <h3><span class="step-num">01</span> Escolha o shikigami</h3>
+              <label class="search-field compact">
+                <svg class="icon"><use href="#i-search"/></svg>
+                <input type="search" id="editorShikiSearch" placeholder="Buscar" autocomplete="off">
+              </label>
+            </div>
+            <div class="editor-shiki-grid" id="editorShikiGrid"></div>
+          </section>
+
+          <section class="editor-card">
+            <div class="editor-section-head">
+              <h3><span class="step-num">02</span> Monte o arsenal <span class="muted" id="itemSlotsLabel">0/6</span></h3>
+              <button class="link-btn" id="clearItems" type="button">Limpar itens</button>
+            </div>
+            <div class="slot-grid" id="slotGrid"></div>
+            <div class="editor-item-tabs" id="editorItemTabs"></div>
+            <div class="editor-item-grid" id="editorItemGrid"></div>
+          </section>
+
+          <section class="editor-card two-col">
+            <div>
+              <div class="editor-section-head"><h3><span class="step-num">03</span> Onmyoji</h3></div>
+              <div class="onmyoji-row" id="onmyojiRow"></div>
+            </div>
+            <div>
+              <div class="editor-section-head"><h3><span class="step-num">04</span> Feitiços <span class="muted" id="spellLabel">0/2</span></h3></div>
+              <div class="spell-row" id="spellRow"></div>
+            </div>
+          </section>
+
+          <section class="editor-card">
+            <div class="editor-section-head"><h3><span class="step-num">05</span> Assinatura</h3></div>
+            <div class="editor-fields">
+              <label class="field"><span>Nome da build</span><input type="text" id="buildName" maxlength="48" placeholder="Ex.: Lâmina do Vazio"></label>
+              <label class="field"><span>Notas de jogo <small>opcional</small></span><textarea id="buildNotes" maxlength="280" rows="2" placeholder="Combos, timing, matchup e prioridades de item."></textarea></label>
+            </div>
+            <div class="editor-savebar">
+              <div class="savebar-info" id="savebarInfo">Selecione um shikigami para começar.</div>
+              <div class="savebar-actions">
+                <button class="btn btn-outline" id="editorCancel" type="button">Cancelar</button>
+                <button class="btn btn-primary" id="editorSave" type="button">Salvar build</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="modal" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Detalhes">
+      <button class="icon-btn modal-close" id="modalClose" aria-label="Fechar"><svg class="icon"><use href="#i-close"/></svg></button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
