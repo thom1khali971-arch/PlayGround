@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#14100e" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Marcenaria" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta
       name="description"
       content="Marcenaria Studio: configure móveis sob medida, veja em 3D, gere lista de corte e orçamento em tempo real."
@@ -13,8 +19,8 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e6a85c'/%3E%3Cpath d='M18 42l20-20 6 6-20 20z' fill='%231a1512'/%3E%3Cpath d='M38 16l10 10-6 6-10-10z' fill='%23f5e6d2'/%3E%3C/svg%3E"
     />
-    <script type="module" crossorigin src="/assets/index-DZzXWA0W.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-bKij8-na.css">
+    <script type="module" crossorigin src="./assets/index-BK2kBeJN.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cg9R_ZQw.css">
   </head>
   <body>
     <header class="topbar">
@@ -243,6 +249,14 @@
         </p>
       </div>
     </div>
+
+    <button class="install-fab" id="installBtn" type="button" hidden aria-label="Instalar aplicativo no Android">
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M7 2.5h6A1.5 1.5 0 0 1 14.5 4v12a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 16V4A1.5 1.5 0 0 1 7 2.5Z" stroke="currentColor" stroke-width="1.4" fill="none" />
+        <path d="M10 6v5.2M8.2 9.6 10 11.4l1.8-1.8M9 15.5h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </svg>
+      <span>Instalar app</span>
+    </button>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

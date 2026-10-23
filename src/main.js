@@ -1,6 +1,7 @@
 import './style.css'
 import { TYPE_LIST, TYPES, MATERIALS, FINISHES, METALS, buildModel, computeEstimate } from './furniture.js'
 import { createViewport } from './scene.js'
+import { registerPwa, setupInstallPrompt } from './pwa.js'
 
 const STORAGE_KEY = 'marcenaria-studio.v1'
 const MAX_PROJECTS = 12
@@ -886,6 +887,11 @@ document.addEventListener('keydown', (event) => {
 
 renderAllFields()
 updateProject(true)
+setupInstallPrompt()
+registerPwa()
+window.addEventListener('marcenaria:installed', () => {
+  toast('Aplicativo instalado. Abra pelo ícone na tela inicial.')
+})
 requestAnimationFrame(() => {
   setTimeout(() => el('loader').classList.add('hidden'), 320)
 })

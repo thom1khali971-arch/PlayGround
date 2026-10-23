@@ -1859,6 +1859,66 @@ svg {
   color: var(--muted-2);
 }
 
+.install-fab {
+  position: fixed;
+  right: 22px;
+  bottom: 24px;
+  z-index: 70;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border: 1px solid var(--amber-line);
+  border-radius: 999px;
+  background: rgba(34, 26, 20, 0.96);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.install-fab[hidden] {
+  display: none;
+}
+
+.install-fab svg {
+  width: 16px;
+  height: 16px;
+  color: var(--amber);
+}
+
+.install-fab:hover {
+  transform: translateY(-2px);
+  border-color: var(--amber);
+  background: rgba(43, 33, 25, 0.98);
+}
+
+@media (max-width: 560px) {
+  .install-fab {
+    right: 14px;
+    bottom: 18px;
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .install-fab span {
+    display: none;
+  }
+
+  .install-fab svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .toast {
   position: fixed;
   bottom: 24px;
@@ -2103,6 +2163,7 @@ svg {
   .workspace,
   .modal-backdrop,
   .toast,
+  .install-fab,
   .loader {
     display: none !important;
   }
