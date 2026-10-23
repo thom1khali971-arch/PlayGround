@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f0d11" />
+    <title>Live Coach — Bolha</title>
+    <link rel="stylesheet" href="./overlay.css" />
+  </head>
+  <body>
+    <main class="ov" id="overlayApp">
+      <header class="ov-head">
+        <div class="ov-brand">
+          <span class="ov-mark" aria-hidden="true">巫</span>
+          <div class="ov-brand-copy">
+            <strong>LIVE COACH</strong>
+            <span id="ovContext">Meio · Preparação</span>
+          </div>
+        </div>
+        <div class="ov-tools">
+          <button id="ovSound" class="ov-icon" type="button" aria-pressed="false" title="Ativar alertas sonoros">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+              <path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11" />
+              <path class="slash" d="m4 4 16 16" />
+            </svg>
+          </button>
+          <button id="ovVoice" class="ov-icon" type="button" aria-pressed="false" title="Ativar avisos por voz">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="3" width="6" height="11" rx="3" />
+              <path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6" />
+              <path class="slash" d="m4 4 16 16" />
+            </svg>
+          </button>
+          <button id="ovClose" class="ov-icon ov-close" type="button" title="Recolher painel">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="ov-clock-card">
+        <button id="ovStartPause" class="ov-clock" type="button">
+          <span class="ov-time" id="ovTime">00:00</span>
+          <span class="ov-phase"><span class="ov-live-dot"></span><span id="ovPhase">Preparação</span></span>
+          <span class="ov-wave" id="ovWave">Onda em 00:30</span>
+        </button>
+        <div class="ov-next" id="ovNext">
+          <span class="ov-kicker" id="ovNextKicker">Próximo</span>
+          <strong id="ovNextName">Boss do rio</strong>
+          <span id="ovNextTime">em 04:00</span>
+        </div>
+      </section>
+
+      <div class="ov-strip">
+        <div class="ov-speed" role="group" aria-label="Velocidade do relógio">
+          <button type="button" data-speed="1" aria-pressed="true">1×</button>
+          <button type="button" data-speed="2" aria-pressed="false">2×</button>
+          <button type="button" data-speed="4" aria-pressed="false">4×</button>
+        </div>
+        <button id="ovRole" class="ov-role" type="button" title="Trocar papel">Suporte</button>
+      </div>
+
+      <div class="ov-scroll">
+        <section id="ovObjectives" class="ov-objectives" aria-label="Objetivos"></section>
+        <section id="ovSituations" class="ov-situations" aria-label="Contexto rápido"></section>
+        <section id="ovAdvice" class="ov-advice" aria-label="Plano de agora"></section>
+      </div>
+
+      <footer class="ov-foot">
+        <button id="ovOpen" class="ov-open" type="button">Abrir app</button>
+        <span class="ov-sync"><span class="ov-sync-dot" id="ovSyncDot"></span><span id="ovSync">Sincronizado</span></span>
+      </footer>
+
+      <div id="ovToast" class="ov-toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script type="module" src="./overlay.js"></script>
+  </body>
+</html>

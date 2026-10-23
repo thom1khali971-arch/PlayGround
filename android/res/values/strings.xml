@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Live Coach — Onmyoji</string>
+    <string name="notification_channel">Bolha do coach</string>
+    <string name="notification_channel_desc">Mantém a bolha e os alertas ativos durante a partida.</string>
+    <string name="notification_title">Coach flutuante ativo</string>
+    <string name="notification_text">Toque para abrir o painel tático.</string>
+    <string name="notification_panel">Painel</string>
+    <string name="notification_stop">Encerrar</string>
+    <string name="overlay_permission">Permita “Sobrepor a outros apps” para usar a bolha.</string>
+    <string name="overlay_ready">Bolha ativada. Arraste para mover e toque para abrir.</string>
+    <string name="overlay_stopped">Bolha encerrada.</string>
+    <string name="overlay_error">Não foi possível iniciar a bolha. Abra o app e tente novamente.</string>
+    <string name="bubble_description">Abrir coach flutuante</string>
+    <string name="panel_description">Painel do coach flutuante</string>
+    <string name="notification_hint">Ative as notificações para manter a bolha visível.</string>
+</resources>

@@ -1,0 +1,750 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b090c;
+  --panel: #121014;
+  --panel-2: #171319;
+  --gold: #e9c77f;
+  --red: #e3482d;
+  --red-bright: #ff6b45;
+  --ink: #f5efe4;
+  --muted: #a89b8e;
+  --teal: #5bdcb8;
+  --line: rgba(233, 199, 127, 0.16);
+  --line-soft: rgba(255, 255, 255, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Noto Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ov {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  border: 1px solid rgba(233, 199, 127, 0.2);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 82% at 100% 0%, rgba(227, 72, 45, 0.18), transparent 55%),
+    radial-gradient(90% 60% at 0% 100%, rgba(233, 199, 127, 0.07), transparent 60%),
+    linear-gradient(180deg, #171219 0%, #0e0b10 58%, #0b090c 100%);
+}
+
+.ov::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ---------- Header ---------- */
+
+.ov-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 11px 8px;
+  flex: 0 0 auto;
+}
+
+.ov-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ov-mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f2764f, #c73528 55%, #761717);
+  border: 1px solid rgba(233, 199, 127, 0.72);
+  color: #1c1010;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.ov-brand-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.ov-brand-copy strong {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.ov-brand-copy span {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ov-tools {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.ov-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid var(--line-soft);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--muted);
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.ov-icon[aria-pressed="true"] {
+  color: var(--gold);
+  border-color: rgba(233, 199, 127, 0.34);
+  background: rgba(233, 199, 127, 0.08);
+}
+
+.ov-icon .slash {
+  opacity: 1;
+}
+
+.ov-icon[aria-pressed="true"] .slash {
+  opacity: 0;
+}
+
+.ov-close {
+  color: var(--ink);
+  border-color: rgba(227, 72, 45, 0.28);
+  background: rgba(227, 72, 45, 0.1);
+}
+
+.ov-close:hover {
+  color: #fff;
+  border-color: rgba(255, 107, 69, 0.55);
+  background: rgba(227, 72, 45, 0.18);
+}
+
+/* ---------- Clock ---------- */
+
+.ov-clock-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+  gap: 10px;
+  align-items: stretch;
+  margin: 0 10px;
+  padding: 10px 11px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(227, 72, 45, 0.1), transparent 52%),
+    rgba(255, 255, 255, 0.025);
+}
+
+.ov-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  text-align: left;
+}
+
+.ov-time {
+  font-family: "Azeret Mono", "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.ov-clock.is-running .ov-time {
+  color: #fff;
+  text-shadow: 0 0 22px rgba(255, 107, 69, 0.22);
+}
+
+.ov-phase {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  color: var(--gold);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ov-live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red-bright);
+  box-shadow: 0 0 8px rgba(255, 107, 69, 0.7);
+}
+
+.ov-clock.is-running .ov-live-dot {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.ov-wave {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.ov-next {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  padding-left: 10px;
+  border-left: 1px solid var(--line-soft);
+}
+
+.ov-kicker {
+  color: var(--muted);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ov-next strong {
+  font-size: 14px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ov-next > span:last-child {
+  color: var(--gold);
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ov-next[data-state="live"] .ov-kicker,
+.ov-next[data-state="live"] > span:last-child {
+  color: var(--red-bright);
+}
+
+.ov-next[data-state="live"] strong {
+  color: #fff;
+}
+
+.ov-next[data-state="done"] > span:last-child {
+  color: var(--teal);
+}
+
+/* ---------- Speed and role ---------- */
+
+.ov-strip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 7px 10px 0;
+  flex: 0 0 auto;
+}
+
+.ov-speed {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border: 1px solid var(--line-soft);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.ov-speed button {
+  min-width: 29px;
+  height: 24px;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 9.5px;
+  font-weight: 700;
+  transition: color 0.16s ease, background 0.16s ease;
+}
+
+.ov-speed button[aria-pressed="true"] {
+  color: #1a1110;
+  background: var(--gold);
+}
+
+.ov-role {
+  margin-left: auto;
+  max-width: 52%;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(233, 199, 127, 0.06);
+  color: var(--gold);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Scroll body ---------- */
+
+.ov-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 8px;
+  padding: 0 10px 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.ov-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.ov-objectives {
+  display: grid;
+  gap: 5px;
+}
+
+.ov-objective {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 6px 8px 6px 10px;
+  border: 1px solid var(--line-soft);
+  border-left: 2px solid rgba(233, 199, 127, 0.32);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ov-objective[data-state="live"] {
+  border-color: rgba(255, 107, 69, 0.32);
+  border-left-color: var(--red-bright);
+  background: linear-gradient(90deg, rgba(227, 72, 45, 0.13), rgba(255, 255, 255, 0.02));
+}
+
+.ov-objective[data-state="soon"] {
+  border-left-color: var(--gold);
+}
+
+.ov-objective[data-state="done"] {
+  opacity: 0.5;
+  border-left-color: var(--teal);
+}
+
+.ov-obj-copy {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.ov-obj-copy strong {
+  font-size: 11.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.ov-obj-copy span {
+  color: var(--muted);
+  font-size: 9.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ov-objective[data-state="live"] .ov-obj-copy span {
+  color: #ff9a7d;
+}
+
+.ov-objective[data-state="done"] .ov-obj-copy span {
+  color: var(--teal);
+}
+
+.ov-objective button {
+  min-width: 47px;
+  height: 25px;
+  padding: 0 7px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ov-objective button:not(:disabled) {
+  color: #1b100e;
+  border-color: transparent;
+  background: var(--red-bright);
+}
+
+.ov-objective button:disabled {
+  opacity: 0.45;
+}
+
+/* ---------- Situations ---------- */
+
+.ov-situations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.ov-situations button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 27px;
+  padding: 4px 7px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  text-align: left;
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.ov-situations button::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.ov-situations button[aria-pressed="true"] {
+  color: var(--teal);
+  border-color: rgba(91, 220, 184, 0.3);
+  background: rgba(91, 220, 184, 0.07);
+}
+
+.ov-situations button[aria-pressed="true"]::before {
+  background: var(--teal);
+  box-shadow: 0 0 7px rgba(91, 220, 184, 0.55);
+}
+
+/* ---------- Advice ---------- */
+
+.ov-advice {
+  display: grid;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.ov-tip {
+  position: relative;
+  padding: 8px 9px 8px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+}
+
+.ov-tip::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--teal);
+}
+
+.ov-tip.is-dont::before {
+  background: var(--red-bright);
+}
+
+.ov-tip.is-dont {
+  background: linear-gradient(90deg, rgba(227, 72, 45, 0.09), rgba(255, 255, 255, 0.02));
+}
+
+.ov-tip-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.ov-tip-kind {
+  color: var(--teal);
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ov-tip.is-dont .ov-tip-kind {
+  color: #ff8b69;
+}
+
+.ov-tip-objective {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ov-tip h3 {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.28;
+  letter-spacing: -0.005em;
+}
+
+.ov-tip p {
+  display: -webkit-box;
+  margin: 2px 0 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9.5px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ov-empty {
+  padding: 12px 8px;
+  border: 1px dashed var(--line-soft);
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 9.5px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ---------- Footer ---------- */
+
+.ov-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px 9px;
+  flex: 0 0 auto;
+}
+
+.ov-open {
+  height: 29px;
+  padding: 0 12px;
+  border: 1px solid rgba(233, 199, 127, 0.3);
+  border-radius: 8px;
+  background: rgba(233, 199, 127, 0.09);
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ov-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.ov-sync-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 7px rgba(91, 220, 184, 0.5);
+}
+
+.ov-sync.is-local .ov-sync-dot {
+  background: var(--gold);
+  box-shadow: 0 0 7px rgba(233, 199, 127, 0.4);
+}
+
+/* ---------- Toast ---------- */
+
+.ov-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 48px;
+  z-index: 5;
+  max-width: calc(100% - 32px);
+  padding: 7px 11px;
+  border: 1px solid rgba(233, 199, 127, 0.3);
+  border-radius: 999px;
+  background: rgba(18, 16, 20, 0.97);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  color: var(--ink);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ov-toast.is-show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.ov-toast[data-tone="teal"] {
+  border-color: rgba(91, 220, 184, 0.36);
+}
+
+.ov-toast[data-tone="red"] {
+  border-color: rgba(255, 107, 69, 0.4);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+
+@media (max-height: 500px) {
+  .ov-head {
+    padding: 7px 9px 5px;
+  }
+
+  .ov-mark {
+    width: 27px;
+    height: 27px;
+    font-size: 13px;
+  }
+
+  .ov-clock-card {
+    padding: 7px 9px;
+  }
+
+  .ov-time {
+    font-size: 30px;
+  }
+
+  .ov-strip {
+    margin-top: 5px;
+  }
+
+  .ov-scroll {
+    margin-top: 5px;
+  }
+
+  .ov-tip p {
+    -webkit-line-clamp: 1;
+  }
+
+  .ov-foot {
+    padding: 5px 9px 7px;
+  }
+}
+
+@media (max-width: 300px) {
+  .ov-brand-copy strong {
+    font-size: 10px;
+  }
+
+  .ov-time {
+    font-size: 32px;
+  }
+
+  .ov-tools {
+    gap: 3px;
+  }
+
+  .ov-icon {
+    width: 27px;
+    height: 27px;
+  }
+}
