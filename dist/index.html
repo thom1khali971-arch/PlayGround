@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070b18" />
+  <meta name="description" content="DeepSeek Build — agente de IA para transformar issues em código, testes e preview." />
+  <title>DeepSeek Build · Agente de engenharia</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b18;
+      --panel: rgba(15, 23, 46, .72);
+      --line: rgba(125, 155, 255, .16);
+      --text: #eef2ff;
+      --muted: #98a5c8;
+      --blue: #4d6bfe;
+      --cyan: #37d7ff;
+      --green: #53e6a4;
+      --violet: #a97bff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(900px 520px at 12% -8%, rgba(77, 107, 254, .30), transparent 62%),
+        radial-gradient(720px 480px at 92% 8%, rgba(55, 215, 255, .14), transparent 60%),
+        radial-gradient(680px 460px at 55% 108%, rgba(169, 123, 255, .12), transparent 62%),
+        var(--bg);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(125, 155, 255, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(125, 155, 255, .045) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+    .shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; position: relative; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0 12px; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -.02em; }
+    .mark {
+      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+      background: linear-gradient(145deg, var(--blue), #2639a8);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 14px 34px rgba(77,107,254,.34);
+      font-size: 18px;
+    }
+    .brand small { display: block; color: var(--muted); font-weight: 500; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin-top: 2px; }
+    .status {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
+      border: 1px solid rgba(83, 230, 164, .28); background: rgba(83, 230, 164, .08);
+      color: #b9ffdb; font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .status i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 50% { opacity: .35; } }
+    main { padding: 54px 0 70px; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr); gap: 46px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; margin-bottom: 20px;
+      border: 1px solid var(--line); border-radius: 999px; background: rgba(77,107,254,.09);
+      color: #b8c7ff; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: clamp(38px, 6vw, 68px); line-height: .99; letter-spacing: -.055em; }
+    h1 span {
+      background: linear-gradient(100deg, #fff 8%, #a9bcff 48%, #5de1ff 92%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { max-width: 560px; margin: 24px 0 0; color: #b7c2df; font-size: clamp(16px, 1.8vw, 18px); line-height: 1.7; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .btn {
+      appearance: none; border: 0; border-radius: 12px; padding: 13px 18px; cursor: pointer;
+      font: inherit; font-size: 14px; font-weight: 700; color: #fff; text-decoration: none;
+      background: linear-gradient(135deg, var(--blue), #3249c9);
+      box-shadow: 0 10px 28px rgba(77,107,254,.30), 0 0 0 1px rgba(255,255,255,.10) inset;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(77,107,254,.38), 0 0 0 1px rgba(255,255,255,.14) inset; }
+    .btn.secondary { background: rgba(255,255,255,.045); box-shadow: 0 0 0 1px var(--line) inset; color: #d6deff; }
+    .terminal {
+      position: relative; border-radius: 18px; border: 1px solid rgba(134, 158, 255, .20);
+      background: linear-gradient(160deg, rgba(17, 26, 53, .94), rgba(9, 14, 31, .96));
+      box-shadow: 0 34px 80px rgba(0,0,0,.46), 0 0 0 1px rgba(255,255,255,.03) inset;
+      overflow: hidden;
+    }
+    .terminal::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(500px 220px at 80% 0%, rgba(77,107,254,.15), transparent 70%); }
+    .term-bar { display: flex; align-items: center; gap: 7px; padding: 12px 14px; border-bottom: 1px solid rgba(125,155,255,.12); background: rgba(255,255,255,.02); }
+    .term-bar b { width: 9px; height: 9px; border-radius: 50%; background: #ff647c; }
+    .term-bar b:nth-child(2) { background: #ffca64; }
+    .term-bar b:nth-child(3) { background: #52dfa0; }
+    .term-bar span { margin-left: 8px; color: #7f8fb7; font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .term-body { padding: 20px 18px 22px; font: 12.5px/1.85 ui-monospace, SFMono-Regular, Menlo, monospace; min-height: 328px; position: relative; z-index: 1; }
+    .term-body .dim { color: #6e7da5; }
+    .term-body .cmd { color: #dbe4ff; }
+    .term-body .ok { color: var(--green); }
+    .term-body .info { color: var(--cyan); }
+    .term-body .warn { color: #ffd479; }
+    .term-body .out { color: #98a5c8; }
+    .caret { display: inline-block; width: 7px; height: 14px; background: var(--cyan); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .stat { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(12, 19, 40, .58); }
+    .stat strong { display: block; font-size: 20px; letter-spacing: -.03em; }
+    .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 34px; }
+    .card {
+      border: 1px solid var(--line); border-radius: 16px; padding: 20px;
+      background: linear-gradient(160deg, rgba(18, 27, 55, .66), rgba(9, 14, 31, .52));
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .card:hover { transform: translateY(-3px); border-color: rgba(125,155,255,.30); }
+    .icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; margin-bottom: 14px; background: rgba(77,107,254,.14); color: #9db1ff; }
+    .icon svg { width: 18px; height: 18px; }
+    .card h3 { margin: 0 0 7px; font-size: 15px; letter-spacing: -.01em; }
+    .card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .pipeline { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 24px; color: #8494bd; font-size: 12px; }
+    .pipeline b { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.025); color: #c6d1f2; font-weight: 600; }
+    .pipeline i { color: #4f5f8c; font-style: normal; }
+    footer { padding: 22px 0 34px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: #66759d; font-size: 12px; border-top: 1px solid rgba(125,155,255,.10); }
+    footer span b { color: #9dabd1; font-weight: 600; }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 34px; }
+      .grid { grid-template-columns: 1fr; }
+      main { padding-top: 30px; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 28px, 1160px); }
+      header { padding-top: 18px; }
+      .brand small { display: none; }
+      .lead { font-size: 15px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stats .stat:last-child { grid-column: 1 / -1; }
+      .term-body { min-height: 310px; font-size: 11px; }
+      .actions .btn { flex: 1 1 auto; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z"/><path d="m4 7 8 4 8-4M12 21V11"/></svg>
+        </div>
+        <div>DeepSeek Build<small>AI engineering agent</small></div>
+      </div>
+      <div class="status"><i></i> agente online</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">modelo · deepseek-v4.1-flash-free</div>
+          <h1>Do issue ao <span>código em produção.</span></h1>
+          <p class="lead">
+            Um agente de build que lê o repositório, planeja a menor mudança correta,
+            implementa, roda testes e valida o preview — sem sair do fluxo.
+          </p>
+          <div class="actions">
+            <button class="btn" id="run-demo" type="button">Rodar demonstração</button>
+            <a class="btn secondary" href="#capabilities">Ver capacidades</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="terminal" aria-label="Terminal do agente">
+            <div class="term-bar"><b></b><b></b><b></b><span>deepseek-build — zsh</span></div>
+            <div class="term-body" id="terminal">
+              <div><span class="dim">$</span> <span class="cmd">opencode agent deepseek-build</span></div>
+              <div class="out">carregando contexto do projeto…</div>
+              <div><span class="ok">✓</span> <span class="out">8 arquivos lidos · convenções detectadas</span></div>
+              <div><span class="dim">$</span> <span class="cmd">deepseek-build "crie a landing do agente"</span></div>
+              <div class="out">planejando implementação…</div>
+              <div><span class="info">→</span> <span class="out">editar src/index.html</span></div>
+              <div><span class="ok">✓</span> <span class="out">build concluído em 1.8s</span></div>
+              <div><span class="warn">!</span> <span class="out">executando verificação de preview…</span></div>
+              <div><span class="ok">✓</span> <span class="out">desktop + mobile renderizados</span></div>
+              <div><span class="dim">$</span> <span class="caret" aria-hidden="true"></span></div>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat"><strong>0</strong><span>commits sem pedir</span></div>
+            <div class="stat"><strong>2</strong><span>views validadas</span></div>
+            <div class="stat"><strong>100%</strong><span>dentro do PROJECT_DIR</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid" id="capabilities">
+        <article class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+          <h3>Contexto antes do código</h3>
+          <p>Lê arquivos, convenções e dependências existentes para fazer a menor mudança correta.</p>
+        </article>
+        <article class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></div>
+          <h3>Verificação real</h3>
+          <p>Executa lint, testes e typecheck quando existem. Falhou? Investiga antes de declarar conclusão.</p>
+        </article>
+        <article class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+          <h3>Preview comprovado</h3>
+          <p>Build e servidor em foreground, captura desktop e mobile, e evidência visual para cada entrega.</p>
+        </article>
+      </section>
+
+      <div class="pipeline" aria-label="Fluxo do agente">
+        <b>issue</b><i>→</i><b>contexto</b><i>→</i><b>implementação</b><i>→</i><b>testes</b><i>→</i><b>preview</b><i>→</i><b>entrega</b>
+      </div>
+    </main>
+
+    <footer>
+      <span><b>DeepSeek Build</b> · opcode/deepseek-v4.1-flash-free</span>
+      <span>Feito para o PlayGround · build, teste e valide</span>
+    </footer>
+  </div>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const button = document.getElementById('run-demo');
+    const lines = [
+      ['<span class="dim">$</span> <span class="cmd">deepseek-build "adicione testes de regressão"</span>', 'out'],
+      ['<span class="info">→</span> <span class="out">localizando o framework de testes…</span>', 'out'],
+      ['<span class="ok">✓</span> <span class="out">vitest encontrado · 12 testes existentes</span>', 'out'],
+      ['<span class="info">→</span> <span class="out">criando cenário de falha e correção</span>', 'out'],
+      ['<span class="ok">✓</span> <span class="out">12/12 testes passando</span>', 'out'],
+      ['<span class="warn">!</span> <span class="out">nenhum commit criado — aguardando revisão</span>', 'out'],
+      ['<span class="dim">$</span> <span class="caret" aria-hidden="true"></span>', 'out']
+    ];
+    button.addEventListener('click', () => {
+      button.disabled = true;
+      button.textContent = 'Executando…';
+      terminal.querySelectorAll('.caret').forEach(node => node.remove());
+      lines.forEach(([html], index) => {
+        setTimeout(() => {
+          const row = document.createElement('div');
+          row.innerHTML = html;
+          terminal.appendChild(row);
+          terminal.scrollTop = terminal.scrollHeight;
+          if (index === lines.length - 1) {
+            button.disabled = false;
+            button.textContent = 'Rodar novamente';
+          }
+        }, 320 * (index + 1));
+      });
+    });
+  </script>
+</body>
+</html>
