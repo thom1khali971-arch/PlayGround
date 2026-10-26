@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <meta name="description" content="ChatBox com o link atualizado. Abra o app ou baixe o APK novo.">
+  <title>ChatBox — link atualizado</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b14;
+      --panel: #111726;
+      --panel-2: #161e30;
+      --line: #263149;
+      --text: #f3f6ff;
+      --muted: #97a3bd;
+      --accent: #ff7a1a;
+      --accent-2: #ffb15c;
+      --ok: #48d597;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background:
+        radial-gradient(900px 500px at 12% -10%, rgba(255, 122, 26, .20), transparent 60%),
+        radial-gradient(800px 500px at 100% 0%, rgba(63, 136, 255, .18), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+    main {
+      width: min(760px, calc(100vw - 36px));
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(22, 30, 48, .96), rgba(13, 18, 30, .98));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: clamp(24px, 5vw, 48px);
+      box-shadow: 0 32px 90px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .05);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; min-width: 0; flex-wrap: wrap; }
+    .logo {
+      width: 58px; height: 58px; border-radius: 18px;
+      display: grid; place-items: center;
+      background: linear-gradient(145deg, var(--accent), #ff4d00);
+      color: #140a02;
+      font-weight: 900; font-size: 26px;
+      box-shadow: 0 10px 30px rgba(255, 122, 26, .35);
+    }
+    .brand strong { display: block; font-size: 20px; letter-spacing: -.02em; }
+    .brand span { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; }
+    .badge {
+      margin-left: auto;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 12px; border-radius: 999px;
+      background: rgba(72, 213, 151, .10);
+      border: 1px solid rgba(72, 213, 151, .30);
+      color: var(--ok); font-size: 12px; font-weight: 700;
+      white-space: nowrap;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(72, 213, 151, .12); }
+    h1 {
+      margin: 30px 0 12px;
+      font-size: clamp(30px, 6vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -.045em;
+    }
+    .lead { margin: 0; color: var(--muted); font-size: clamp(15px, 2.4vw, 18px); line-height: 1.6; max-width: 56ch; }
+    .linkbox {
+      width: 100%;
+      max-width: 100%;
+      margin-top: 24px;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(8, 11, 20, .65);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      min-width: 0;
+    }
+    .linkbox svg { flex: none; color: var(--accent-2); }
+    .linkbox code {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      color: #dce5ff;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      min-width: 0;
+    }
+    .actions { display: grid; grid-template-columns: 1.25fr 1fr; gap: 12px; margin-top: 22px; min-width: 0; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 52px; padding: 0 20px;
+      border-radius: 14px;
+      text-decoration: none; font-weight: 800; font-size: 15px;
+      border: 1px solid transparent;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: linear-gradient(180deg, var(--accent-2), var(--accent)); color: #1b0c02; box-shadow: 0 14px 34px rgba(255, 122, 26, .28); }
+    .btn-primary:hover { background: linear-gradient(180deg, #ffc17a, #ff8a35); }
+    .btn-ghost { background: var(--panel-2); color: var(--text); border-color: var(--line); }
+    .btn-ghost:hover { background: #1c263c; border-color: #33415f; }
+    .btn svg { flex: none; }
+    .features { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; min-width: 0; }
+    .features span {
+      font-size: 12px; color: #b9c5de;
+      padding: 7px 11px; border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(17, 23, 38, .7);
+    }
+    .updated { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+    .updated b { color: #dce5ff; font-weight: 600; }
+    @media (max-width: 560px) {
+      main { border-radius: 22px; }
+      .brand { align-items: flex-start; }
+      .badge { margin-left: 0; margin-top: 2px; }
+      .badge span { display: none; }
+      .actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main data-app-ready="true">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">C</div>
+      <div>
+        <strong>ChatBox</strong>
+        <span>conversas em tempo real</span>
+      </div>
+      <div class="badge"><i class="dot" aria-hidden="true"></i><span>Link atualizado</span></div>
+    </div>
+
+    <h1>O app agora abre o link novo.</h1>
+    <p class="lead">O APK foi atualizado sem remover nenhum recurso. Abra a versão nova do ChatBox ou baixe o APK para instalar no Android.</p>
+
+    <div class="linkbox" title="https://thom1khali971-arch-chatbox-5e026bdd43a9.omgithub.com/">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1"/></svg>
+      <code>thom1khali971-arch-chatbox-5e026bdd43a9.omgithub.com</code>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="https://thom1khali971-arch-chatbox-5e026bdd43a9.omgithub.com/" target="_blank" rel="noopener">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M12 5l7 7-7 7"/></svg>
+        Abrir ChatBox
+      </a>
+      <a class="btn btn-ghost" href="/ChatBox-5e026bdd43a9.apk" download>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+        Baixar APK
+      </a>
+    </div>
+
+    <div class="features">
+      <span>salas em tempo real</span>
+      <span>imagens e vídeos</span>
+      <span>áudio e música</span>
+      <span>presença ao vivo</span>
+      <span>moderação</span>
+    </div>
+
+    <div class="updated">
+      Link anterior: <b>...chatbox-f493cf9447cb...</b><br>
+      Link atual: <b>...chatbox-5e026bdd43a9...</b><br>
+      APK atualizado: <b>ChatBox-5e026bdd43a9.apk</b>
+    </div>
+  </main>
+</body>
+</html>
