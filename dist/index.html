@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080c14">
+  <title>PlayGround — App Builder</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080c14;
+      --surface: #0f1624;
+      --surface-2: #141d2f;
+      --line: #233047;
+      --text: #eef4ff;
+      --muted: #9aa9c2;
+      --accent: #8ff0c8;
+      --accent-2: #6ea8ff;
+      --warning: #ffd479;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, textarea { font: inherit; }
+    .glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(60rem 40rem at 12% -10%, rgba(110, 168, 255, .18), transparent 60%),
+        radial-gradient(50rem 36rem at 92% 8%, rgba(143, 240, 200, .12), transparent 60%);
+      z-index: 0;
+    }
+    .shell { position: relative; z-index: 1; width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 26px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -.02em; }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #071019;
+      font-weight: 900;
+      font-size: 14px;
+      box-shadow: 0 10px 30px rgba(110, 168, 255, .25);
+    }
+    nav { display: flex; align-items: center; gap: 24px; color: var(--muted); font-size: 14px; }
+    nav a:hover { color: var(--text); }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(15, 22, 36, .7);
+      color: var(--text);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap: 56px;
+      align-items: center;
+      padding: 58px 0 72px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.35rem);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+    h1 span {
+      background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lede { max-width: 560px; margin: 22px 0 0; color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.12rem); }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
+    .primary {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 20px;
+      background: linear-gradient(135deg, var(--accent), #b8ffdf);
+      color: #06131a;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(143, 240, 200, .18);
+    }
+    .primary:hover { filter: brightness(1.06); }
+    .secondary { color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+    .secondary:hover { color: var(--text); border-color: var(--accent); }
+    .stats { display: flex; flex-wrap: wrap; gap: 26px; margin: 36px 0 0; padding: 0; list-style: none; }
+    .stats li { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+    .stats strong { color: var(--text); font-size: 14px; }
+    .terminal {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(20, 29, 47, .96), rgba(11, 17, 29, .96));
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
+      overflow: hidden;
+      transform: rotate(.6deg);
+    }
+    .terminal-bar { display: flex; align-items: center; gap: 7px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    .terminal-bar i { width: 9px; height: 9px; border-radius: 50%; background: #33415a; }
+    .terminal-bar i:first-child { background: #ff7a85; }
+    .terminal-bar i:nth-child(2) { background: var(--warning); }
+    .terminal-bar i:nth-child(3) { background: var(--accent); }
+    .terminal-bar span { margin-left: auto; color: #6c7d99; font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    pre { margin: 0; padding: 22px; overflow: auto; font: 13px/1.9 ui-monospace, SFMono-Regular, Menlo, monospace; color: #b9c7dd; }
+    .k { color: #c792ea; } .s { color: var(--accent); } .c { color: #5c6c85; } .n { color: var(--warning); }
+    section { scroll-margin-top: 24px; }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(15, 22, 36, .92), rgba(10, 15, 25, .92));
+      padding: clamp(22px, 4vw, 34px);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, .28);
+    }
+    .panel h2, .workflow h2 { margin: 0 0 8px; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -.03em; }
+    .panel p, .workflow > p { margin: 0; color: var(--muted); }
+    label { display: block; margin-top: 24px; font-size: 13px; font-weight: 700; color: var(--muted); }
+    textarea {
+      width: 100%;
+      min-height: 96px;
+      margin-top: 9px;
+      padding: 15px 16px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0a111d;
+      color: var(--text);
+      outline: none;
+    }
+    textarea:focus { border-color: rgba(143, 240, 200, .6); box-shadow: 0 0 0 3px rgba(143, 240, 200, .08); }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+    #status { color: var(--muted); font-size: 13px; }
+    .steps { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+    .steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(20, 29, 47, .48);
+      color: #cfdaea;
+      font-size: 14px;
+      opacity: .58;
+      transition: opacity .2s ease, border-color .2s ease;
+    }
+    .steps li.ready { opacity: 1; border-color: rgba(143, 240, 200, .32); }
+    .steps b {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      background: var(--surface-2);
+      color: var(--accent);
+      font-size: 11px;
+    }
+    .workflow { padding: 78px 0 34px; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+    .card { border: 1px solid var(--line); border-radius: 16px; padding: 22px; background: rgba(15, 22, 36, .62); }
+    .card .icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--surface-2); color: var(--accent); font-weight: 800; }
+    .card h3 { margin: 16px 0 6px; font-size: 16px; letter-spacing: -.01em; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    footer { display: flex; justify-content: space-between; gap: 18px; padding: 48px 0 34px; color: #71819b; font-size: 13px; border-top: 1px solid rgba(35, 48, 71, .6); margin-top: 54px; }
+    @media (max-width: 860px) {
+      nav a { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 38px; padding: 34px 0 54px; }
+      .terminal { transform: none; }
+      .cards { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: min(100% - 28px, 1120px); }
+      header { padding: 18px 0; }
+      .pill { display: none; }
+      h1 { font-size: clamp(2.25rem, 12vw, 3rem); }
+      .stats { gap: 18px; }
+      .row { align-items: flex-start; flex-direction: column; }
+      .row .primary { width: 100%; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="shell">
+    <header>
+      <a class="brand" href="#"><span class="mark">PG</span> PlayGround</a>
+      <nav aria-label="Primary">
+        <a href="#build">Builder</a>
+        <a href="#workflow">Workflow</a>
+        <span class="pill"><span class="dot"></span> Agent ready</span>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">App Builder agent</p>
+          <h1>Turn an idea into a <span>working app.</span></h1>
+          <p class="lede">Describe what you want. The agent plans the work, builds the interface, tests it, and verifies the result in a real browser.</p>
+          <div class="actions">
+            <button class="primary" id="focusPrompt" type="button">Start building</button>
+            <a class="secondary" href="#workflow">See the workflow</a>
+          </div>
+          <ul class="stats">
+            <li><strong>Plan</strong><span>Small, judgeable steps</span></li>
+            <li><strong>Build</strong><span>Real, running code</span></li>
+            <li><strong>Verify</strong><span>Lint, tests, screenshots</span></li>
+          </ul>
+        </div>
+        <div class="terminal" aria-hidden="true">
+          <div class="terminal-bar"><i></i><i></i><i></i><span>app-builder</span></div>
+          <pre><span class="c"># describe the app</span>
+<span class="k">const</span> request = {
+  idea: <span class="s">"habit tracker"</span>,
+  screens: [<span class="s">"today"</span>, <span class="s">"charts"</span>],
+  data: <span class="s">"local storage"</span>
+}
+
+<span class="c"># the agent</span>
+<span class="n">1.</span> inspect repository
+<span class="n">2.</span> plan the build
+<span class="n">3.</span> implement screens
+<span class="n">4.</span> test + verify
+<span class="n">5.</span> report results</pre>
+        </div>
+      </section>
+
+      <section class="panel" id="build">
+        <h2>What should we build?</h2>
+        <p>Give the agent a concrete goal. It will turn the goal into a build plan.</p>
+        <label for="idea">Your idea</label>
+        <textarea id="idea">A habit tracker with streaks, weekly charts, and local persistence.</textarea>
+        <div class="row">
+          <span id="status" aria-live="polite">Ready to plan</span>
+          <button class="primary" id="plan" type="button">Create plan</button>
+        </div>
+        <ol class="steps" id="steps">
+          <li><b>1</b><span>Inspect the repository and choose the smallest suitable stack.</span></li>
+          <li><b>2</b><span>Define the screens, data model, and acceptance checks.</span></li>
+          <li><b>3</b><span>Implement the app with loading, empty, and error states.</span></li>
+          <li><b>4</b><span>Run lint, typecheck, tests, and a production build.</span></li>
+          <li><b>5</b><span>Open the app in a browser and verify the main flows.</span></li>
+        </ol>
+      </section>
+
+      <section class="workflow" id="workflow">
+        <h2>A loop you can trust</h2>
+        <p>Every step produces evidence, so “done” means it actually runs.</p>
+        <div class="cards">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3>Understand</h3>
+            <p>Read the repo, reuse the existing stack, and ask only the questions that change the build.</p>
+          </article>
+          <article class="card">
+            <div class="icon">02</div>
+            <h3>Build</h3>
+            <p>Ship the smallest complete app: real flows, real states, and no placeholder buttons.</p>
+          </article>
+          <article class="card">
+            <div class="icon">03</div>
+            <h3>Prove it</h3>
+            <p>Run the checks, start the server, and inspect desktop and mobile screenshots before reporting.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>PlayGround — build, play, and remix.</span>
+      <span>Powered by the app-builder agent.</span>
+    </footer>
+  </div>
+
+  <script>
+    const idea = document.getElementById('idea')
+    const plan = document.getElementById('plan')
+    const status = document.getElementById('status')
+    const steps = [...document.querySelectorAll('#steps li')]
+    const focusPrompt = document.getElementById('focusPrompt')
+
+    focusPrompt.addEventListener('click', () => {
+      document.getElementById('build').scrollIntoView({ behavior: 'smooth', block: 'center' })
+      idea.focus({ preventScroll: true })
+    })
+
+    plan.addEventListener('click', () => {
+      const value = idea.value.trim()
+      if (!value) {
+        status.textContent = 'Describe an app first.'
+        idea.focus()
+        return
+      }
+      status.textContent = 'Building a plan…'
+      plan.disabled = true
+      steps.forEach((step) => step.classList.remove('ready'))
+      steps.forEach((step, index) => {
+        setTimeout(() => step.classList.add('ready'), 140 * (index + 1))
+      })
+      setTimeout(() => {
+        status.textContent = 'Plan ready — 5 steps'
+        plan.disabled = false
+      }, 140 * steps.length + 250)
+    })
+  </script>
+</body>
+</html>
