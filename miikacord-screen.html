@@ -605,6 +605,317 @@
 
   .hidden{display:none!important}
 
+  /* ---------- live pix ---------- */
+  .pix{
+    position:relative;
+    overflow:hidden;
+    margin-top:18px;
+    padding:clamp(20px,2.8vw,30px);
+    border:1px solid var(--line);
+    border-radius:26px;
+    background:
+      radial-gradient(720px 280px at 96% -24%,rgba(45,212,191,.12),transparent 66%),
+      linear-gradient(180deg,rgba(20,24,30,.94),rgba(12,14,19,.97));
+    box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.05);
+  }
+
+  .pix::before{
+    content:"";
+    position:absolute;
+    top:-1px;
+    left:12%;
+    right:12%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,rgba(45,212,191,.6),rgba(109,124,255,.45),transparent);
+    pointer-events:none;
+  }
+
+  .pix-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+  }
+
+  .pix-title{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    min-width:0;
+  }
+
+  .pix-icon{
+    display:grid;
+    place-items:center;
+    width:46px;
+    height:46px;
+    flex:0 0 auto;
+    border:1px solid rgba(45,212,191,.28);
+    border-radius:14px;
+    color:#5eead4;
+    background:linear-gradient(145deg,rgba(45,212,191,.2),rgba(45,212,191,.045));
+    box-shadow:
+      0 14px 30px -17px rgba(45,212,191,.85),
+      inset 0 1px 0 rgba(255,255,255,.12);
+  }
+
+  .pix-icon svg{width:23px;height:23px}
+
+  .pix-kicker{
+    display:block;
+    margin-bottom:3px;
+    color:#5eead4;
+    font-size:9.5px;
+    font-weight:750;
+    letter-spacing:.17em;
+    text-transform:uppercase;
+  }
+
+  .pix h3{
+    font-size:20px;
+    font-weight:720;
+    letter-spacing:-.03em;
+    line-height:1.15;
+  }
+
+  .pix-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 11px;
+    border:1px solid rgba(45,212,191,.24);
+    border-radius:999px;
+    background:rgba(45,212,191,.07);
+    color:#8df5e5;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+
+  .pix-badge::before{
+    content:"";
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:#2dd4bf;
+    box-shadow:0 0 8px rgba(45,212,191,.8);
+  }
+
+  .pix-sub{
+    max-width:630px;
+    margin-top:13px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.65;
+  }
+
+  .pix-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.18fr) minmax(260px,.82fr);
+    gap:clamp(20px,3vw,34px);
+    align-items:start;
+    margin-top:22px;
+  }
+
+  .pix-form{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-width:0;
+  }
+
+  .pix-fields{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .pix-field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    min-width:0;
+  }
+
+  .pix-field label{
+    color:#b8c0d2;
+    font-size:11px;
+    font-weight:650;
+    letter-spacing:.03em;
+  }
+
+  .pix-field input{
+    width:100%;
+    height:46px;
+    padding:0 13px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    outline:0;
+    background:rgba(5,6,10,.52);
+    color:var(--text);
+    font:inherit;
+    font-size:13px;
+    transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+  }
+
+  .pix-field input::placeholder{color:#626a7e}
+
+  .pix-field input:hover{border-color:var(--line-strong)}
+
+  .pix-field input:focus{
+    border-color:rgba(45,212,191,.62);
+    background:rgba(5,6,10,.74);
+    box-shadow:0 0 0 4px rgba(45,212,191,.1);
+  }
+
+  .pix-field .field-hint{
+    margin-top:-1px;
+    color:#626a7e;
+    font-size:10.5px;
+    line-height:1.4;
+  }
+
+  .pix-actions{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    flex-wrap:wrap;
+    margin-top:2px;
+  }
+
+  .pix .btn{
+    height:46px;
+    border-radius:12px;
+    font-size:13px;
+  }
+
+  .btn-pix{
+    border-color:rgba(45,212,191,.3);
+    color:#031b18;
+    background:linear-gradient(135deg,#5eead4 0%,#2dd4bf 46%,#14b8a6 100%);
+    box-shadow:
+      0 14px 28px -13px rgba(45,212,191,.65),
+      inset 0 1px 0 rgba(255,255,255,.34);
+  }
+
+  .btn-pix:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.05);
+    box-shadow:
+      0 18px 34px -14px rgba(45,212,191,.75),
+      inset 0 1px 0 rgba(255,255,255,.4);
+  }
+
+  .btn-pix:active{transform:translateY(0)}
+
+  .pix-feedback{
+    min-height:16px;
+    color:var(--muted-2);
+    font-size:11.5px;
+    line-height:1.45;
+  }
+
+  .pix-feedback.ok{color:#7deee0}
+  .pix-feedback.error{color:#ff9aa1}
+
+  .pix-preview{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    min-width:0;
+    padding:16px;
+    border:1px solid var(--line);
+    border-radius:17px;
+    background:rgba(4,6,9,.4);
+  }
+
+  .pix-qr-shell{
+    display:grid;
+    place-items:center;
+    width:100%;
+    max-width:226px;
+    aspect-ratio:1;
+    margin:0 auto;
+    padding:11px;
+    border:1px dashed rgba(255,255,255,.14);
+    border-radius:16px;
+    background:rgba(255,255,255,.025);
+    transition:border-color .25s ease,background .25s ease,box-shadow .25s ease;
+  }
+
+  .pix-qr-shell.has-qr{
+    border-style:solid;
+    border-color:rgba(255,255,255,.2);
+    background:#fff;
+    box-shadow:0 22px 48px -22px rgba(0,0,0,.85);
+  }
+
+  .pix-qr-empty{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color:#687185;
+    font-size:10.5px;
+    line-height:1.4;
+    text-align:center;
+  }
+
+  .pix-qr-empty svg{
+    width:30px;
+    height:30px;
+    opacity:.65;
+  }
+
+  .pix-qr{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:6px;
+  }
+
+  .pix-code-label{
+    color:#6f778c;
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+  }
+
+  .pixcode{
+    width:100%;
+    min-height:76px;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    outline:0;
+    background:rgba(5,6,10,.55);
+    color:#b9c1d3;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:10.5px;
+    line-height:1.5;
+    resize:vertical;
+    transition:border-color .2s ease,box-shadow .2s ease;
+  }
+
+  .pixcode:focus{
+    border-color:rgba(45,212,191,.55);
+    box-shadow:0 0 0 4px rgba(45,212,191,.08);
+  }
+
+  .pixcode::placeholder{color:#5f677a}
+
+  .qr-source{
+    position:absolute!important;
+    left:-9999px;
+    top:-9999px;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+  }
+
   /* ---------- rodapé ---------- */
   .page-footer{
     display:flex;
@@ -641,6 +952,10 @@
     50%{opacity:.35}
   }
 
+  @media (max-width:860px){
+    .pix-grid{grid-template-columns:1fr}
+  }
+
   @media (max-width:720px){
     .app{padding-top:18px;padding-bottom:22px}
     .topbar{margin-bottom:34px}
@@ -662,6 +977,15 @@
     .actions{width:100%}
     .actions .btn{flex:1;min-width:132px}
     .status-wrap{width:100%;margin:0;padding:3px 6px 2px}
+    .pix{margin-top:14px;padding:18px;border-radius:21px}
+    .pix h3{font-size:18px}
+    .pix-badge{display:none}
+    .pix-grid{gap:20px;margin-top:18px}
+    .pix-fields{grid-template-columns:1fr}
+    .pix-actions{flex-direction:column;align-items:stretch}
+    .pix .btn{width:100%}
+    .pix-preview{padding:14px}
+    .pix-qr-shell{max-width:210px}
     .page-footer{flex-direction:column;align-items:flex-start;gap:6px;padding-top:22px}
   }
 
@@ -798,6 +1122,94 @@
           </div>
         </div>
       </section>
+
+      <section class="pix" aria-labelledby="pix-title">
+        <div class="pix-head">
+          <div class="pix-title">
+            <span class="pix-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2.8 21.2 12 12 21.2 2.8 12 12 2.8Z"></path>
+                <path d="m8.2 8.2 3.8-3.8 3.8 3.8M8.2 15.8l3.8 3.8 3.8-3.8"></path>
+              </svg>
+            </span>
+            <div>
+              <span class="pix-kicker">Apoie a transmissão</span>
+              <h3 id="pix-title">Live Pix</h3>
+            </div>
+          </div>
+          <span class="pix-badge">Pagamento instantâneo</span>
+        </div>
+
+        <p class="pix-sub">Configure sua chave, defina um valor se quiser e gere o QR Code para receber contribuições durante a live.</p>
+
+        <div class="pix-grid">
+          <div class="pix-form">
+            <div class="pix-field">
+              <label for="pixKey">Chave Pix</label>
+              <input id="pixKey" type="text" placeholder="E-mail, CPF/CNPJ, +55 11 99999-9999 ou chave aleatória" autocomplete="off" spellcheck="false">
+              <span class="field-hint">Para telefone, informe o número com o código do país: +55.</span>
+            </div>
+
+            <div class="pix-fields">
+              <div class="pix-field">
+                <label for="pixName">Nome do recebedor</label>
+                <input id="pixName" type="text" placeholder="Seu nome" maxlength="25" autocomplete="name">
+              </div>
+              <div class="pix-field">
+                <label for="pixCity">Cidade</label>
+                <input id="pixCity" type="text" placeholder="Cidade" maxlength="15" value="PARANA" autocomplete="address-level2">
+              </div>
+            </div>
+
+            <div class="pix-field">
+              <label for="pixAmount">Valor opcional</label>
+              <input id="pixAmount" type="number" step="0.01" min="0" placeholder="0,00" inputmode="decimal">
+              <span class="field-hint">Deixe em branco para o pagador escolher o valor.</span>
+            </div>
+
+            <div class="pix-actions">
+              <button id="pixGenerateBtn" class="btn btn-pix" type="button" onclick="generatePix()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                  <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                  <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                  <path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"></path>
+                </svg>
+                Gerar QR Pix
+              </button>
+              <button id="pixCopyBtn" class="btn btn-secondary" type="button" onclick="copyPix()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                  <path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"></path>
+                </svg>
+                Copiar código Pix
+              </button>
+            </div>
+
+            <div class="pix-feedback" id="pixFeedback" role="status" aria-live="polite">Preencha os dados para gerar seu código Pix.</div>
+          </div>
+
+          <div class="pix-preview">
+            <div class="pix-qr-shell" id="pixQrShell">
+              <img id="pixQr" class="pix-qr hidden" alt="QR Code Pix">
+              <div class="pix-qr-empty" id="pixQrEmpty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                  <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                  <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                  <path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"></path>
+                </svg>
+                <span>Seu QR Code aparece aqui</span>
+              </div>
+            </div>
+
+            <label class="pix-code-label" for="pixCode">Pix Copia e Cola</label>
+            <textarea id="pixCode" class="pixcode" rows="3" readonly spellcheck="false" placeholder="O código Pix Copia e Cola aparecerá aqui." aria-label="Código Pix Copia e Cola"></textarea>
+          </div>
+        </div>
+
+        <div id="pixQrSource" class="qr-source" aria-hidden="true"></div>
+      </section>
     </main>
 
     <footer class="page-footer">
@@ -813,6 +1225,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     const sb = supabase.createClient('https://jldkrcgfjvaalouoxgqa.supabase.co','sb_publishable_igul1pyZmV8V4wmm1VBxfg_YyzEXToO');
     let room = null, channel = null, isHost = false, localStream = null, peers = {}, watching = false;
@@ -935,6 +1348,223 @@
     roomInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') joinRoom();
     });
+
+    /* ---------- Live Pix ---------- */
+    const pixKeyInput = document.getElementById('pixKey');
+    const pixNameInput = document.getElementById('pixName');
+    const pixCityInput = document.getElementById('pixCity');
+    const pixAmountInput = document.getElementById('pixAmount');
+    const pixCode = document.getElementById('pixCode');
+    const pixQr = document.getElementById('pixQr');
+    const pixQrShell = document.getElementById('pixQrShell');
+    const pixQrEmpty = document.getElementById('pixQrEmpty');
+    const pixQrSource = document.getElementById('pixQrSource');
+    const pixFeedback = document.getElementById('pixFeedback');
+    const pixCopyBtn = document.getElementById('pixCopyBtn');
+    const pixCopyBtnDefault = pixCopyBtn.innerHTML;
+
+    function setPixFeedback(text, type) {
+      pixFeedback.textContent = text;
+      pixFeedback.className = 'pix-feedback' + (type ? ' ' + type : '');
+    }
+
+    function clearPixResult() {
+      pixCode.value = '';
+      pixQr.removeAttribute('src');
+      pixQr.classList.add('hidden');
+      pixQrEmpty.classList.remove('hidden');
+      pixQrShell.classList.remove('has-qr');
+      pixQrSource.innerHTML = '';
+    }
+
+    function pixEmv(id, value) {
+      return id + String(value.length).padStart(2, '0') + value;
+    }
+
+    function pixCrc16(payload) {
+      let crc = 0xFFFF;
+      for (let i = 0; i < payload.length; i++) {
+        crc ^= payload.charCodeAt(i) << 8;
+        for (let bit = 0; bit < 8; bit++) {
+          crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+          crc &= 0xFFFF;
+        }
+      }
+      return crc.toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    function normalizePixText(value, maxLength) {
+      return value
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^A-Za-z0-9 ]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toUpperCase()
+        .slice(0, maxLength);
+    }
+
+    function normalizePixKey(raw) {
+      const key = raw.trim();
+      if (!key) return '';
+
+      if (key.includes('@')) return key.toLowerCase();
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(key)) {
+        return key.toLowerCase();
+      }
+      if (/^[0-9a-f]{32}$/i.test(key)) return key.toLowerCase();
+      if (key.startsWith('+')) return '+' + key.replace(/\D/g, '');
+
+      const digits = key.replace(/\D/g, '');
+      const looksLikeDocument = /[./]/.test(key);
+
+      if ((digits.length === 11 || digits.length === 14) && (looksLikeDocument || /^\d+$/.test(key))) {
+        return digits;
+      }
+      if ((digits.length === 10 || digits.length === 11) && /[()\s-]/.test(key)) {
+        return '+55' + digits;
+      }
+      if (digits.length === 12 || digits.length === 13) return '+' + digits;
+
+      return key;
+    }
+
+    function renderPixQr(payload) {
+      if (typeof QRCode === 'undefined') {
+        throw new Error('Biblioteca de QR Code indisponível.');
+      }
+
+      pixQrSource.innerHTML = '';
+      new QRCode(pixQrSource, {
+        text: payload,
+        width: 512,
+        height: 512,
+        colorDark: '#0b0d12',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      const canvas = pixQrSource.querySelector('canvas');
+      const image = pixQrSource.querySelector('img');
+      const dataUrl = canvas ? canvas.toDataURL('image/png') : (image ? image.src : '');
+
+      if (!dataUrl) throw new Error('Não foi possível desenhar o QR Code.');
+
+      pixQr.src = dataUrl;
+      pixQr.classList.remove('hidden');
+      pixQrEmpty.classList.add('hidden');
+      pixQrShell.classList.add('has-qr');
+    }
+
+    function generatePix() {
+      const key = normalizePixKey(pixKeyInput.value);
+      if (!key) {
+        setPixFeedback('Informe sua chave Pix para continuar.', 'error');
+        pixKeyInput.focus();
+        return false;
+      }
+
+      const name = normalizePixText(pixNameInput.value, 25);
+      if (!name) {
+        setPixFeedback('Informe o nome do recebedor.', 'error');
+        pixNameInput.focus();
+        return false;
+      }
+
+      const city = normalizePixText(pixCityInput.value, 15) || 'PARANA';
+      const amountRaw = pixAmountInput.value.trim();
+      let amount = '';
+
+      if (amountRaw !== '') {
+        const parsedAmount = Number(amountRaw.replace(',', '.'));
+        if (!Number.isFinite(parsedAmount) || parsedAmount < 0) {
+          setPixFeedback('Informe um valor válido ou deixe o campo em branco.', 'error');
+          pixAmountInput.focus();
+          return false;
+        }
+        if (parsedAmount > 0) amount = parsedAmount.toFixed(2);
+      }
+
+      pixKeyInput.value = key;
+      pixNameInput.value = name;
+      pixCityInput.value = city;
+
+      const merchantAccount =
+        pixEmv('00', 'br.gov.bcb.pix') +
+        pixEmv('01', key);
+
+      let payload =
+        pixEmv('00', '01') +
+        pixEmv('26', merchantAccount) +
+        pixEmv('52', '0000') +
+        pixEmv('53', '986');
+
+      if (amount) payload += pixEmv('54', amount);
+
+      payload +=
+        pixEmv('58', 'BR') +
+        pixEmv('59', name) +
+        pixEmv('60', city) +
+        pixEmv('62', pixEmv('05', '***'));
+
+      payload += '6304';
+      const code = payload + pixCrc16(payload);
+
+      clearPixResult();
+      pixCode.value = code;
+
+      try {
+        renderPixQr(code);
+        setPixFeedback('QR Code gerado. Código Pix pronto para copiar.', 'ok');
+      } catch (error) {
+        setPixFeedback('Código gerado, mas o QR Code não pôde ser exibido. Copie o código abaixo.', 'error');
+      }
+
+      return true;
+    }
+
+    async function copyPix() {
+      if (!pixCode.value.trim() && !generatePix()) return;
+
+      try {
+        await navigator.clipboard.writeText(pixCode.value);
+      } catch (error) {
+        pixCode.focus();
+        pixCode.select();
+
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch (fallbackError) { copied = false; }
+
+        if (!copied) {
+          setPixFeedback('Não foi possível copiar automaticamente. Selecione o código e copie manualmente.', 'error');
+          return;
+        }
+      }
+
+      setPixFeedback('Código Pix copiado para a área de transferência.', 'ok');
+      pixCopyBtn.textContent = 'Copiado!';
+      setTimeout(() => {
+        pixCopyBtn.innerHTML = pixCopyBtnDefault;
+      }, 1800);
+    }
+
+    [pixKeyInput, pixNameInput, pixCityInput, pixAmountInput].forEach((input) => {
+      input.addEventListener('input', () => {
+        if (pixCode.value) {
+          clearPixResult();
+          setPixFeedback('Dados alterados. Gere um novo QR Code.');
+        }
+      });
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          generatePix();
+        }
+      });
+    });
+
+    pixCode.addEventListener('click', () => pixCode.select());
   </script>
 </body>
 </html>
