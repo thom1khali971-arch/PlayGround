@@ -681,6 +681,20 @@
     }
   }
 </style>
+<script>
+  // Abrir a página com ?download=1 inicia o download do próprio arquivo HTML.
+  if (new URLSearchParams(location.search).has('download')) {
+    addEventListener('DOMContentLoaded', () => {
+      const link = document.createElement('a');
+      link.href = location.pathname;
+      link.download = 'miikacord-screen.html';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      history.replaceState(null, '', location.pathname);
+    });
+  }
+</script>
 </head>
 <body>
   <div class="app">
