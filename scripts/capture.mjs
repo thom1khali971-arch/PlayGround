@@ -92,49 +92,75 @@ try {
         } catch {}
       })
 
+      const navigationStarted = performance.now()
       let response
       try {
         response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 })
       } catch (error) {
         fail(`Could not navigate to ${url}: ${error.message}`, 75)
       }
+      console.log(`[capture] ${name}: navigation completed in ${((performance.now() - navigationStarted) / 1000).toFixed(2)}s`)
 
       if (!response) fail(`No response from ${url}.`, 75)
       if (!response.ok()) {
         fail(`HTTP ${response.status()} loading ${url}.`, transientStatuses.has(response.status()) ? 75 : 1)
       }
 
-      // Wait for the application shell and webfonts, then let entrance
-      // animations settle before taking immutable evidence.
-      await page.locator('body').waitFor({ state: 'visible' })
-      await page.locator('h1').waitFor({ state: 'visible' })
+      // Wait for a real application shell and visible content. Not every app
+      // uses an <h1>, so rely on a main landmark, meaningful visible text and
+      // the absence of a visible loading state instead of a heading selector.
+      const renderStarted = performance.now()
+      try {
+        await page.locator('body').waitFor({ state: 'visible', timeout: 15000 })
+        await page.waitForFunction(() => {
+          const body = document.body
+          if (!body) return false
+
+          const text = (body.innerText || '').trim()
+          if (text.length < 40) return false
+          if (!document.querySelector('main, [role="main"], #app, .app')) return false
+
+          return ![...document.querySelectorAll('.loading, .spinner, .skeleton, [aria-busy="true"]')]
+            .some((element) => {
+              const style = getComputedStyle(element)
+              return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0'
+            })
+        }, null, { timeout: 30000 })
+      } catch (error) {
+        fail(`Rendered content did not appear at ${url}: ${error.message}`, 1)
+      }
+      console.log(`[capture] ${name}: rendered content ready in ${((performance.now() - renderStarted) / 1000).toFixed(2)}s`)
+
       await page.waitForFunction(() => document.fonts?.status === 'loaded', null, { timeout: 15000 })
         .catch(() => {})
       await page.waitForTimeout(900)
 
       const rendered = await page.evaluate(() => ({
         title: document.title.trim(),
-        heading: document.querySelector('h1')?.textContent?.trim() || '',
+        heading: document.querySelector('h1, [role="heading"]')?.textContent?.trim() || '',
         text: document.body.innerText.trim(),
+        hasMain: Boolean(document.querySelector('main, [role="main"], #app, .app')),
         width: window.innerWidth,
         height: window.innerHeight,
       }))
 
       if (renderingFailures.length) fail(`Rendering failed: ${renderingFailures.join('; ')}`, 1)
       if (!rendered.title) fail('Rendering failed: missing document title.', 1)
-      if (!rendered.heading || rendered.text.length < 40) fail('Rendering failed: page content is empty.', 1)
+      if (!rendered.hasMain || rendered.text.length < 40) fail('Rendering failed: page content is empty.', 1)
       if (rendered.width < width - 1 || rendered.height < height - 1) {
         fail(`Rendering failed: viewport is ${rendered.width}x${rendered.height}, expected ${width}x${height}.`, 1)
       }
 
       const screenshot = join(output, `final-${name}.png`)
+      const screenshotStarted = performance.now()
       try {
         await page.screenshot({ path: screenshot, fullPage: false, timeout: 30000 })
       } catch (error) {
         fail(`Could not capture ${name} screenshot: ${error.message}`, /timeout|disconnected|closed/i.test(error.message) ? 75 : 1)
       }
+      console.log(`[capture] ${name}: screenshot completed in ${((performance.now() - screenshotStarted) / 1000).toFixed(2)}s`)
 
-      result.views[name] = { path: screenshot, width, height, title: rendered.title }
+      result.views[name] = { path: screenshot, width, height, title: rendered.title, heading: rendered.heading }
       console.log(`[capture] ${name}: ${screenshot} (${width}x${height})`)
     } finally {
       if (page) await page.close().catch(() => {})
