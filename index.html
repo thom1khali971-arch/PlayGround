@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08090e">
+<meta name="description" content="Compartilhamento de tela em tempo real com salas privadas pelo navegador.">
+<title>MiikaCord — Compartilhar Tela</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238792ff'/%3E%3Cstop offset='.55' stop-color='%235b63f1'/%3E%3Cstop offset='1' stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cg fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='8' width='22' height='15' rx='3'/%3E%3Cpath d='M12 27h8M16 23v4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#08090e;
+    --panel:rgba(18,20,29,.84);
+    --panel-solid:#12141d;
+    --elevated:#171a24;
+    --line:rgba(255,255,255,.075);
+    --line-strong:rgba(255,255,255,.14);
+    --text:#f4f6fb;
+    --muted:#9aa2b5;
+    --muted-2:#6e7689;
+    --brand:#6d7cff;
+    --brand-strong:#5865f2;
+    --violet:#a78bfa;
+    --green:#2bd576;
+    --red:#ff5a65;
+    --radius:18px;
+    --shadow:0 36px 90px -34px rgba(0,0,0,.9);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{min-height:100%}
+
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    overflow-x:hidden;
+    color:var(--text);
+    background:
+      radial-gradient(950px 560px at 12% -12%,rgba(88,101,242,.22),transparent 62%),
+      radial-gradient(800px 520px at 100% 4%,rgba(139,92,246,.14),transparent 60%),
+      radial-gradient(700px 400px at 50% 110%,rgba(79,70,229,.08),transparent 65%),
+      var(--bg);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:.16;
+    background-image:
+      linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);
+    background-size:68px 68px;
+    mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.45) 48%,transparent 78%);
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.45) 48%,transparent 78%);
+  }
+
+  ::selection{background:rgba(109,124,255,.35);color:#fff}
+
+  .app{
+    position:relative;
+    z-index:1;
+    width:min(1080px,100%);
+    min-height:100vh;
+    min-height:100dvh;
+    margin:0 auto;
+    padding:26px clamp(18px,4vw,40px) 30px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- topo ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:clamp(34px,6.5vh,68px);
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:inherit;
+    text-decoration:none;
+  }
+
+  .logo{
+    position:relative;
+    display:grid;
+    place-items:center;
+    width:46px;
+    height:46px;
+    flex:0 0 auto;
+    overflow:hidden;
+    border-radius:14px;
+    color:#fff;
+    background:linear-gradient(145deg,#8792ff 0%,#5b63f1 48%,#7c3aed 100%);
+    box-shadow:
+      0 12px 30px -9px rgba(88,101,242,.85),
+      inset 0 1px 0 rgba(255,255,255,.4);
+  }
+
+  .logo::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,.38),transparent 46%);
+  }
+
+  .logo svg{position:relative;z-index:1;width:24px;height:24px}
+
+  .brand-name{
+    display:block;
+    font-size:17px;
+    font-weight:750;
+    letter-spacing:-.025em;
+  }
+
+  .brand-sub{
+    display:block;
+    margin-top:3px;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.17em;
+    text-transform:uppercase;
+    color:var(--muted-2);
+  }
+
+  .session-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 13px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(255,255,255,.03);
+    color:#bbc2d2;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+    backdrop-filter:blur(10px);
+  }
+
+  .session-dot{
+    width:7px;
+    height:7px;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 0 4px rgba(43,213,118,.11),0 0 10px rgba(43,213,118,.55);
+  }
+
+  /* ---------- introdução ---------- */
+  .hero{
+    max-width:760px;
+    margin-bottom:26px;
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:7px 12px;
+    border:1px solid rgba(139,148,255,.18);
+    border-radius:999px;
+    background:rgba(109,124,255,.07);
+    color:#b8c0ff;
+    font-size:11px;
+    font-weight:650;
+    letter-spacing:.04em;
+  }
+
+  .eyebrow-dot{
+    position:relative;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#8b95ff;
+    box-shadow:0 0 0 4px rgba(109,124,255,.12);
+  }
+
+  .eyebrow-dot::after{
+    content:"";
+    position:absolute;
+    inset:-4px;
+    border:1px solid rgba(139,149,255,.6);
+    border-radius:50%;
+    animation:ping 2.4s ease-out infinite;
+  }
+
+  h1{
+    margin-top:16px;
+    font-size:clamp(2.25rem,5vw,3.65rem);
+    font-weight:780;
+    line-height:1.02;
+    letter-spacing:-.048em;
+  }
+
+  h1 .gradient{
+    background:linear-gradient(100deg,#b9c1ff 0%,#818cf8 38%,#c4b5fd 72%,#e0d7ff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .hero p{
+    max-width:590px;
+    margin-top:16px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.7;
+  }
+
+  /* ---------- painel ---------- */
+  .workspace{
+    position:relative;
+    padding:14px;
+    border:1px solid var(--line);
+    border-radius:26px;
+    background:linear-gradient(180deg,rgba(24,27,38,.94),rgba(14,16,23,.96));
+    box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.05);
+    backdrop-filter:blur(18px);
+  }
+
+  .workspace::before{
+    content:"";
+    position:absolute;
+    top:-1px;
+    left:16%;
+    right:16%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,rgba(167,139,250,.7),transparent);
+    pointer-events:none;
+  }
+
+  .roombar{
+    display:flex;
+    gap:10px;
+    padding:2px;
+  }
+
+  .field{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+    flex:1;
+    height:52px;
+    padding:0 16px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:rgba(5,6,10,.55);
+    transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+  }
+
+  .field:hover{border-color:var(--line-strong);background:rgba(5,6,10,.7)}
+
+  .field:focus-within{
+    border-color:rgba(109,124,255,.7);
+    background:rgba(5,6,10,.78);
+    box-shadow:0 0 0 4px rgba(88,101,242,.13);
+  }
+
+  .field-icon{
+    display:flex;
+    flex:0 0 auto;
+    color:#7e88a4;
+  }
+
+  .field-icon svg{width:18px;height:18px}
+
+  .field input{
+    width:100%;
+    min-width:0;
+    height:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--text);
+    font:inherit;
+    font-size:14px;
+    letter-spacing:.01em;
+  }
+
+  .field input::placeholder{color:#6f778b}
+
+  /* ---------- botões ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    height:52px;
+    padding:0 20px;
+    border:1px solid transparent;
+    border-radius:14px;
+    color:var(--text);
+    font:inherit;
+    font-size:14px;
+    font-weight:650;
+    letter-spacing:-.01em;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease,filter .18s ease;
+  }
+
+  .btn svg{width:18px;height:18px;flex:0 0 auto}
+
+  .btn:focus-visible{
+    outline:2px solid #a9b2ff;
+    outline-offset:3px;
+  }
+
+  .btn-primary{
+    color:#fff;
+    background:linear-gradient(135deg,#7b88ff 0%,#5865f2 52%,#6d4aff 100%);
+    box-shadow:
+      0 14px 28px -12px rgba(88,101,242,.95),
+      inset 0 1px 0 rgba(255,255,255,.24);
+  }
+
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.07);
+    box-shadow:
+      0 18px 34px -12px rgba(88,101,242,1),
+      inset 0 1px 0 rgba(255,255,255,.28);
+  }
+
+  .btn-primary:active{transform:translateY(0)}
+
+  .btn-secondary{
+    border-color:var(--line-strong);
+    background:rgba(255,255,255,.055);
+  }
+
+  .btn-secondary:hover{
+    background:rgba(255,255,255,.09);
+    border-color:rgba(255,255,255,.22);
+  }
+
+  .btn-danger{
+    border-color:rgba(255,90,101,.3);
+    background:rgba(255,90,101,.12);
+    color:#ff9aa1;
+  }
+
+  .btn-danger:hover{
+    background:rgba(255,90,101,.19);
+    border-color:rgba(255,90,101,.45);
+  }
+
+  /* ---------- palco / vídeo ---------- */
+  .stage{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    aspect-ratio:16/9;
+    margin-top:12px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:
+      radial-gradient(950px 400px at 50% -15%,rgba(88,101,242,.16),transparent 68%),
+      linear-gradient(180deg,#0e111a,#06070c);
+  }
+
+  .stage::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    opacity:.36;
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:42px 42px;
+    mask-image:radial-gradient(circle at 50% 50%,#000 15%,transparent 74%);
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 15%,transparent 74%);
+  }
+
+  .stage video{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    width:100%;
+    height:100%;
+    border:0;
+    object-fit:contain;
+    background:#05060a;
+    opacity:0;
+    transition:opacity .4s ease;
+  }
+
+  .stage.is-live video{opacity:1}
+
+  .stage-empty{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:13px;
+    padding:24px;
+    text-align:center;
+    transition:opacity .35s ease,transform .35s ease,visibility .35s;
+  }
+
+  .stage.is-live .stage-empty{
+    opacity:0;
+    visibility:hidden;
+    transform:scale(.97);
+  }
+
+  .empty-icon{
+    position:relative;
+    display:grid;
+    place-items:center;
+    width:74px;
+    height:74px;
+    margin-bottom:2px;
+    border:1px solid rgba(129,140,248,.26);
+    border-radius:23px;
+    color:#adb7ff;
+    background:linear-gradient(145deg,rgba(129,140,248,.19),rgba(167,139,250,.055));
+    box-shadow:
+      0 0 0 8px rgba(99,102,241,.035),
+      0 22px 50px -22px rgba(99,102,241,.65),
+      inset 0 1px 0 rgba(255,255,255,.1);
+  }
+
+  .empty-icon svg{width:32px;height:32px}
+
+  .empty-icon::after{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border:1px solid rgba(165,180,252,.28);
+    border-radius:inherit;
+    animation:halo 3.2s ease-in-out infinite;
+  }
+
+  .stage-empty h2{
+    font-size:16px;
+    font-weight:650;
+    letter-spacing:-.015em;
+  }
+
+  .stage-empty p{
+    max-width:330px;
+    color:var(--muted-2);
+    font-size:12.5px;
+    line-height:1.6;
+  }
+
+  .empty-hint{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    margin-top:3px;
+    color:#737c92;
+    font-size:11.5px;
+    font-weight:500;
+  }
+
+  .empty-hint kbd{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:22px;
+    height:20px;
+    padding:0 6px;
+    border:1px solid var(--line-strong);
+    border-radius:5px;
+    background:rgba(255,255,255,.045);
+    color:#aeb5c6;
+    font:inherit;
+    font-size:10.5px;
+    box-shadow:0 1px 0 rgba(0,0,0,.4);
+  }
+
+  .live-badge,
+  .quality-badge{
+    position:absolute;
+    z-index:3;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(8,10,15,.72);
+    color:#c8cede;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    backdrop-filter:blur(10px);
+    opacity:0;
+    transition:opacity .3s ease,transform .3s ease;
+    pointer-events:none;
+  }
+
+  .live-badge{
+    top:15px;
+    left:15px;
+    padding:8px 12px;
+    border-color:rgba(255,90,101,.34);
+    color:#ffdadd;
+    transform:translateY(-4px);
+  }
+
+  .quality-badge{
+    right:15px;
+    bottom:15px;
+    padding:7px 10px;
+    transform:translateY(4px);
+  }
+
+  .stage.is-live .live-badge,
+  .stage.is-live .quality-badge{
+    opacity:1;
+    transform:none;
+  }
+
+  .live-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--red);
+    box-shadow:0 0 0 3px rgba(255,90,101,.17);
+    animation:blink 1.6s ease-in-out infinite;
+  }
+
+  /* ---------- barra de ações ---------- */
+  .actionbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+    padding:14px 4px 4px;
+  }
+
+  .actions{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    flex-wrap:wrap;
+  }
+
+  .actions .btn{
+    height:44px;
+    padding:0 16px;
+    border-radius:12px;
+    font-size:13px;
+  }
+
+  .status-wrap{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+    margin-left:auto;
+  }
+
+  .status-dot{
+    width:5px;
+    height:5px;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:#596174;
+    box-shadow:0 0 0 3px rgba(89,97,116,.12);
+    transition:background .25s ease,box-shadow .25s ease;
+  }
+
+  body.joined .status-dot{
+    background:var(--green);
+    box-shadow:0 0 0 3px rgba(43,213,118,.12),0 0 10px rgba(43,213,118,.5);
+  }
+
+  body.live .status-dot{
+    background:var(--red);
+    box-shadow:0 0 0 3px rgba(255,90,101,.13),0 0 10px rgba(255,90,101,.55);
+  }
+
+  .status{
+    min-width:0;
+    color:var(--muted);
+    font-size:12.5px;
+    line-height:1.45;
+  }
+
+  .hidden{display:none!important}
+
+  /* ---------- rodapé ---------- */
+  .page-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:auto;
+    padding-top:28px;
+    color:#5d6476;
+    font-size:11px;
+    letter-spacing:.015em;
+  }
+
+  .page-footer span:last-child{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  .page-footer svg{width:13px;height:13px}
+
+  @keyframes ping{
+    0%{transform:scale(.6);opacity:.8}
+    80%,100%{transform:scale(2.1);opacity:0}
+  }
+
+  @keyframes halo{
+    0%,100%{opacity:.25;transform:scale(1)}
+    50%{opacity:.65;transform:scale(1.06)}
+  }
+
+  @keyframes blink{
+    0%,100%{opacity:1}
+    50%{opacity:.35}
+  }
+
+  @media (max-width:720px){
+    .app{padding-top:18px;padding-bottom:22px}
+    .topbar{margin-bottom:34px}
+    .brand-sub{display:none}
+    .session-pill{padding:8px 11px;font-size:11px}
+    .hero{margin-bottom:22px}
+    .hero p{font-size:14px;line-height:1.65}
+    h1{letter-spacing:-.04em}
+    .workspace{padding:10px;border-radius:21px}
+    .roombar{flex-direction:column}
+    .btn{height:50px;width:100%}
+    .stage{aspect-ratio:4/3;margin-top:10px;border-radius:15px}
+    .empty-icon{width:62px;height:62px;border-radius:20px}
+    .empty-icon svg{width:27px;height:27px}
+    .stage-empty{gap:10px;padding:18px}
+    .stage-empty p{max-width:270px;font-size:12px}
+    .empty-hint{display:none}
+    .actionbar{align-items:stretch;padding:12px 2px 2px}
+    .actions{width:100%}
+    .actions .btn{flex:1;min-width:132px}
+    .status-wrap{width:100%;margin:0;padding:3px 6px 2px}
+    .page-footer{flex-direction:column;align-items:flex-start;gap:6px;padding-top:22px}
+  }
+
+  @media (max-width:390px){
+    .actions .btn{min-width:100%}
+  }
+
+  @media (max-width:360px){
+    .session-label{display:none}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation-duration:.001ms!important;
+      animation-iteration-count:1!important;
+      transition-duration:.001ms!important;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="miikacord-screen.html" aria-label="MiikaCord — início">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2.5" y="4" width="19" height="13" rx="3"></rect>
+            <path d="M8 21h8M12 17v4"></path>
+            <path d="M8.5 9.2h7M8.5 12h4.5"></path>
+          </svg>
+        </span>
+        <span>
+          <span class="brand-name">MiikaCord</span>
+          <span class="brand-sub">Screen share</span>
+        </span>
+      </a>
+
+      <div class="session-pill">
+        <span class="session-dot" aria-hidden="true"></span>
+        <span class="session-label">Conexão segura</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <span class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          Transmissão em tempo real
+        </span>
+        <h1 id="page-title">Compartilhe sua tela<br><span class="gradient">sem complicação.</span></h1>
+        <p>Entre com um código de sala, inicie a transmissão e convide quem quiser assistir. Tudo direto no navegador, sem instalar nada.</p>
+      </section>
+
+      <section class="workspace" aria-label="Compartilhamento de tela">
+        <div class="roombar">
+          <label class="field" for="roomId">
+            <span class="field-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 3 8 21M16 3l-2 18M3.5 9h17M3 15h17"></path>
+              </svg>
+            </span>
+            <input id="roomId" type="text" placeholder="Digite o código da sala" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Código da sala">
+          </label>
+          <button class="btn btn-primary" type="button" onclick="joinRoom()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <path d="M10 17l5-5-5-5M15 12H3"></path>
+            </svg>
+            Entrar na sala
+          </button>
+        </div>
+
+        <div class="stage" id="stage">
+          <video id="screen" autoplay playsinline muted></video>
+
+          <div class="stage-empty">
+            <span class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2.5" y="4" width="19" height="13" rx="3"></rect>
+                <path d="M8 21h8M12 17v4"></path>
+                <path d="m10 8.5 4.5 2.25L10 13V8.5Z" fill="currentColor" stroke="none"></path>
+              </svg>
+            </span>
+            <h2>Sua tela aparece aqui</h2>
+            <p>Entre em uma sala e escolha compartilhar a tela ou assistir à transmissão de alguém.</p>
+            <span class="empty-hint"><kbd>↵</kbd> Dica: pressione Enter para entrar</span>
+          </div>
+
+          <span class="live-badge"><span class="live-dot" aria-hidden="true"></span> Ao vivo</span>
+          <span class="quality-badge">Qualidade HD</span>
+        </div>
+
+        <div class="actionbar">
+          <div class="actions">
+            <button id="shareBtn" class="btn btn-primary hidden" type="button" onclick="startShare()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2.5" y="4" width="19" height="13" rx="3"></rect>
+                <path d="M8 21h8M12 17v4M9 11l3-3 3 3M12 8v6"></path>
+              </svg>
+              Compartilhar tela
+            </button>
+            <button id="stopBtn" class="btn btn-danger hidden" type="button" onclick="stopShare()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+              </svg>
+              Parar
+            </button>
+            <button id="watchBtn" class="btn btn-secondary hidden" type="button" onclick="requestStream()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                <circle cx="12" cy="12" r="2.7"></circle>
+              </svg>
+              Assistir tela
+            </button>
+          </div>
+
+          <div class="status-wrap">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="status" id="status" role="status" aria-live="polite">Entre com um código de sala para começar.</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <span>MiikaCord © 2026</span>
+      <span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="11" rx="2.5"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+        Conexão criptografada
+      </span>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script>
+    const sb = supabase.createClient('https://jldkrcgfjvaalouoxgqa.supabase.co','sb_publishable_igul1pyZmV8V4wmm1VBxfg_YyzEXToO');
+    let room = null, channel = null, isHost = false, localStream = null, peers = {}, watching = false;
+    const video = document.getElementById('screen');
+    const status = document.getElementById('status');
+    const stage = document.getElementById('stage');
+    const roomInput = document.getElementById('roomId');
+    const myId = crypto.randomUUID();
+
+    function setStatus(text) {
+      status.textContent = text;
+    }
+
+    function setLive(live) {
+      stage.classList.toggle('is-live', live);
+      document.body.classList.toggle('live', live);
+    }
+
+    async function auth() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) { location.href = 'miikacord-login.html'; return true; }
+      return false;
+    }
+
+    async function joinRoom() {
+      if (await auth()) return;
+      room = (roomInput.value.trim() || 'miika-' + Math.random().toString(36).slice(2, 8)).toLowerCase();
+      roomInput.value = room;
+      channel = sb.channel('screen-' + room, { config: { broadcast: { self: false } } });
+      channel.on('broadcast', { event: 'signal' }, async ({ payload }) => handleSignal(payload));
+      channel.subscribe(async (s) => {
+        if (s === 'SUBSCRIBED') {
+          document.body.classList.add('joined');
+          setStatus('Sala “' + room + '” pronta. Escolha como participar.');
+          document.getElementById('shareBtn').classList.remove('hidden');
+          document.getElementById('watchBtn').classList.remove('hidden');
+          channel.send({ type: 'broadcast', event: 'signal', payload: { type: 'hello', from: myId } });
+        }
+      });
+    }
+
+    function createPeer(id, localId) {
+      const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      pc.onicecandidate = (e) => {
+        if (e.candidate) send({ type: 'ice', to: id, from: localId, candidate: e.candidate });
+      };
+      pc.ontrack = (e) => {
+        video.srcObject = e.streams[0];
+        setLive(true);
+        setStatus('Recebendo compartilhamento de tela...');
+      };
+      peers[id] = pc;
+      return pc;
+    }
+
+    function send(payload) {
+      channel.send({ type: 'broadcast', event: 'signal', payload });
+    }
+
+    async function startShare() {
+      try {
+        localStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true });
+        video.srcObject = localStream;
+        isHost = true;
+        setLive(true);
+        document.getElementById('shareBtn').classList.add('hidden');
+        document.getElementById('stopBtn').classList.remove('hidden');
+        setStatus('Compartilhando tela. Outras pessoas podem clicar em “Assistir tela”.');
+        localStream.getVideoTracks()[0].onended = stopShare;
+        send({ type: 'host-live', from: myId });
+      } catch (e) {
+        setStatus('Permissão negada ou tela não selecionada.');
+      }
+    }
+
+    function stopShare() {
+      Object.values(peers).forEach((pc) => pc.close());
+      peers = {};
+      if (localStream) { localStream.getTracks().forEach((t) => t.stop()); localStream = null; }
+      video.srcObject = null;
+      isHost = false;
+      watching = false;
+      setLive(false);
+      document.getElementById('shareBtn').classList.remove('hidden');
+      document.getElementById('stopBtn').classList.add('hidden');
+      setStatus('Compartilhamento encerrado.');
+      send({ type: 'host-stopped', from: myId });
+    }
+
+    async function requestStream() {
+      if (!channel) return setStatus('Entre em uma sala primeiro.');
+      watching = true;
+      setStatus('Pedindo acesso à tela do apresentador...');
+      send({ type: 'request-stream', from: myId });
+    }
+
+    async function handleSignal(p) {
+      if (p.type === 'request-stream' && isHost && localStream) {
+        const pc = createPeer(p.from, 'host');
+        localStream.getTracks().forEach((t) => pc.addTrack(t, localStream));
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        send({ type: 'offer', to: p.from, from: 'host', sdp: offer });
+      }
+      if (p.type === 'offer' && p.to === myId) {
+        const pc = createPeer(p.from, myId);
+        await pc.setRemoteDescription(p.sdp);
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        send({ type: 'answer', to: p.from, from: myId, sdp: answer });
+      }
+      if (p.type === 'answer' && p.to === 'host' && peers[p.from]) {
+        await peers[p.from].setRemoteDescription(p.sdp);
+      }
+      if (p.type === 'ice' && peers[p.from]) {
+        try { await peers[p.from].addIceCandidate(p.candidate); } catch (e) {}
+      }
+    }
+
+    roomInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') joinRoom();
+    });
+  </script>
+</body>
+</html>
