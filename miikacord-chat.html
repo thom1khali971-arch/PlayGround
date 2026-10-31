@@ -576,6 +576,8 @@
     transform:translate(-50%,0);
   }
 
+  .hidden{display:none!important}
+
   @keyframes spin{to{transform:rotate(360deg)}}
 
   @media (max-width:900px){
@@ -975,11 +977,23 @@
       sb.from('profiles').select('*')
     ]);
 
+    const fallbackName = session.user.email ? session.user.email.split('@')[0] : 'Usuário';
     me = profile || {
-      username: session.user.email ? session.user.email.split('@')[0] : 'Usuário',
+      id: uid,
+      username: fallbackName,
       color: '#5865f2',
       status: 'Online'
     };
+
+    if (!profile) {
+      // Se o trigger do banco não conseguiu criar o perfil, tenta criar
+      // pelo próprio usuário autenticado. A policy de INSERT permite isso.
+      sb.from('profiles')
+        .upsert({ id: uid, username: fallbackName, color: '#5865f2', status: 'Online' }, { onConflict: 'id' })
+        .then(({ error }) => {
+          if (error) console.warn('Não foi possível criar o perfil:', error.message);
+        });
+    }
 
     meName.textContent = me.username;
     meAvatar.textContent = ini(me.username);
@@ -987,7 +1001,11 @@
     meStatus.textContent = me.status || 'Online';
 
     channels = channelRows || [];
-    members = profiles || [];
+    members = (profiles || []).filter((member) => member.id !== uid);
+
+    if (!profile) {
+      members.unshift({ id: uid, username: me.username, color: me.color, status: me.status });
+    }
 
     if (channelsError) {
       showToast('Não foi possível carregar os canais.');
