@@ -721,10 +721,7 @@
   let toastTimer = null;
 
   const demoChannels = [
-    { id: 'geral', name: 'geral' },
-    { id: 'jogos', name: 'jogos' },
-    { id: 'musica', name: 'musica' },
-    { id: 'suporte', name: 'suporte' }
+    { id: 'geral', name: 'geral' }
   ];
 
   const demoMembers = [
@@ -740,15 +737,6 @@
       { id: 'demo-2', username: 'Lucas', color: '#23a55a', content: 'Tudo sim! Já configurei o compartilhamento de tela.', created_at: minutesAgo(31) },
       { id: 'demo-3', username: 'Bia', color: '#f0b232', content: 'E o Live Pix já está funcionando também 👀', created_at: minutesAgo(19) },
       { id: 'demo-4', username: 'Rafa', color: '#5865f2', content: 'Boa! Vou entrar na sala e assistir.', created_at: minutesAgo(7) }
-    ],
-    jogos: [
-      { id: 'demo-5', username: 'Lucas', color: '#23a55a', content: 'Alguém para uma partida mais tarde?', created_at: minutesAgo(52) }
-    ],
-    musica: [
-      { id: 'demo-6', username: 'Marina', color: '#eb459e', content: 'Deixei uma playlist nova no canal de voz.', created_at: minutesAgo(64) }
-    ],
-    suporte: [
-      { id: 'demo-7', username: 'Bia', color: '#f0b232', content: 'Precisa de ajuda? É só chamar por aqui.', created_at: minutesAgo(90) }
     ]
   };
 
@@ -1000,7 +988,7 @@
     meAvatar.style.background = safeColor(me.color);
     meStatus.textContent = me.status || 'Online';
 
-    channels = channelRows || [];
+    channels = (channelRows || []).filter((channel) => channel.id === 'geral' || channel.name === 'geral');
     members = (profiles || []).filter((member) => member.id !== uid);
 
     if (!profile) {

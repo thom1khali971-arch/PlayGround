@@ -130,8 +130,7 @@ on public.channels for select
 to authenticated
 using (true);
 
--- Semeia os canais iniciais somente quando a tabela usa id textual
--- (o formato esperado pelo app). Se o projeto usa UUID, nada é alterado.
+-- Semeia apenas o canal geral e remove os demais canais.
 do $$
 declare
   id_type text;
@@ -146,18 +145,24 @@ begin
     insert into public.channels (id, name)
     select 'geral', 'geral'
     where not exists (select 1 from public.channels where id = 'geral' or name = 'geral');
+  end if;
+end;
+$$;
 
-    insert into public.channels (id, name)
-    select 'jogos', 'jogos'
-    where not exists (select 1 from public.channels where id = 'jogos' or name = 'jogos');
+-- Mantém somente o canal geral, apagando as mensagens dos outros canais.
+do $$
+begin
+  if exists (select 1 from public.channels where id::text = 'geral' or name = 'geral') then
+    if to_regclass('public.messages') is not null then
+      delete from public.messages
+      where channel_id is not null
+        and channel_id::text not in (
+          select id::text from public.channels where id::text = 'geral' or name = 'geral'
+        );
+    end if;
 
-    insert into public.channels (id, name)
-    select 'musica', 'musica'
-    where not exists (select 1 from public.channels where id = 'musica' or name = 'musica');
-
-    insert into public.channels (id, name)
-    select 'suporte', 'suporte'
-    where not exists (select 1 from public.channels where id = 'suporte' or name = 'suporte');
+    delete from public.channels
+    where not (id::text = 'geral' or name = 'geral');
   end if;
 end;
 $$;
