@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Gás Solidário — doe um botijão, acenda uma vida</title>
+  <meta name="description" content="Campanha de doação de gás de cozinha: veja pedidos de famílias da comunidade, fale direto no WhatsApp e ajude com um botijão. Cartaz e panfleto prontos para imprimir.">
+  <meta name="theme-color" content="#0d4b45">
+  <meta property="og:title" content="Gás Solidário — doe um botijão, acenda uma vida">
+  <meta property="og:description" content="Um botijão de gás garante o almoço de hoje e a dignidade de cozinhar com segurança. Veja os pedidos e ajude pelo WhatsApp.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f1571f'/%3E%3Cpath d='M32 12c7 9 13 14 13 22a13 13 0 0 1-26 0c0-8 6-13 13-22Z' fill='%23ffd76a'/%3E%3Cpath d='M32 27c4 5 7 8 7 12a7 7 0 0 1-14 0c0-4 3-7 7-12Z' fill='%23fff8ec'/%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#pedidos">Pular para os pedidos</a>
+
+  <!-- Icon sprite -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-flame" viewBox="0 0 24 24">
+      <path d="M12 2c3.2 4 6.5 6.6 6.5 10.4a6.5 6.5 0 0 1-13 0C5.5 8.6 8.8 6 12 2Z" fill="currentColor"/>
+      <path d="M12 10.2c1.8 2.2 3.2 3.6 3.2 5.4a3.2 3.2 0 0 1-6.4 0c0-1.8 1.4-3.2 3.2-5.4Z" fill="#fff8ec"/>
+    </symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15L2 22l5.16-1.5A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.06.8.82-3-.2-.31a8.2 8.2 0 1 1 6.94 3.84Zm4.5-6.14c-.25-.13-1.46-.72-1.68-.8-.23-.09-.39-.13-.56.12-.16.24-.64.8-.79.97-.14.16-.29.18-.54.06-.24-.13-1.04-.39-1.98-1.23-.73-.65-1.22-1.46-1.37-1.71-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.83-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.06 0 1.21.89 2.39 1.01 2.55.12.17 1.74 2.65 4.21 3.72.59.26 1.05.41 1.4.52.59.19 1.13.16 1.55.1.48-.07 1.47-.6 1.68-1.18.2-.58.2-1.07.14-1.17-.06-.11-.22-.17-.47-.29Z"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-users" viewBox="0 0 24 24">
+      <circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M3.5 20c0-3.1 2.5-5.2 5.5-5.2s5.5 2.1 5.5 5.2M16 5.2a3.2 3.2 0 0 1 0 6.2M17 15c2.3.3 3.9 2.2 3.9 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 7.4V12l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="8.5" y="8.5" width="11" height="11" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M15.5 5.5H6.9A2.4 2.4 0 0 0 4.5 7.9v8.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m5 12.5 4.4 4.3L19 6.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-print" viewBox="0 0 24 24">
+      <path d="M7 9V4h10v5M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <rect x="7" y="14" width="10" height="6.5" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-share" viewBox="0 0 24 24">
+      <circle cx="6" cy="12" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <circle cx="18" cy="6" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <circle cx="18" cy="18" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="m8.2 10.9 7.6-3.8M8.2 13.1l7.6 3.8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <path d="M4.5 7h15M9 7V4.8h6V7M6.5 7l.9 12.2h9.2L17.5 7M10 11v5M14 11v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 3 5 6v5.4c0 4.3 2.9 7.8 7 9.6 4.1-1.8 7-5.3 7-9.6V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+      <path d="M12 20.3C6.8 17 3.6 13.7 3.6 9.8A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 8.4 2.2c0 3.9-3.2 7.2-8.4 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-box" viewBox="0 0 24 24">
+      <path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2L12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="m4 7.2 8 4.2 8-4.2M12 11.4V21" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-pix" viewBox="0 0 24 24">
+      <path d="m12 3 4.2 4.2L12 11.4 7.8 7.2 12 3Zm0 18-4.2-4.2L12 12.6l4.2 4.2L12 21ZM3 12l4.2-4.2L11.4 12l-4.2 4.2L3 12Zm18 0-4.2-4.2L12.6 12l4.2 4.2L21 12Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-megaphone" viewBox="0 0 24 24">
+      <path d="M3 10v4h4l7 4V6L7 10H3Zm13-1.5a5 5 0 0 1 0 7M19 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="poster-cylinder" viewBox="0 0 240 320">
+      <defs>
+        <linearGradient id="pcylBody" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff8a2b"/>
+          <stop offset=".55" stop-color="#f1571f"/>
+          <stop offset="1" stop-color="#cf3a08"/>
+        </linearGradient>
+        <linearGradient id="pcylFlame" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="#f1571f"/>
+          <stop offset=".6" stop-color="#ffb020"/>
+          <stop offset="1" stop-color="#ffe08a"/>
+        </linearGradient>
+        <linearGradient id="pcylValve" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#5a4a42"/>
+          <stop offset="1" stop-color="#2b211d"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="120" cy="303" rx="86" ry="13" fill="#1b1310" opacity=".16"/>
+      <path d="M120 18c13 22 32 34 32 56 0 20-14 34-32 34s-32-14-32-34c0-22 19-34 32-56Z" fill="url(#pcylFlame)"/>
+      <path d="M120 44c7 12 16 19 16 31 0 11-7 18-16 18s-16-7-16-18c0-12 9-19 16-31Z" fill="#fff3c4"/>
+      <rect x="104" y="100" width="32" height="26" rx="4" fill="url(#pcylValve)"/>
+      <rect x="96" y="96" width="48" height="12" rx="6" fill="#3a2d27"/>
+      <path d="M60 152c0-27 26-40 60-40s60 13 60 40l7 103c1 19-28 31-67 31s-68-12-67-31l7-103Z" fill="url(#pcylBody)"/>
+      <path d="M60 152c0-27 26-40 60-40s60 13 60 40l7 103c1 19-28 31-67 31s-68-12-67-31l7-103Z" fill="none" stroke="#1b1310" stroke-width="4"/>
+      <path d="M74 158c0-20 20-30 46-30 12 0 22 2 30 6-10 3-20 10-25 22-5 13-6 33-7 54-1 22-2 41-7 55-9-1-16-3-22-6-9-4-14-10-14-18l-1-83Z" fill="#fff" opacity=".14"/>
+      <rect x="66" y="186" width="108" height="62" rx="8" fill="#fff5e2" stroke="#1b1310" stroke-width="3"/>
+      <g transform="translate(76 196)">
+        <path d="M11 2c4 6 8 9 8 14a8 8 0 0 1-16 0c0-5 4-8 8-14Z" fill="#f1571f"/>
+        <text x="20" y="18" font-family="Archivo Black, sans-serif" font-size="21" fill="#1b1310">GÁS</text>
+        <text x="20" y="30" font-family="Inter, sans-serif" font-size="8" font-weight="700" letter-spacing="1.5" fill="#5b4a41">13 KG</text>
+      </g>
+      <ellipse cx="120" cy="283" rx="64" ry="9" fill="#000" opacity=".14"/>
+      <rect x="52" y="268" width="136" height="12" rx="6" fill="#b83206" stroke="#1b1310" stroke-width="3"/>
+      <path d="M96 120h48" stroke="#1b1310" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.36a1.7 1.7 0 0 0-1 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.64 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.64a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.36 9c.16.6.65 1.06 1.28 1.06H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51.94Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </svg>
+
+  <header class="site-header" id="topo">
+    <div class="wrap header-inner">
+      <a class="brand" href="#topo" aria-label="Gás Solidário, início">
+        <span class="brand-mark"><svg aria-hidden="true"><use href="#i-flame"/></svg></span>
+        <span class="brand-name" data-cfg="name">Gás Solidário</span>
+      </a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#pedidos">Pedidos</a>
+        <a href="#preciso-de-ajuda">Preciso de ajuda</a>
+        <a href="#materiais">Cartaz e panfleto</a>
+      </nav>
+      <a class="btn btn-wa btn-sm header-cta" data-cfg-link="wa" href="#" target="_blank" rel="noopener">
+        <svg aria-hidden="true"><use href="#i-wa"/></svg>
+        <span>Doe agora</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="campanha">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Campanha permanente de gás de cozinha</p>
+          <h1>Doe um botijão.<br><span class="hl">Acenda uma vida.</span></h1>
+          <p class="hero-lead">O gás virou luxo em milhares de casas. Sua doação garante o almoço de hoje e a dignidade de cozinhar com segurança — direto para uma família da sua comunidade.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="#pedidos">Quero ajudar agora <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-ghost btn-lg" href="#preciso-de-ajuda">Preciso de gás</a>
+          </div>
+          <dl class="hero-stats" aria-label="Números da campanha">
+            <div><dt>Pedidos abertos</dt><dd data-stat="open">—</dd></div>
+            <div><dt>Pessoas esperando</dt><dd data-stat="people">—</dd></div>
+            <div><dt>Bairros</dt><dd data-stat="hoods">—</dd></div>
+          </dl>
+          <p class="hero-note"><svg aria-hidden="true"><use href="#i-shield"/></svg> Sem intermediários. Você fala direto com a família e combina a entrega.</p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-sun"></div>
+          <div class="hero-grid-lines"></div>
+          <div class="hero-cylinder">
+            <svg viewBox="0 0 240 320" role="img" aria-label="Ilustração de um botijão de gás com chama">
+              <defs>
+                <linearGradient id="cylBody" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#ff8a2b"/>
+                  <stop offset=".55" stop-color="#f1571f"/>
+                  <stop offset="1" stop-color="#cf3a08"/>
+                </linearGradient>
+                <linearGradient id="cylFlame" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0" stop-color="#f1571f"/>
+                  <stop offset=".6" stop-color="#ffb020"/>
+                  <stop offset="1" stop-color="#ffe08a"/>
+                </linearGradient>
+                <linearGradient id="cylValve" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#5a4a42"/>
+                  <stop offset="1" stop-color="#2b211d"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="120" cy="303" rx="86" ry="13" fill="#1b1310" opacity=".16"/>
+              <g class="flame-group">
+                <path d="M120 18c13 22 32 34 32 56 0 20-14 34-32 34s-32-14-32-34c0-22 19-34 32-56Z" fill="url(#cylFlame)"/>
+                <path d="M120 44c7 12 16 19 16 31 0 11-7 18-16 18s-16-7-16-18c0-12 9-19 16-31Z" fill="#fff3c4"/>
+              </g>
+              <rect x="104" y="100" width="32" height="26" rx="4" fill="url(#cylValve)"/>
+              <rect x="96" y="96" width="48" height="12" rx="6" fill="#3a2d27"/>
+              <path d="M60 152c0-27 26-40 60-40s60 13 60 40l7 103c1 19-28 31-67 31s-68-12-67-31l7-103Z" fill="url(#cylBody)"/>
+              <path d="M60 152c0-27 26-40 60-40s60 13 60 40l7 103c1 19-28 31-67 31s-68-12-67-31l7-103Z" fill="none" stroke="#1b1310" stroke-width="4"/>
+              <path d="M74 158c0-20 20-30 46-30 12 0 22 2 30 6-10 3-20 10-25 22-5 13-6 33-7 54-1 22-2 41-7 55-9-1-16-3-22-6-9-4-14-10-14-18l-1-83Z" fill="#fff" opacity=".14"/>
+              <rect x="66" y="186" width="108" height="62" rx="8" fill="#fff5e2" stroke="#1b1310" stroke-width="3"/>
+              <g transform="translate(76 196)">
+                <path d="M11 2c4 6 8 9 8 14a8 8 0 0 1-16 0c0-5 4-8 8-14Z" fill="#f1571f"/>
+                <text x="20" y="18" font-family="Archivo Black, sans-serif" font-size="21" fill="#1b1310">GÁS</text>
+                <text x="20" y="30" font-family="Inter, sans-serif" font-size="8" font-weight="700" letter-spacing="1.5" fill="#5b4a41">13 KG</text>
+              </g>
+              <ellipse cx="120" cy="283" rx="64" ry="9" fill="#000" opacity=".14"/>
+              <rect x="52" y="268" width="136" height="12" rx="6" fill="#b83206" stroke="#1b1310" stroke-width="3"/>
+              <path d="M96 120h48" stroke="#1b1310" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="sticker sticker-1"><svg aria-hidden="true"><use href="#i-heart"/></svg> 100% direto<br>com a família</div>
+          <div class="sticker sticker-2"><svg aria-hidden="true"><use href="#i-wa"/></svg> Combine a entrega<br>no WhatsApp</div>
+          <div class="sticker sticker-qr">
+            <img class="qr-img" alt="" width="86" height="86">
+            <span>Aponte a câmera<br>e ajude agora</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="trust-strip" aria-hidden="true">
+      <div class="wrap trust-inner">
+        <span><svg><use href="#i-flame"/></svg> Doação direta</span>
+        <span><svg><use href="#i-wa"/></svg> Contato no WhatsApp</span>
+        <span><svg><use href="#i-shield"/></svg> Pedido com privacidade</span>
+        <span><svg><use href="#i-heart"/></svg> Sem intermediários</span>
+      </div>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <section class="section" id="como-funciona">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span>01</span> Simples do começo ao fim</p>
+          <h2>Três passos para <em>acender</em> uma casa.</h2>
+          <p class="section-lead">Você escolhe quem ajudar, abre a conversa e combina os detalhes. A campanha não fica com nenhuma parte da doação.</p>
+        </header>
+        <ol class="steps-grid">
+          <li class="step-card reveal">
+            <span class="step-num">01</span>
+            <span class="step-icon"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>
+            <h3>Escolha uma família</h3>
+            <p>Veja os pedidos abertos e encontre alguém perto de você. Cada pedido mostra o bairro e o que a família está vivendo.</p>
+          </li>
+          <li class="step-card reveal">
+            <span class="step-num">02</span>
+            <span class="step-icon"><svg aria-hidden="true"><use href="#i-wa"/></svg></span>
+            <h3>Fale no WhatsApp</h3>
+            <p>Um clique abre a conversa com a mensagem pronta. Combine entrega, troca do botijão ou pagamento com segurança.</p>
+          </li>
+          <li class="step-card reveal">
+            <span class="step-num">03</span>
+            <span class="step-icon"><svg aria-hidden="true"><use href="#i-flame"/></svg></span>
+            <h3>Entregue o gás</h3>
+            <p>Leve o botijão, pague a troca no revendedor ou chame a entrega. A família confirma o recebimento e o pedido sai do ar.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- PEDIDOS -->
+    <section class="section section-board" id="pedidos">
+      <div class="wrap">
+        <header class="section-head board-head reveal">
+          <div>
+            <p class="eyebrow"><span>02</span> Pedidos abertos</p>
+            <h2>Quem está esperando<br>por um botijão.</h2>
+          </div>
+          <div class="board-head-side">
+            <p class="section-lead">Famílias da comunidade cadastraram estes pedidos. Fale direto com quem precisa — sem cadastro, sem taxa, sem intermediário.</p>
+            <a class="text-link" href="#preciso-de-ajuda">Também preciso de ajuda <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </header>
+
+        <div class="board-toolbar reveal">
+          <div class="chips" role="group" aria-label="Filtrar pedidos por urgência">
+            <button class="chip is-active" type="button" data-filter="todos">Todos</button>
+            <button class="chip" type="button" data-filter="urgente">Urgente</button>
+            <button class="chip" type="button" data-filter="semana">Esta semana</button>
+            <button class="chip" type="button" data-filter="espera">Pode esperar</button>
+            <button class="chip" type="button" data-filter="atendidos">Atendidos</button>
+          </div>
+          <label class="search">
+            <svg aria-hidden="true"><use href="#i-search"/></svg>
+            <span class="sr-only">Buscar por bairro ou cidade</span>
+            <input type="search" id="board-search" placeholder="Buscar bairro ou cidade" autocomplete="off">
+          </label>
+        </div>
+
+        <div class="demo-note" id="demo-note" hidden>
+          <span class="demo-dot"></span>
+          <p><strong>Pedidos de exemplo.</strong> Eles demonstram o sistema com nomes e números fictícios. Publique um pedido real ou remova os exemplos.</p>
+          <button class="btn btn-tiny btn-ghost" type="button" id="remove-demo">Remover exemplos</button>
+        </div>
+
+        <div class="board-grid" id="board-grid" aria-live="polite"></div>
+
+        <div class="board-empty" id="board-empty" hidden>
+          <span class="empty-icon"><svg aria-hidden="true"><use href="#i-flame"/></svg></span>
+          <h3>Nenhum pedido por aqui.</h3>
+          <p>Altere o filtro ou a busca. Se você precisa de ajuda, publique o primeiro pedido.</p>
+          <a class="btn btn-primary" href="#preciso-de-ajuda">Publicar um pedido</a>
+        </div>
+
+        <p class="board-footnote reveal"><svg aria-hidden="true"><use href="#i-share"/></svg> Cada pedido tem um link próprio: quem abrir em outro celular vê o pedido e pode chamar a família no WhatsApp.</p>
+      </div>
+    </section>
+
+    <!-- PEDIR AJUDA -->
+    <section class="section section-ask" id="preciso-de-ajuda">
+      <div class="wrap ask-grid">
+        <div class="ask-intro reveal">
+          <p class="eyebrow eyebrow-light"><span>03</span> Precisa de ajuda?</p>
+          <h2>Peça um botijão<br>com <em>dignidade</em></h2>
+          <p class="ask-lead">Leva um minuto. Você escolhe o que aparece no pedido e recebe um link para compartilhar com quem pode ajudar. Nada de fila, cadastro ou exposição desnecessária.</p>
+
+          <ul class="ask-list">
+            <li><span><svg aria-hidden="true"><use href="#i-shield"/></svg></span><div><strong>Seu número fica protegido</strong><p>Só quem clica em “Ajudar no WhatsApp” vê a conversa. No cartão público, o telefone aparece mascarado.</p></div></li>
+            <li><span><svg aria-hidden="true"><use href="#i-share"/></svg></span><div><strong>Um link, várias pessoas</strong><p>Compartilhe nos grupos da família e do bairro. O pedido abre em qualquer celular, sem instalar nada.</p></div></li>
+            <li><span><svg aria-hidden="true"><use href="#i-wa"/></svg></span><div><strong>Você fala direto</strong><p>Ninguém pede senha, código ou dinheiro antecipado em nome da campanha. Combine a entrega com calma.</p></div></li>
+          </ul>
+
+          <a class="ask-wa" data-cfg-link="wa" href="#" target="_blank" rel="noopener">
+            <span class="ask-wa-icon"><svg aria-hidden="true"><use href="#i-wa"/></svg></span>
+            <span><small>Prefere falar com a equipe?</small><strong>Chamar a campanha no WhatsApp</strong></span>
+            <svg class="ask-wa-arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </div>
+
+        <div class="ask-card reveal">
+          <div class="ask-card-head">
+            <h3>Pedir um botijão</h3>
+            <span class="badge-soft"><svg aria-hidden="true"><use href="#i-clock"/></svg> 1 minuto</span>
+          </div>
+          <form id="request-form" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="f-name">Seu nome</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Ex.: Marli Souza" maxlength="60" required>
+                <p class="field-error" data-error-for="f-name"></p>
+              </div>
+              <div class="field">
+                <label for="f-phone">WhatsApp com DDD</label>
+                <input id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(11) 99999-9999" maxlength="16" required>
+                <p class="field-error" data-error-for="f-phone"></p>
+              </div>
+              <div class="field">
+                <label for="f-hood">Bairro</label>
+                <input id="f-hood" name="hood" type="text" autocomplete="address-level3" placeholder="Ex.: Jardim Aurora" maxlength="50" required>
+                <p class="field-error" data-error-for="f-hood"></p>
+              </div>
+              <div class="field">
+                <label for="f-city">Cidade</label>
+                <input id="f-city" name="city" type="text" autocomplete="address-level2" placeholder="Ex.: São Paulo" maxlength="50" required>
+                <p class="field-error" data-error-for="f-city"></p>
+              </div>
+              <div class="field">
+                <label for="f-people">Pessoas na casa</label>
+                <select id="f-people" name="people">
+                  <option value="1">Moro sozinho(a)</option>
+                  <option value="2" selected>2 pessoas</option>
+                  <option value="3">3 pessoas</option>
+                  <option value="4">4 pessoas</option>
+                  <option value="5">5 pessoas</option>
+                  <option value="6">6 ou mais</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-reason">Como está a situação? <span class="optional">(opcional)</span></label>
+                <input id="f-reason" name="reason" type="text" placeholder="Ex.: o gás acabou este mês" maxlength="120">
+                <p class="field-error" data-error-for="f-reason"></p>
+              </div>
+            </div>
+
+            <fieldset class="field urgency-field">
+              <legend>Quando você precisa?</legend>
+              <div class="urgency-options">
+                <label class="urgency-option">
+                  <input type="radio" name="urgency" value="urgente" checked>
+                  <span><strong>Urgente</strong><small>O gás já acabou</small></span>
+                </label>
+                <label class="urgency-option">
+                  <input type="radio" name="urgency" value="semana">
+                  <span><strong>Esta semana</strong><small>Está acabando</small></span>
+                </label>
+                <label class="urgency-option">
+                  <input type="radio" name="urgency" value="espera">
+                  <span><strong>Pode esperar</strong><small>Sem pressa</small></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <label class="consent">
+              <input type="checkbox" id="f-consent" required>
+              <span>Autorizo a divulgação do meu primeiro nome, bairro e situação nesta campanha. Meu WhatsApp só é revelado para quem clicar em ajudar. <a href="#privacidade" data-open="privacy">Entenda os dados</a>.</span>
+            </label>
+            <p class="field-error consent-error" data-error-for="f-consent"></p>
+
+            <button class="btn btn-primary btn-lg btn-block" type="submit">
+              <svg aria-hidden="true"><use href="#i-flame"/></svg>
+              Publicar meu pedido
+            </button>
+            <p class="form-foot"><svg aria-hidden="true"><use href="#i-shield"/></svg> Você pode apagar o pedido quando quiser. Nunca pedimos senha ou código.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- MATERIAIS -->
+    <section class="section section-materials" id="materiais">
+      <div class="wrap">
+        <header class="section-head materials-head reveal">
+          <div>
+            <p class="eyebrow"><span>04</span> Materiais da campanha</p>
+            <h2>Leve a campanha<br>para o mundo real.</h2>
+          </div>
+          <p class="section-lead">Cartaz para o comércio do bairro e panfleto para distribuir. Os dois saem prontos, com QR Code e WhatsApp atualizados automaticamente.</p>
+        </header>
+
+        <div class="materials-shell reveal">
+          <div class="materials-tabs" role="tablist" aria-label="Escolha o material">
+            <button class="mat-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="panel-poster" id="tab-poster" data-sheet="poster">Cartaz A4</button>
+            <button class="mat-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-flyer" id="tab-flyer" data-sheet="flyer">Panfleto A5</button>
+          </div>
+
+          <div class="materials-body">
+            <div class="materials-preview">
+              <div class="sheet-frame" id="panel-poster" role="tabpanel" aria-labelledby="tab-poster">
+                <!-- POSTER A4 -->
+                <article class="sheet sheet-poster" aria-label="Cartaz A4 da campanha">
+                  <div class="sheet-inner poster-inner">
+                    <header class="sheet-top">
+                      <div class="sheet-brand">
+                        <span class="sheet-mark"><svg aria-hidden="true"><use href="#i-flame"/></svg></span>
+                        <span data-cfg="name">Gás Solidário</span>
+                      </div>
+                      <span class="sheet-city" data-cfg="city">São Paulo — SP</span>
+                    </header>
+
+                    <p class="sheet-kicker">Campanha de doação de gás de cozinha</p>
+                    <h3 class="poster-title">Doe um botijão.<br><span>Acenda uma vida.</span></h3>
+
+                    <div class="poster-art">
+                      <svg viewBox="0 0 240 320" aria-hidden="true">
+                        <use href="#poster-cylinder"/>
+                      </svg>
+                      <span class="poster-stamp">13 kg<br><small>de dignidade</small></span>
+                    </div>
+
+                    <p class="poster-lead">Sua doação garante o gás de cozinha de uma família que hoje cozinha no fogareiro — ou não tem o que preparar.</p>
+
+                    <div class="poster-bottom">
+                      <div class="poster-qr">
+                        <img class="qr-img" alt="QR Code para falar com a campanha no WhatsApp">
+                        <div>
+                          <strong>Aponte a câmera<br>e ajude agora</strong>
+                          <span>ou chame no WhatsApp</span>
+                        </div>
+                      </div>
+                      <div class="poster-phone">
+                        <small>WhatsApp da campanha</small>
+                        <strong data-cfg="phone">(11) 99999-9999</strong>
+                        <span>Fale direto com a família</span>
+                      </div>
+                    </div>
+
+                    <ol class="poster-steps">
+                      <li><b>1</b><span>Escolha uma<br>família</span></li>
+                      <li><b>2</b><span>Fale no<br>WhatsApp</span></li>
+                      <li><b>3</b><span>Combine a<br>entrega</span></li>
+                    </ol>
+
+                    <p class="poster-foot">Doe um botijão. Aqueça uma casa. <span>Retire este cartaz e espalhe essa ideia.</span></p>
+
+                    <div class="sheet-tabs" aria-hidden="true">
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="sheet-frame" id="panel-flyer" role="tabpanel" aria-labelledby="tab-flyer" hidden>
+                <!-- FLYER A5 -->
+                <article class="sheet sheet-flyer" aria-label="Panfleto A5 da campanha">
+                  <div class="sheet-inner flyer-inner">
+                    <header class="sheet-top">
+                      <div class="sheet-brand">
+                        <span class="sheet-mark"><svg aria-hidden="true"><use href="#i-flame"/></svg></span>
+                        <span data-cfg="name">Gás Solidário</span>
+                      </div>
+                      <span class="sheet-city" data-cfg="city">São Paulo — SP</span>
+                    </header>
+
+                    <p class="sheet-kicker">Campanha de doação de gás</p>
+                    <h3 class="flyer-title">Doe um botijão.<br><span>Acenda uma vida.</span></h3>
+                    <p class="flyer-lead">O gás de cozinha virou luxo para muitas famílias. Sua doação garante o almoço de hoje e a dignidade de cozinhar com segurança.</p>
+
+                    <div class="flyer-mid">
+                      <div class="flyer-art">
+                        <span class="flyer-sun" aria-hidden="true"></span>
+                        <svg viewBox="0 0 240 320" aria-hidden="true"><use href="#poster-cylinder"/></svg>
+                        <span class="flyer-stamp" aria-hidden="true">13 kg<small>de dignidade</small></span>
+                      </div>
+                      <div class="flyer-qr">
+                        <img class="qr-img" alt="QR Code para falar com a campanha no WhatsApp">
+                        <strong>Aponte a câmera<br>e ajude agora</strong>
+                        <span data-cfg="phone">(11) 99999-9999</span>
+                      </div>
+                    </div>
+
+                    <ol class="flyer-steps">
+                      <li><b>1</b> Escolha uma família</li>
+                      <li><b>2</b> Fale no WhatsApp</li>
+                      <li><b>3</b> Combine a entrega</li>
+                    </ol>
+
+                    <p class="flyer-foot">Doação direta, sem intermediários.<br><strong>Pergunte como ajudar no WhatsApp.</strong></p>
+
+                    <div class="sheet-tabs" aria-hidden="true">
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                      <span class="tab">WhatsApp<br><b data-cfg="phone">(11) 99999-9999</b></span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <aside class="materials-side">
+              <p class="materials-label">Prévia em escala real de impressão</p>
+              <h3 id="materials-title">Cartaz A4</h3>
+              <p id="materials-desc">Uma página A4 para prender no comércio, no elevador ou no mural do bairro. Já vem com QR Code, telefone e sete tiras para destacar.</p>
+              <ul class="materials-specs">
+                <li><svg aria-hidden="true"><use href="#i-print"/></svg> <span id="spec-size">210 × 297 mm · 1 por folha</span></li>
+                <li><svg aria-hidden="true"><use href="#i-shield"/></svg> Cores e fontes já embutidas</li>
+                <li><svg aria-hidden="true"><use href="#i-wa"/></svg> QR e telefone sincronizados</li>
+              </ul>
+              <button class="btn btn-primary btn-block" type="button" id="print-btn">
+                <svg aria-hidden="true"><use href="#i-print"/></svg>
+                <span id="print-label">Imprimir cartaz</span>
+              </button>
+              <button class="btn btn-ghost btn-block" type="button" id="pdf-btn">
+                <svg aria-hidden="true"><use href="#i-arrow"/></svg>
+                Salvar em PDF
+              </button>
+              <p class="materials-tip" id="materials-tip"><svg aria-hidden="true"><use href="#i-print"/></svg> <span id="tip-text">Dica: no celular, use “Imprimir” e escolha “Salvar como PDF”. O tamanho A4 é mantido.</span></p>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUTRAS FORMAS -->
+    <section class="section section-help" id="outras-formas">
+      <div class="wrap">
+        <header class="section-head center reveal">
+          <p class="eyebrow"><span>05</span> Outras formas de ajudar</p>
+          <h2>Nem todo mundo pode doar<br>um botijão. <em>Todo mundo pode fazer algo.</em></h2>
+        </header>
+        <div class="help-grid">
+          <article class="help-card reveal">
+            <span class="help-icon"><svg aria-hidden="true"><use href="#i-box"/></svg></span>
+            <h3>Doe um botijão</h3>
+            <p>Escolha um pedido, fale com a família e combine a entrega ou a troca no revendedor mais próximo.</p>
+            <a class="text-link" href="#pedidos">Ver pedidos <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+          <article class="help-card reveal">
+            <span class="help-icon"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>
+            <h3>Seja um ponto de coleta</h3>
+            <p>Tem um comércio no bairro? Receba botijões doados e ajude a campanha a alcançar mais famílias.</p>
+            <a class="text-link" data-cfg-link="wa-collect" href="#" target="_blank" rel="noopener">Quero participar <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+          <article class="help-card reveal">
+            <span class="help-icon"><svg aria-hidden="true"><use href="#i-megaphone"/></svg></span>
+            <h3>Divulgue a campanha</h3>
+            <p>Imprima o cartaz, compartilhe o link nos grupos e ajude um pedido a encontrar quem pode atender.</p>
+            <a class="text-link" href="#materiais">Baixar materiais <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </article>
+          <article class="help-card help-card-pix reveal" id="pix-card" hidden>
+            <span class="help-icon"><svg aria-hidden="true"><use href="#i-pix"/></svg></span>
+            <h3>Apoio via PIX</h3>
+            <p>Contribua com qualquer valor para a compra de botijões e a logística da campanha.</p>
+            <div class="pix-key"><code id="pix-key"></code><button class="icon-btn" type="button" id="copy-pix" aria-label="Copiar chave PIX"><svg aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+          </article>
+        </div>
+        <p class="help-safety reveal"><svg aria-hidden="true"><use href="#i-shield"/></svg> <strong>Segurança:</strong> a campanha nunca pede senhas, códigos ou transferências para terceiros. Combine a entrega em local público e confirme quem está recebendo.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="#topo">
+          <span class="brand-mark"><svg aria-hidden="true"><use href="#i-flame"/></svg></span>
+          <span class="brand-name" data-cfg="name">Gás Solidário</span>
+        </a>
+        <p>Uma campanha de vizinhos para vizinhos. Gás de cozinha, dignidade e cuidado direto para quem precisa.</p>
+        <a class="btn btn-wa" data-cfg-link="wa" href="#" target="_blank" rel="noopener">
+          <svg aria-hidden="true"><use href="#i-wa"/></svg> Falar no WhatsApp
+        </a>
+      </div>
+      <nav class="footer-col" aria-label="Campanha">
+        <h4>Campanha</h4>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#pedidos">Pedidos abertos</a>
+        <a href="#preciso-de-ajuda">Preciso de ajuda</a>
+        <a href="#materiais">Cartaz e panfleto</a>
+      </nav>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <p class="footer-phone" data-cfg="phone">(11) 99999-9999</p>
+        <p data-cfg="city">São Paulo — SP</p>
+        <p class="footer-muted">Atendimento pela própria comunidade, todos os dias, das 8h às 20h.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Transparência</h4>
+        <button class="footer-link" type="button" data-open="privacy">Como tratamos seus dados</button>
+        <button class="footer-link" type="button" data-open="settings"><svg aria-hidden="true"><use href="#i-settings"/></svg> Configurar campanha</button>
+        <p class="footer-muted">Campanha independente e sem fins lucrativos. Nenhum valor passa pela organização.</p>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <p>© <span id="year">2026</span> <span data-cfg="name">Gás Solidário</span>. Feito para aquecer.</p>
+      <p>Um botijão. Uma casa. Uma vida.</p>
+    </div>
+  </footer>
+
+  <a class="wa-fab" data-cfg-link="wa" href="#" target="_blank" rel="noopener" aria-label="Fale com a gente no WhatsApp">
+    <svg aria-hidden="true"><use href="#i-wa"/></svg>
+    <span>Fale com a gente</span>
+  </a>
+
+  <div id="print-stage" aria-hidden="true"></div>
+
+  <!-- SUCCESS DIALOG -->
+  <dialog class="modal" id="success-dialog" aria-labelledby="success-title">
+    <div class="modal-body">
+      <button class="modal-close" type="button" data-close aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      <span class="success-icon"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+      <p class="eyebrow"><span>Pedido publicado</span></p>
+      <h2 id="success-title">Agora é só espalhar.</h2>
+      <p class="modal-lead">Seu pedido está neste aparelho e viaja dentro do link abaixo. Compartilhe nos grupos: quem abrir vê seus dados e pode falar com você no WhatsApp.</p>
+      <label class="share-box">
+        <span class="sr-only">Link do seu pedido</span>
+        <input type="text" id="share-link" readonly>
+        <button class="btn btn-primary btn-sm" type="button" id="copy-share"><svg aria-hidden="true"><use href="#i-copy"/></svg> Copiar</button>
+      </label>
+      <div class="modal-actions">
+        <a class="btn btn-wa btn-block" id="success-wa" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg> Falar com a equipe</a>
+        <button class="btn btn-ghost btn-block" type="button" id="view-request">Ver meu pedido na lista</button>
+      </div>
+      <p class="modal-note"><svg aria-hidden="true"><use href="#i-shield"/></svg> Para apagar o pedido, use o ícone de lixeira no cartão. O link já compartilhado continua abrindo a cópia que foi enviada.</p>
+    </div>
+  </dialog>
+
+  <!-- SETTINGS DIALOG -->
+  <dialog class="modal" id="settings-dialog" aria-labelledby="settings-title">
+    <div class="modal-body">
+      <button class="modal-close" type="button" data-close aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      <p class="eyebrow"><span>Configuração</span></p>
+      <h2 id="settings-title">Sua campanha, seus dados.</h2>
+      <p class="modal-lead">Troque o nome, a cidade e o WhatsApp. O cartaz, o panfleto, o QR Code e todos os botões se atualizam na hora.</p>
+      <form id="settings-form" novalidate>
+        <div class="field">
+          <label for="s-name">Nome da campanha</label>
+          <input id="s-name" name="name" type="text" maxlength="40" required>
+        </div>
+        <div class="field">
+          <label for="s-city">Cidade e estado</label>
+          <input id="s-city" name="city" type="text" maxlength="50" required>
+        </div>
+        <div class="field">
+          <label for="s-wa">WhatsApp da campanha (com DDI e DDD)</label>
+          <input id="s-wa" name="whatsapp" type="tel" inputmode="numeric" placeholder="5511999999999" maxlength="17" required>
+          <p class="field-hint">Somente números. Ex.: 5511999999999 (55 = Brasil, 11 = DDD).</p>
+          <p class="field-error" data-error-for="s-wa"></p>
+        </div>
+        <div class="field">
+          <label for="s-pix">Chave PIX <span class="optional">(opcional)</span></label>
+          <input id="s-pix" name="pix" type="text" maxlength="80" placeholder="Deixe vazio para não exibir">
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary btn-block" type="submit">Salvar configuração</button>
+        </div>
+      </form>
+      <div class="danger-zone">
+        <h3>Dados deste aparelho</h3>
+        <p>Pedidos e configurações ficam salvos apenas neste navegador. Os links compartilhados levam o pedido com eles.</p>
+        <div class="danger-actions">
+          <button class="btn btn-tiny btn-ghost" type="button" id="reset-demo">Restaurar exemplos</button>
+          <button class="btn btn-tiny btn-danger" type="button" id="wipe-data">Apagar todos os pedidos</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- PRIVACY DIALOG -->
+  <dialog class="modal" id="privacy-dialog" aria-labelledby="privacy-title">
+    <div class="modal-body">
+      <button class="modal-close" type="button" data-close aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      <p class="eyebrow"><span>Privacidade</span></p>
+      <h2 id="privacy-title">Seus dados, do seu jeito.</h2>
+      <div class="prose">
+        <h3>O que fica público</h3>
+        <p>No cartão do pedido aparecem apenas o primeiro nome, a inicial do sobrenome, o bairro, a cidade, a quantidade de pessoas e a situação que você escrever. O WhatsApp é exibido mascarado.</p>
+        <h3>Quem vê o número</h3>
+        <p>O número completo só é usado no link do WhatsApp quando alguém clica em “Ajudar”. A conversa acontece diretamente entre você e a pessoa doadora.</p>
+        <h3>Onde os dados ficam</h3>
+        <p>Este é um sistema local: os pedidos ficam no armazenamento do seu navegador. O link de compartilhamento carrega uma cópia do pedido no endereço — quem recebe consegue abrir sem servidor. Por isso, trate o link como público.</p>
+        <h3>Como apagar</h3>
+        <p>Use a lixeira no seu pedido para removê-lo deste aparelho. O link compartilhado carrega uma cópia do pedido: apagar aqui não apaga as cópias que já foram enviadas. Para uma campanha com muitos pedidos, conecte um banco de dados ou uma planilha.</p>
+        <h3>Segurança</h3>
+        <p>Nunca envie senhas, códigos de verificação ou documentos. Combine a entrega em local público, de dia, e confirme com a família quem está recebendo o botijão.</p>
+      </div>
+      <button class="btn btn-primary btn-block" type="button" data-close>Entendi</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
