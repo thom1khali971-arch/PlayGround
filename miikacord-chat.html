@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1e1f22">
+<meta name="description" content="MiikaCord — converse em canais de texto em tempo real.">
+<title>MiikaCord</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%235865f2'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial' font-size='18' font-weight='700' fill='white'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1e1f22;
+    --sidebar:#2b2d31;
+    --chat:#313338;
+    --input:#383a40;
+    --text:#dbdee1;
+    --muted:#949ba4;
+    --brand:#5865f2;
+    --line:#26272b;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+
+  body{
+    height:100vh;
+    height:100dvh;
+    display:flex;
+    overflow:hidden;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  button,input{font:inherit}
+  button{cursor:pointer}
+
+  ::selection{background:rgba(88,101,242,.45);color:#fff}
+
+  /* ---------- barra de servidores ---------- */
+  .serverbar{
+    width:72px;
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    padding:12px 0;
+    background:var(--bg);
+  }
+
+  .server{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:48px;
+    height:48px;
+    flex:0 0 auto;
+    border:0;
+    border-radius:16px;
+    background:#313338;
+    color:var(--text);
+    font-weight:800;
+    text-decoration:none;
+    transition:border-radius .18s ease,background .18s ease,color .18s ease;
+  }
+
+  .server:hover,.server:focus-visible{
+    border-radius:14px;
+    background:var(--brand);
+    color:#fff;
+    outline:none;
+  }
+
+  .server.active{
+    border-radius:14px;
+    background:var(--brand);
+    color:#fff;
+  }
+
+  .server.active::before{
+    content:"";
+    position:absolute;
+    left:-12px;
+    width:4px;
+    height:30px;
+    border-radius:0 4px 4px 0;
+    background:#fff;
+  }
+
+  .server-sep{
+    width:32px;
+    height:1px;
+    flex:0 0 auto;
+    margin:2px 0;
+    background:#3f4147;
+  }
+
+  .server svg{width:22px;height:22px}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    width:240px;
+    min-height:0;
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    background:var(--sidebar);
+  }
+
+  .userbar{
+    height:52px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:0 10px;
+    background:#232428;
+    font-weight:600;
+  }
+
+  .user-meta{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+  }
+
+  .user-text{
+    min-width:0;
+    line-height:1.15;
+  }
+
+  #meName{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:13px;
+  }
+
+  .user-status{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    margin-top:2px;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:500;
+  }
+
+  .avatar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    overflow:hidden;
+    border-radius:50%;
+    background:var(--brand);
+    color:#fff;
+    font-weight:700;
+    user-select:none;
+  }
+
+  .userbar .avatar{width:32px;height:32px;font-size:13px}
+
+  .dot{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#23a55a;
+    box-shadow:0 0 0 2px rgba(35,165,90,.14);
+  }
+
+  .logout{
+    display:grid;
+    place-items:center;
+    width:30px;
+    height:30px;
+    flex:0 0 auto;
+    border:0;
+    border-radius:7px;
+    background:transparent;
+    color:var(--muted);
+    transition:background .15s ease,color .15s ease;
+  }
+
+  .logout:hover{
+    background:#35373c;
+    color:#fff;
+  }
+
+  .logout svg{width:16px;height:16px}
+
+  .channels-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 14px 6px;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+
+  .channels{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:2px 8px 12px;
+  }
+
+  .channel{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:100%;
+    padding:7px 9px;
+    border:0;
+    border-radius:6px;
+    background:transparent;
+    color:var(--muted);
+    font-size:14px;
+    text-align:left;
+    transition:background .12s ease,color .12s ease;
+  }
+
+  .channel:hover{background:#35373c;color:var(--text)}
+  .channel.active{background:#404249;color:#fff}
+
+  .channel .hash{
+    color:#80848e;
+    font-size:17px;
+    font-weight:700;
+    line-height:1;
+  }
+
+  .channel.active .hash{color:#fff}
+
+  .channel-empty{
+    padding:12px 10px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+  }
+
+  /* ---------- área principal ---------- */
+  .main{
+    flex:1;
+    min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    background:var(--chat);
+  }
+
+  .chat-header{
+    height:48px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:0 1px 0 rgba(0,0,0,.12);
+    font-weight:700;
+  }
+
+  .chat-header .hash{
+    color:#80848e;
+    font-size:20px;
+    line-height:1;
+  }
+
+  #channelName{font-size:14px}
+
+  .mobile-menu{
+    display:none;
+    place-items:center;
+    width:32px;
+    height:32px;
+    margin-right:2px;
+    border:0;
+    border-radius:7px;
+    background:transparent;
+    color:var(--muted);
+  }
+
+  .mobile-menu:hover{background:#3a3c42;color:#fff}
+
+  .mobile-menu svg{width:19px;height:19px}
+
+  .demo-banner{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:0 0 auto;
+    padding:8px 14px;
+    border-bottom:1px solid rgba(255,255,255,.055);
+    background:linear-gradient(90deg,rgba(88,101,242,.16),rgba(139,92,246,.14));
+    color:#c8cdff;
+    font-size:11.5px;
+    line-height:1.4;
+    text-align:center;
+  }
+
+  .demo-banner strong{color:#fff;font-weight:700}
+  .demo-banner a{color:#fff;font-weight:700;text-underline-offset:2px}
+
+  .messages{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    padding:16px 16px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    scroll-behavior:smooth;
+  }
+
+  .messages::-webkit-scrollbar,
+  .channels::-webkit-scrollbar,
+  .members::-webkit-scrollbar{width:8px}
+
+  .messages::-webkit-scrollbar-track,
+  .channels::-webkit-scrollbar-track,
+  .members::-webkit-scrollbar-track{background:transparent}
+
+  .messages::-webkit-scrollbar-thumb,
+  .channels::-webkit-scrollbar-thumb,
+  .members::-webkit-scrollbar-thumb{
+    border:2px solid transparent;
+    border-radius:999px;
+    background:#1e1f22;
+    background-clip:padding-box;
+  }
+
+  .msg{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+
+  .msg .avatar{
+    width:40px;
+    height:40px;
+    margin-top:1px;
+    font-size:16px;
+  }
+
+  .msg-body{min-width:0}
+
+  .msg-head{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+
+  .name{
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+  }
+
+  .time{
+    color:var(--muted);
+    font-size:10.5px;
+    font-weight:400;
+  }
+
+  .content{
+    margin-top:2px;
+    font-size:15px;
+    line-height:1.4;
+    overflow-wrap:anywhere;
+    white-space:pre-wrap;
+  }
+
+  .empty-state{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:100%;
+    padding:32px 16px;
+    text-align:center;
+  }
+
+  .empty-icon{
+    display:grid;
+    place-items:center;
+    width:56px;
+    height:56px;
+    margin-bottom:4px;
+    border-radius:50%;
+    background:#2b2d31;
+    color:#b5bac1;
+    font-size:27px;
+    font-weight:700;
+  }
+
+  .empty-state h2{color:#f2f3f5;font-size:18px;font-weight:700}
+  .empty-state p{max-width:420px;color:var(--muted);font-size:13px;line-height:1.55}
+
+  .loading{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    min-height:100%;
+    color:var(--muted);
+    font-size:12.5px;
+  }
+
+  .spinner{
+    width:15px;
+    height:15px;
+    border:2px solid rgba(255,255,255,.18);
+    border-top-color:#c4c9ff;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+
+  /* ---------- compositor ---------- */
+  .composer{
+    flex:0 0 auto;
+    padding:0 16px 20px;
+    padding-bottom:max(20px,env(safe-area-inset-bottom));
+  }
+
+  .composer form{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    padding:2px;
+    border-radius:8px;
+    background:var(--input);
+  }
+
+  .composer input{
+    flex:1;
+    min-width:0;
+    padding:13px 14px;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--text);
+    font-size:15px;
+  }
+
+  .composer input::placeholder{color:#878d97}
+
+  .send{
+    display:grid;
+    place-items:center;
+    width:40px;
+    height:40px;
+    flex:0 0 auto;
+    margin-right:2px;
+    border:0;
+    border-radius:7px;
+    background:transparent;
+    color:var(--muted);
+    transition:background .15s ease,color .15s ease;
+  }
+
+  .send:hover{background:#404249;color:#fff}
+  .send:disabled{opacity:.45;cursor:not-allowed}
+  .send svg{width:18px;height:18px}
+
+  /* ---------- membros ---------- */
+  .members{
+    width:240px;
+    flex:0 0 auto;
+    padding:14px 10px;
+    overflow-y:auto;
+    background:var(--sidebar);
+  }
+
+  .members-title{
+    margin:0 6px 8px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+
+  .member{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px;
+    border-radius:6px;
+  }
+
+  .member:hover{background:#35373c}
+
+  .member .avatar{width:32px;height:32px;font-size:13px}
+
+  .member-name{
+    overflow:hidden;
+    color:#c9cdd4;
+    font-size:13px;
+    font-weight:500;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .member small{
+    display:block;
+    margin-top:2px;
+    overflow:hidden;
+    color:var(--muted);
+    font-size:10.5px;
+    font-weight:400;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .members-empty{
+    padding:8px 6px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+  }
+
+  /* ---------- extras ---------- */
+  .backdrop{
+    position:fixed;
+    inset:0;
+    z-index:29;
+    display:none;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(2px);
+  }
+
+  .backdrop.show{display:block}
+
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    z-index:60;
+    max-width:min(420px,calc(100vw - 32px));
+    padding:11px 15px;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:10px;
+    background:#111214;
+    box-shadow:0 18px 45px -15px rgba(0,0,0,.8);
+    color:#e4e6ea;
+    font-size:12.5px;
+    line-height:1.45;
+    transform:translate(-50%,14px);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  @media (max-width:900px){
+    .members{display:none}
+    .sidebar{width:190px}
+  }
+
+  @media (max-width:640px){
+    .serverbar{display:none}
+    .sidebar{
+      position:fixed;
+      inset:0 auto 0 0;
+      z-index:30;
+      width:min(82vw,278px);
+      transform:translateX(-100%);
+      transition:transform .22s ease;
+      box-shadow:18px 0 50px -20px rgba(0,0,0,.8);
+    }
+    .sidebar.open{transform:none}
+    .mobile-menu{display:grid}
+    .chat-header{padding-left:8px}
+    .messages{padding:14px 12px 18px}
+    .composer{padding-left:12px;padding-right:12px}
+    .msg .avatar{width:36px;height:36px;font-size:14px}
+    .content{font-size:14px}
+    .demo-banner{justify-content:flex-start;text-align:left}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation-duration:.001ms!important;
+      animation-iteration-count:1!important;
+      transition-duration:.001ms!important;
+      scroll-behavior:auto!important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav class="serverbar" aria-label="Servidores">
+  <div class="server active" title="MiikaCord">M</div>
+  <div class="server-sep" aria-hidden="true"></div>
+  <a class="server" href="miikacord-screen.html" title="Compartilhar tela" aria-label="Abrir compartilhamento de tela">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2.5" y="4" width="19" height="13" rx="3"></rect>
+      <path d="M8 21h8M12 17v4"></path>
+      <path d="M9 11l3-3 3 3M12 8v6"></path>
+    </svg>
+  </a>
+</nav>
+
+<aside class="sidebar" id="sidebar" aria-label="Canais">
+  <div class="userbar">
+    <div class="user-meta">
+      <div class="avatar" id="meAvatar">M</div>
+      <div class="user-text">
+        <span id="meName">Carregando…</span>
+        <span class="user-status"><span class="dot"></span><span id="meStatus">Online</span></span>
+      </div>
+    </div>
+    <button class="logout" type="button" onclick="logout()" title="Sair" aria-label="Sair da conta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="channels-head"><span>Canais de texto</span></div>
+  <div class="channels" id="channels"></div>
+</aside>
+
+<div class="backdrop" id="backdrop" onclick="toggleSidebar(false)"></div>
+
+<main class="main">
+  <header class="chat-header">
+    <button class="mobile-menu" type="button" onclick="toggleSidebar()" aria-label="Abrir canais">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"></path>
+      </svg>
+    </button>
+    <span class="hash" aria-hidden="true">#</span>
+    <span id="channelName">geral</span>
+  </header>
+
+  <div class="demo-banner hidden" id="demoBanner">
+    <span><strong>Modo demonstração</strong> — as mensagens ficam apenas neste navegador. <a href="miikacord-login.html">Entrar para conversar</a></span>
+  </div>
+
+  <section class="messages" id="messages" aria-live="polite" aria-label="Mensagens">
+    <div class="loading"><span class="spinner" aria-hidden="true"></span>Carregando conversas…</div>
+  </section>
+
+  <div class="composer">
+    <form id="form">
+      <input id="input" type="text" placeholder="Conversar em #geral" maxlength="2000" autocomplete="off" aria-label="Mensagem">
+      <button class="send" type="submit" aria-label="Enviar mensagem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5 21 3Z"></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+</main>
+
+<aside class="members" aria-label="Membros">
+  <div class="members-title">Membros</div>
+  <div id="members"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+  const sb = supabase.createClient(
+    'https://jldkrcgfjvaalouoxgqa.supabase.co',
+    'sb_publishable_igul1pyZmV8V4wmm1VBxfg_YyzEXToO'
+  );
+
+  const channelsEl = document.getElementById('channels');
+  const messagesEl = document.getElementById('messages');
+  const membersEl = document.getElementById('members');
+  const meName = document.getElementById('meName');
+  const meAvatar = document.getElementById('meAvatar');
+  const meStatus = document.getElementById('meStatus');
+  const channelName = document.getElementById('channelName');
+  const input = document.getElementById('input');
+  const form = document.getElementById('form');
+  const demoBanner = document.getElementById('demoBanner');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('backdrop');
+  const toastEl = document.getElementById('toast');
+
+  let me = null;
+  let current = null;
+  let channels = [];
+  let members = [];
+  let demo = false;
+  let realtimeChannel = null;
+  let loadToken = 0;
+  let toastTimer = null;
+
+  const demoChannels = [
+    { id: 'geral', name: 'geral' },
+    { id: 'jogos', name: 'jogos' },
+    { id: 'musica', name: 'musica' },
+    { id: 'suporte', name: 'suporte' }
+  ];
+
+  const demoMembers = [
+    { username: 'Marina', color: '#eb459e', status: 'Online' },
+    { username: 'Lucas', color: '#23a55a', status: 'Jogando' },
+    { username: 'Bia', color: '#f0b232', status: 'Online' },
+    { username: 'Rafa', color: '#5865f2', status: 'Ausente' }
+  ];
+
+  const demoMessages = {
+    geral: [
+      { id: 'demo-1', username: 'Marina', color: '#eb459e', content: 'Oi, gente! Tudo pronto para a live de hoje?', created_at: minutesAgo(38) },
+      { id: 'demo-2', username: 'Lucas', color: '#23a55a', content: 'Tudo sim! Já configurei o compartilhamento de tela.', created_at: minutesAgo(31) },
+      { id: 'demo-3', username: 'Bia', color: '#f0b232', content: 'E o Live Pix já está funcionando também 👀', created_at: minutesAgo(19) },
+      { id: 'demo-4', username: 'Rafa', color: '#5865f2', content: 'Boa! Vou entrar na sala e assistir.', created_at: minutesAgo(7) }
+    ],
+    jogos: [
+      { id: 'demo-5', username: 'Lucas', color: '#23a55a', content: 'Alguém para uma partida mais tarde?', created_at: minutesAgo(52) }
+    ],
+    musica: [
+      { id: 'demo-6', username: 'Marina', color: '#eb459e', content: 'Deixei uma playlist nova no canal de voz.', created_at: minutesAgo(64) }
+    ],
+    suporte: [
+      { id: 'demo-7', username: 'Bia', color: '#f0b232', content: 'Precisa de ajuda? É só chamar por aqui.', created_at: minutesAgo(90) }
+    ]
+  };
+
+  function minutesAgo(minutes) {
+    return new Date(Date.now() - minutes * 60000).toISOString();
+  }
+
+  function esc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[character]);
+  }
+
+  function ini(name) {
+    return String(name || '?').trim().charAt(0).toUpperCase() || '?';
+  }
+
+  function safeColor(value) {
+    return /^#[0-9a-f]{3,8}$/i.test(value || '') ? value : '#5865f2';
+  }
+
+  function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
+  }
+
+  function toggleSidebar(force) {
+    const shouldOpen = typeof force === 'boolean' ? force : !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', shouldOpen);
+    backdrop.classList.toggle('show', shouldOpen);
+  }
+
+  function logout() {
+    if (demo) {
+      location.href = 'miikacord-login.html';
+      return;
+    }
+
+    sb.auth.signOut().then(() => {
+      location.href = 'miikacord-login.html';
+    });
+  }
+
+  function renderChannels() {
+    if (!channels.length) {
+      channelsEl.innerHTML = '<div class="channel-empty">Nenhum canal disponível.</div>';
+      return;
+    }
+
+    channelsEl.innerHTML = channels.map((channel) => `
+      <button class="channel ${channel.id === current ? 'active' : ''}" type="button" data-channel="${esc(channel.id)}">
+        <span class="hash" aria-hidden="true">#</span>
+        <span>${esc(channel.name)}</span>
+      </button>
+    `).join('');
+  }
+
+  function renderMembers() {
+    if (!members.length) {
+      membersEl.innerHTML = '<div class="members-empty">Nenhum membro por aqui ainda.</div>';
+      return;
+    }
+
+    membersEl.innerHTML = members.map((member) => `
+      <div class="member">
+        <div class="avatar" style="background:${safeColor(member.color)}">${esc(ini(member.username))}</div>
+        <div style="min-width:0">
+          <div class="member-name">${esc(member.username || 'Usuário')}</div>
+          <small>${esc(member.status || 'Online')}</small>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function formatTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '--:--';
+    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatFullDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString('pt-BR');
+  }
+
+  function msgHTML(message) {
+    return `
+      <div class="msg" data-message-id="${esc(message.id || '')}">
+        <div class="avatar" style="background:${safeColor(message.color)}">${esc(ini(message.username))}</div>
+        <div class="msg-body">
+          <div class="msg-head">
+            <span class="name">${esc(message.username || 'Usuário')}</span>
+            <span class="time" title="${esc(formatFullDate(message.created_at))}">${esc(formatTime(message.created_at))}</span>
+          </div>
+          <div class="content">${esc(message.content || '')}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function emptyState() {
+    const channel = channels.find((item) => item.id === current);
+    const name = channel ? channel.name : current || 'geral';
+    return `
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">#</div>
+        <h2>Bem-vindo ao #${esc(name)}</h2>
+        <p>Este é o começo do canal #${esc(name)}. Envie a primeira mensagem para começar a conversa.</p>
+      </div>
+    `;
+  }
+
+  function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function renderMessages(messages) {
+    if (!messages.length) {
+      messagesEl.innerHTML = emptyState();
+      return;
+    }
+    messagesEl.innerHTML = messages.map(msgHTML).join('');
+    requestAnimationFrame(scrollToBottom);
+  }
+
+  function appendMessage(message) {
+    if (!message || message.channel_id !== current) return;
+
+    if (message.id) {
+      const selector = `[data-message-id="${CSS.escape(String(message.id))}"]`;
+      if (messagesEl.querySelector(selector)) return;
+    }
+
+    const empty = messagesEl.querySelector('.empty-state');
+    if (empty) messagesEl.innerHTML = '';
+
+    messagesEl.insertAdjacentHTML('beforeend', msgHTML(message));
+    requestAnimationFrame(scrollToBottom);
+  }
+
+  async function loadMessages() {
+    const token = ++loadToken;
+    messagesEl.innerHTML = '<div class="loading"><span class="spinner" aria-hidden="true"></span>Carregando mensagens…</div>';
+
+    if (demo) {
+      renderMessages(demoMessages[current] || []);
+      return;
+    }
+
+    const { data, error } = await sb
+      .from('messages')
+      .select('*')
+      .eq('channel_id', current)
+      .order('created_at');
+
+    if (token !== loadToken) return;
+
+    if (error) {
+      messagesEl.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">!</div>
+          <h2>Não foi possível carregar as mensagens</h2>
+          <p>${esc(error.message)}</p>
+        </div>
+      `;
+      return;
+    }
+
+    renderMessages(data || []);
+  }
+
+  function openChannel(id) {
+    const channel = channels.find((item) => item.id === id);
+    current = id;
+    channelName.textContent = channel ? channel.name : id;
+    input.placeholder = `Conversar em #${channel ? channel.name : id}`;
+    document.title = `#${channel ? channel.name : id} • MiikaCord`;
+    renderChannels();
+    toggleSidebar(false);
+    loadMessages();
+  }
+
+  function startDemo() {
+    demo = true;
+    document.body.classList.add('demo-mode');
+    demoBanner.classList.remove('hidden');
+
+    me = { username: 'Visitante', color: '#8b5cf6', status: 'Demonstração' };
+    channels = demoChannels;
+    members = demoMembers;
+
+    meName.textContent = me.username;
+    meAvatar.textContent = ini(me.username);
+    meAvatar.style.background = me.color;
+    meStatus.textContent = me.status;
+
+    renderChannels();
+    renderMembers();
+    openChannel('geral');
+  }
+
+  async function init() {
+    const { data: { session }, error: sessionError } = await sb.auth.getSession();
+
+    if (sessionError) {
+      showToast('Não foi possível verificar sua sessão.');
+    }
+
+    if (!session) {
+      startDemo();
+      return;
+    }
+
+    const uid = session.user.id;
+
+    const [{ data: profile }, { data: channelRows, error: channelsError }, { data: profiles }] = await Promise.all([
+      sb.from('profiles').select('*').eq('id', uid).single(),
+      sb.from('channels').select('*').order('created_at'),
+      sb.from('profiles').select('*')
+    ]);
+
+    me = profile || {
+      username: session.user.email ? session.user.email.split('@')[0] : 'Usuário',
+      color: '#5865f2',
+      status: 'Online'
+    };
+
+    meName.textContent = me.username;
+    meAvatar.textContent = ini(me.username);
+    meAvatar.style.background = safeColor(me.color);
+    meStatus.textContent = me.status || 'Online';
+
+    channels = channelRows || [];
+    members = profiles || [];
+
+    if (channelsError) {
+      showToast('Não foi possível carregar os canais.');
+    }
+
+    renderChannels();
+    renderMembers();
+
+    realtimeChannel = sb
+      .channel('miikacord-realtime-' + uid)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages'
+      }, (payload) => {
+        appendMessage(payload.new);
+      })
+      .subscribe();
+
+    const initial = channels.find((channel) => channel.id === 'geral') || channels[0];
+    if (initial) {
+      openChannel(initial.id);
+    } else {
+      current = 'geral';
+      channelName.textContent = 'geral';
+      renderMessages([]);
+    }
+  }
+
+  channelsEl.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-channel]');
+    if (!button) return;
+    openChannel(button.dataset.channel);
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const text = input.value.trim();
+    if (!text || !me || !current) return;
+
+    input.value = '';
+
+    if (demo) {
+      const message = {
+        id: 'demo-' + Date.now(),
+        channel_id: current,
+        username: me.username,
+        color: me.color,
+        content: text,
+        created_at: new Date().toISOString()
+      };
+
+      if (!demoMessages[current]) demoMessages[current] = [];
+      demoMessages[current].push(message);
+      appendMessage(message);
+      return;
+    }
+
+    const { error } = await sb.from('messages').insert({
+      channel_id: current,
+      username: me.username,
+      color: safeColor(me.color),
+      content: text
+    });
+
+    if (error) {
+      input.value = text;
+      showToast('Não foi possível enviar a mensagem. Tente novamente.');
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') toggleSidebar(false);
+  });
+
+  init().catch((error) => {
+    console.error(error);
+    startDemo();
+  });
+</script>
+</body>
+</html>

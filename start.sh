@@ -8,7 +8,9 @@ cd "$PROJECT_DIR"
 WEB_DIR="${OPENCODE_WEB_DIR:-/home/runner/work/_temp/omgithub-web}"
 PORT="${PORT:-3000}"
 DIST_DIR="$PROJECT_DIR/dist"
-SOURCE_HTML="$PROJECT_DIR/miikacord-screen.html"
+SOURCE_HTML="$PROJECT_DIR/miikacord-chat.html"
+SCREEN_HTML="$PROJECT_DIR/miikacord-screen.html"
+LOGIN_HTML="$PROJECT_DIR/miikacord-login.html"
 DEPLOYMENT_OUTPUT="$WEB_DIR/deployment-output.json"
 
 export PORT
@@ -43,11 +45,17 @@ fi
   exit 1
 }
 
-# Rebuild only when the source is newer than the published entry point.
-if [[ ! -f "$DIST_DIR/index.html" || "$SOURCE_HTML" -nt "$DIST_DIR/index.html" || "$SOURCE_HTML" -nt "$DIST_DIR/miikacord-screen.html" ]]; then
+[[ -f "$SCREEN_HTML" ]] || echo "Warning: missing optional page $SCREEN_HTML" >&2
+[[ -f "$LOGIN_HTML" ]] || echo "Warning: missing optional page $LOGIN_HTML" >&2
+
+# Rebuild only when a source page is newer than the published entry points.
+if [[ ! -f "$DIST_DIR/index.html" || "$SOURCE_HTML" -nt "$DIST_DIR/index.html" || \
+      ( -f "$SCREEN_HTML" && "$SCREEN_HTML" -nt "$DIST_DIR/miikacord-screen.html" ) || \
+      ( -f "$LOGIN_HTML" && "$LOGIN_HTML" -nt "$DIST_DIR/miikacord-login.html" ) ]]; then
   timed cp "$SOURCE_HTML" "$DIST_DIR/index.html"
-  timed cp "$SOURCE_HTML" "$DIST_DIR/miikacord-screen.html"
-  [[ ! -f "$PROJECT_DIR/miikacord-login.html" ]] || timed cp "$PROJECT_DIR/miikacord-login.html" "$DIST_DIR/miikacord-login.html"
+  timed cp "$SOURCE_HTML" "$DIST_DIR/miikacord-chat.html"
+  [[ ! -f "$SCREEN_HTML" ]] || timed cp "$SCREEN_HTML" "$DIST_DIR/miikacord-screen.html"
+  [[ ! -f "$LOGIN_HTML" ]] || timed cp "$LOGIN_HTML" "$DIST_DIR/miikacord-login.html"
 else
   echo '[start] static build is up to date'
 fi
