@@ -11,6 +11,7 @@ DIST_DIR="$PROJECT_DIR/dist"
 SOURCE_HTML="$PROJECT_DIR/miikacord-chat.html"
 SCREEN_HTML="$PROJECT_DIR/miikacord-screen.html"
 LOGIN_HTML="$PROJECT_DIR/miikacord-login.html"
+FIX_SQL="$PROJECT_DIR/supabase/fix-auth.sql"
 DEPLOYMENT_OUTPUT="$WEB_DIR/deployment-output.json"
 
 export PORT
@@ -47,6 +48,7 @@ fi
 
 [[ -f "$SCREEN_HTML" ]] || echo "Warning: missing optional page $SCREEN_HTML" >&2
 [[ -f "$LOGIN_HTML" ]] || echo "Warning: missing optional page $LOGIN_HTML" >&2
+[[ -f "$FIX_SQL" ]] || echo "Warning: missing optional SQL $FIX_SQL" >&2
 
 # Rebuild only when a source page is newer than any published entry point.
 rebuild=false
@@ -64,11 +66,17 @@ if [[ -f "$LOGIN_HTML" ]]; then
   [[ "$LOGIN_HTML" -nt "$DIST_DIR/miikacord-login.html" ]] && rebuild=true
 fi
 
+if [[ -f "$FIX_SQL" ]]; then
+  [[ -f "$DIST_DIR/fix-auth.sql" ]] || rebuild=true
+  [[ "$FIX_SQL" -nt "$DIST_DIR/fix-auth.sql" ]] && rebuild=true
+fi
+
 if [[ "$rebuild" == true ]]; then
   timed cp "$SOURCE_HTML" "$DIST_DIR/index.html"
   timed cp "$SOURCE_HTML" "$DIST_DIR/miikacord-chat.html"
   [[ ! -f "$SCREEN_HTML" ]] || timed cp "$SCREEN_HTML" "$DIST_DIR/miikacord-screen.html"
   [[ ! -f "$LOGIN_HTML" ]] || timed cp "$LOGIN_HTML" "$DIST_DIR/miikacord-login.html"
+  [[ ! -f "$FIX_SQL" ]] || timed cp "$FIX_SQL" "$DIST_DIR/fix-auth.sql"
 else
   echo '[start] static build is up to date'
 fi
